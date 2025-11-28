@@ -441,7 +441,7 @@ class PuzzleSkipAmount(Range):
     """
     display_name = "Puzzle Skips"
     range_start = 0
-    range_end = 30
+    range_end = 100
     default = 10
 
 
