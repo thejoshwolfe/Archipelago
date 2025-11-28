@@ -15,6 +15,7 @@ import math
 import operator
 import pickle
 import random
+import re
 import shlex
 import threading
 import time
@@ -243,6 +244,9 @@ class Context:
     non_hintable_names: typing.Dict[str, typing.AbstractSet[str]]
     spheres: typing.List[typing.Dict[int, typing.Set[int]]]
     """ each sphere is { player: { location_id, ... } } """
+    spoiler_spheres: typing.Dict[int, typing.List[typing.Set[int]]]
+    """ each player's spheres of locations from the spoiler log playthrough.
+        { player: [ { location_id, ... } ] } """
     logger: logging.Logger
 
     def __init__(self, host: str, port: int, server_password: str, password: str, location_check_points: int,
@@ -308,6 +312,7 @@ class Context:
         self.stored_data_notification_clients = collections.defaultdict(weakref.WeakSet)
         self.read_data = {}
         self.spheres = []
+        self.spoiler_spheres = {}
 
         # init empty to satisfy linter, I suppose
         self.gamespackage = {}
@@ -716,6 +721,62 @@ class Context:
             f'Loaded save file with {sum([len(v) for k, v in self.received_items.items() if k[2]])} received items '
             f'for {sum(k[2] for k in self.received_items)} players')
 
+    def load_spoiler(self, filename):
+        with open(filename) as f:
+            contents = f.read()
+        #try:
+        #    [seed_name] = re.findall(r'Seed: (\d+)', contents.split("\n", 1)[0])
+        #except ValueError:
+        #    raise Exception("doesn't look like a spoiler log: " + filename) from None
+        #if seed_name != self.seed_name:
+        #    raise Exception("wrong spoiler log. seed mismatch: " + filename)
+        #    # Could do more checks too.
+
+        is_multiplayer = len(self.player_names) > 1
+        self.spoiler_spheres = collections.defaultdict(list)
+
+        match = re.search(r'^Playthrough:$', contents, re.MULTILINE)
+        if match == None: raise Exception("spoiler does not contain a playthrough: " + filename)
+        contents = contents[match.span()[1]:]
+
+        # Example playthrough content:
+        #   0: {
+        #     Dashmaster (player_1)
+        #   }
+        #   1: {
+        #     Bow Weapon Unlock Location (player_3): progressive-processing (player_4)
+        # ...
+        for sphere_paragraph in re.findall(r'^\d+: \{$(.*?)^\}$', contents, re.MULTILINE | re.DOTALL):
+            player_spoiler_sphere = collections.defaultdict(set)
+            for line in sphere_paragraph.splitlines():
+                try:
+                    location_str, item_str = line.split(":", 1)
+                except ValueError:
+                    continue # skip sphere 0 starter items.
+                # Multiplayer has different syntax.
+                if is_multiplayer:
+                    # Location Name (slot_name): Item Name (slot_name)
+                    location_name, location_slot_name = re.match(r'^  (.*) \((.*)\)$', location_str).groups()
+                    item_name, item_slot_name = re.match(r'^ (.*) \((.*)\)$', item_str).groups()
+                    # Reverse lookup names back to ids
+                    _, location_slot_id = self.player_name_lookup[location_slot_name]
+                    _, item_slot_id = self.player_name_lookup[item_slot_name]
+                else:
+                    # Location Name: Item Name
+                    location_name = location_str
+                    location_slot_id = item_slot_id = 1
+                try:
+                    location_id = self.location_names_for_game(self.games[location_slot_id])[location_name]
+                except KeyError:
+                    if location_slot_id == item_slot_id:
+                        continue # "events" trigger this, such as defeating a boss locally.
+                    raise
+
+                player_spoiler_sphere[location_slot_id].add(location_id)
+
+            for slot, sphere in player_spoiler_sphere.items():
+                self.spoiler_spheres[slot].append(sphere)
+
     # rest
 
     def get_hint_cost(self, slot):
@@ -951,7 +1012,11 @@ async def on_client_disconnected(ctx: Context, client: Client):
         await on_client_left(ctx, client)
 
 
-_non_game_messages = {"HintGame": "hinting", "Tracker": "tracking", "TextOnly": "viewing"}
+_non_game_messages = {
+    "HintGame": "hinting",
+    "Tracker": "tracking",
+    "TextOnly": "viewing",
+}
 """ { tag: ui_message } """
 
 
@@ -1822,6 +1887,30 @@ class ClientMessageProcessor(CommonCommandProcessor):
         return self.get_hints(location, True)
 
 
+    def get_oracle_advice(self):
+        ctx = self.ctx
+        if not ctx.spoiler_spheres:
+            self.output("The !oracle command is disabled. Run server with --oracle-spoiler to enable.")
+            return False
+        location_checks = ctx.location_checks[self.client.team, self.client.slot]
+        for sphere in ctx.spoiler_spheres[self.client.slot]:
+            remaining = sphere - location_checks
+            if not remaining: continue
+            location_id = random.choice(list(remaining))
+            parts = [{"text": "The oracle advises you to go to "}]
+            NetUtils.add_json_location(parts, location_id, self.client.slot)
+            parts.append({"text": "."})
+            async_start(ctx.send_msgs(self.client, [{"cmd": "PrintJSON", "data": parts}]))
+            return True
+
+        self.output("The oracle advises you to simply win")
+        return True
+
+    def _cmd_oracle(self) -> bool:
+        """Get advice from the oracle."""
+        return self.get_oracle_advice()
+
+
 def get_checked_checks(ctx: Context, team: int, slot: int) -> typing.List[int]:
     return ctx.locations.get_checked(ctx.location_checks, team, slot)
 
@@ -2576,6 +2665,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument('--server_password', default=defaults["server_password"])
     parser.add_argument('--password', default=defaults["password"])
     parser.add_argument('--savefile', default=defaults["savefile"])
+    parser.add_argument('--oracle-spoiler', help="path to _Spoiler.txt to enable the !oracle command")
     parser.add_argument('--disable_save', default=defaults["disable_save"], action='store_true')
     parser.add_argument('--cert', help="Path to a SSL Certificate for encryption.")
     parser.add_argument('--cert_key', help="Path to SSL Certificate Key file")
@@ -2706,6 +2796,13 @@ async def main(args: argparse.Namespace):
     except Exception as e:
         logging.exception(f"Failed to read multiworld data ({e})")
         raise
+
+    if args.oracle_spoiler:
+        try:
+            ctx.load_spoiler(args.oracle_spoiler)
+        except Exception as e:
+            logging.exception(f"Failed to read spoilers ({e})")
+            raise
 
     ctx.init_save(not args.disable_save)
 
