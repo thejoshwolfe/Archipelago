@@ -85,11 +85,31 @@ class ClientCommandProcessor(CommandProcessor):
         async_start(self.ctx.disconnect(), name="disconnecting")
         return True
 
-    def _cmd_received(self) -> bool:
-        """List all received items"""
+    def _cmd_received(self, flags="") -> bool:
+        """
+        List all received items.
+
+        :param flags: some combination of the letters "AUT" or "aut" to show only Advancement, Useful, and/or Trap items.
+        """
+        flag_set = set(flags.lower())
+        if flag_set - set("aut"):
+            self.output("Unrecognized flags: " + "".join(flag_set - set("aut")))
+            return False
+        if flag_set:
+            filter_bits = 0
+            if "a" in flag_set: filter_bits |= 0b001
+            if "u" in flag_set: filter_bits |= 0b010
+            if "t" in flag_set: filter_bits |= 0b100
+        if not self.ctx.items_received:
+            self.output("No items received.")
+            return True
+        skipped_count = 0
         item: NetworkItem
         self.output(f'{len(self.ctx.items_received)} received items, sorted by time:')
         for index, item in enumerate(self.ctx.items_received, 1):
+            if flag_set and (item.flags&-item.flags) & filter_bits == 0:
+                skipped_count += 1
+                continue
             parts = []
             add_json_item(parts, item.item, self.ctx.slot, item.flags)
             add_json_text(parts, " from ")
@@ -97,6 +117,10 @@ class ClientCommandProcessor(CommandProcessor):
             add_json_text(parts, " by ")
             add_json_text(parts, item.player, type=JSONTypes.player_id)
             self.ctx.on_print_json({"data": parts, "cmd": "PrintJSON"})
+
+        if skipped_count:
+            self.output(f'({skipped_count} item{"s" if skipped_count != 1 else ""} hidden due to flags={"".join(flag_set)})')
+
         return True
 
     def _cmd_missing(self, filter_text = "") -> bool:
