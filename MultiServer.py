@@ -763,7 +763,7 @@ class Context:
                     _, item_slot_id = self.player_name_lookup[item_slot_name]
                 else:
                     # Location Name: Item Name
-                    location_name = location_str
+                    [location_name] = re.match(r'^  (.*)$', location_str).groups()
                     location_slot_id = item_slot_id = 1
                 try:
                     location_id = self.location_names_for_game(self.games[location_slot_id])[location_name]
@@ -776,6 +776,8 @@ class Context:
 
             for slot, sphere in player_spoiler_sphere.items():
                 self.spoiler_spheres[slot].append(sphere)
+
+        self.logger.info("loaded spoilers for !oracle. spheres: %d", sum(len(spheres) for spheres in self.spoiler_spheres.values()))
 
     # rest
 
@@ -1900,7 +1902,7 @@ class ClientMessageProcessor(CommonCommandProcessor):
             parts = [{"text": "The oracle advises you to go to "}]
             NetUtils.add_json_location(parts, location_id, self.client.slot)
             parts.append({"text": "."})
-            async_start(ctx.send_msgs(self.client, [{"cmd": "PrintJSON", "data": parts}]))
+            ctx.broadcast_all([{"cmd": "PrintJSON", "data": parts}])
             return True
 
         self.output("The oracle advises you to simply win")
