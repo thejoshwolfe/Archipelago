@@ -1904,7 +1904,7 @@ class ClientMessageProcessor(CommonCommandProcessor):
             parts = [{"text": "The oracle advises you to go to "}]
             NetUtils.add_json_location(parts, location_id, self.client.slot)
             parts.append({"text": "."})
-            ctx.broadcast_team([{"cmd": "PrintJSON", "data": parts}])
+            ctx.broadcast_all([{"cmd": "PrintJSON", "data": parts}])
             return True
 
         self.output("The oracle advises you to simply win")
