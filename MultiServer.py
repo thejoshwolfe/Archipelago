@@ -749,21 +749,23 @@ class Context:
         for sphere_paragraph in re.findall(r'^\d+: \{$(.*?)^\}$', contents, re.MULTILINE | re.DOTALL):
             player_spoiler_sphere = collections.defaultdict(set)
             for line in sphere_paragraph.splitlines():
-                try:
-                    location_str, item_str = line.split(":", 1)
-                except ValueError:
-                    continue # skip sphere 0 starter items.
                 # Multiplayer has different syntax.
                 if is_multiplayer:
                     # Location Name (slot_name): Item Name (slot_name)
-                    location_name, location_slot_name = re.match(r'^  (.*) \((.*)\)$', location_str).groups()
-                    item_name, item_slot_name = re.match(r'^ (.*) \((.*)\)$', item_str).groups()
+                    match = re.match(r'^  (.*) \((.*)\): (.*) \((.*)\)$', line)
+                    if match == None:
+                        continue # skip sphere 0 starter items.
+                    location_name, location_slot_name, item_name, item_slot_name = match.groups()
                     # Reverse lookup names back to ids
                     _, location_slot_id = self.player_name_lookup[location_slot_name]
                     _, item_slot_id = self.player_name_lookup[item_slot_name]
                 else:
                     # Location Name: Item Name
                     [location_name] = re.match(r'^  (.*)$', location_str).groups()
+                    match = re.match(r'^  (.*): (.*)$', line)
+                    if match == None:
+                        continue # skip sphere 0 starter items.
+                    location_name, item_name = match.groups()
                     location_slot_id = item_slot_id = 1
                 try:
                     location_id = self.location_names_for_game(self.games[location_slot_id])[location_name]
@@ -1902,7 +1904,7 @@ class ClientMessageProcessor(CommonCommandProcessor):
             parts = [{"text": "The oracle advises you to go to "}]
             NetUtils.add_json_location(parts, location_id, self.client.slot)
             parts.append({"text": "."})
-            ctx.broadcast_all([{"cmd": "PrintJSON", "data": parts}])
+            ctx.broadcast_team([{"cmd": "PrintJSON", "data": parts}])
             return True
 
         self.output("The oracle advises you to simply win")
