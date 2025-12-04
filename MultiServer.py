@@ -701,6 +701,7 @@ class Context:
 
         if "game_options" in savedata:
             self.hint_cost = savedata["game_options"]["hint_cost"]
+            self.hint_cost = 0 # actually i hate this
             self.location_check_points = savedata["game_options"]["location_check_points"]
             self.server_password = savedata["game_options"]["server_password"]
             self.password = savedata["game_options"]["password"]
