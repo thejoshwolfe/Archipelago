@@ -531,7 +531,7 @@ commands.add_command("ap-get-technology", "Grant a technology, used by the Archi
         game.print("ap-get-technology is only to be used by the Archipelago Factorio Client")
         return
     end
-    if index == -1 then -- for coop sync and restoring from an older savegame
+    if index == "-1" then -- for coop sync and restoring from an older savegame
         local tech = force.technologies[item_name]
         if tech.researched ~= true then
             game.print({"", "Received [technology=" .. tech.name .. "] as it is already checked."})
