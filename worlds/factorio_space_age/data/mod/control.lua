@@ -564,11 +564,13 @@ commands.add_command("ap-get-technology", "Grant a technology, used by the Archi
     if force.technologies[item_name] ~= nil then
         local tech = force.technologies[item_name]
         if tech ~= nil then
-            storage.index_sync[index] = item_name
-            if tech.researched ~= true then
-                game.print({"", "Received [technology=" .. tech.name .. "] from ", source})
-                game.play_sound({path="utility/research_completed"})
-                tech.researched = true
+            if storage.index_sync[index] ~= item_name then -- not yet received tech
+                storage.index_sync[index] = item_name
+                if tech.researched ~= true then
+                    game.print({"", "Received [technology=" .. tech.name .. "] from ", source})
+                    game.play_sound({path="utility/research_completed"})
+                    tech.researched = true
+                end
             end
         end
     elseif TRAP_TABLE[item_name] ~= nil then
