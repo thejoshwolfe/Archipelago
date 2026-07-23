@@ -1,5 +1,10 @@
 # Factorio: Space Age apworld Changelog
 
+## 2.2.2
+
+* Fix item duplication on server restart. Only applies to infinite techs, such as `worker-robot-speed-7`, which is included in `quick_start: true`. Thanks @lepideble for the implementation. [#29](https://github.com/thejoshwolfe/Archipelago/pull/29)
+* Adjusted balance on `space_technology_level` to no longer reduce the ingredient count for `space-platform-foundation`, `rocket-silo`, and rockets from rocket parts. Thanks to Hah and Silasary for playtesting and balance suggestions.
+
 ## 2.2.1
 
 * Fix crash when your slot names contains a space. Thanks `@Silasary` for reporting this on Discord.
