@@ -253,6 +253,8 @@ class ProgressiveTechs(Choice):
     large_groups: Loosely-related technologies will be grouped together with more critical recipes near the start and less critical bonuses near the end.
     This allows many more ways to get critical technologies, for example 2/9+ progressive-oil and 2/9+ progressive-circuit to get the same set of recipes listed in the previous example.
     Additional copies of progressive-circuit can be added to the pool with filler_processing_unit_productivity_weight, and similarly with other infinite technologies as filler items.
+
+    See also this community-maintained info sheet: https://docs.google.com/spreadsheets/d/e/2PACX-1vQEF0W46I7aHX6mgmaiVfVMI_SWJIhQyNpzkelunmdCHO8VloBntOKRI1Hg7j0y-LwcOmiVbS-dLqba/pubhtml#gid=1921791348
     """
     display_name = "Progressive Technologies"
     option_only_related = 0
@@ -402,8 +404,7 @@ class SpaceTechnologyLevel(Choice):
     If require_self_sufficient_space_platform is enabled and not starting on Vulcans, then electric-furnace will also be included in the list.
     The early_game setting unlocks chemical plants as part of space-platform-thruster so you can melt ice and make fuel.
 
-    This setting also reduces small and medium asteroid health,
-    and reduces item counts for rocket-silo, space-platform-foundation, and rocket parts per rocket.
+    This setting also reduces small and medium asteroid health.
 
     To get the most out of this option, you might be interested in these other changes:
       technology_prerequisites: removed

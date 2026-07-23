@@ -261,7 +261,6 @@ class Factorio(World):
         if self.options.space_technology_level.current_key != "vanilla":
             index = {"mid_game": 0, "early_game": 1}[self.options.space_technology_level.current_key]
             small_divisor = {"mid_game": 2, "early_game": 4}[self.options.space_technology_level.current_key]
-            large_divisor = {"mid_game": 4, "early_game": 10}[self.options.space_technology_level.current_key]
 
             # Recipes
             ingredient_replacements = {
@@ -320,16 +319,12 @@ class Factorio(World):
                     if ingredient_name != new_ingredient_name:
                         ingredient_data["name"] = new_ingredient_name
                         made_any_change = True
-                    if recipe_name in recipes_to_shrink:
-                        ingredient_data["amount"] //= large_divisor
-                        made_any_change = True
                 if recipe_name in recipes_to_shrink:
                     made_any_change = True
                     recipe_data["energy_required"] /= small_divisor
                 if made_any_change:
                     # Being minimal about this means avoiding the in-game display of which mods modified things (i think).
                     self.recipe_changes[recipe_name] = recipe_data
-            the_data["rocket-silo"][names.rocket_silo]["rocket_parts_required"] //= large_divisor
 
             # Asteroid HP
             for asteroid_name in [
