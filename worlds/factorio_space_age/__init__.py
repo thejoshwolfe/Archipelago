@@ -279,10 +279,6 @@ class Factorio(World):
             ]
             if self.options.require_self_sufficient_space_platform.value and self.starting_planet != names.vulcanus:
                 recipes_to_modify.append(names.electric_furnace)
-            recipes_to_shrink = {
-                names.rocket_silo,
-                names.space_platform_foundation,
-            }
 
             if self.starting_planet == names.nauvis:
                 pass
@@ -292,9 +288,6 @@ class Factorio(World):
                 # These are easy to get:
                 del ingredient_replacements[names.steel_plate]
                 del ingredient_replacements[names.concrete]
-                # Automating tons of steel is actually fine,
-                # (and you get assembling machine 2 unrandomized, so crafting speed is less of a concern).
-                recipes_to_shrink.remove(names.space_platform_foundation)
             elif self.starting_planet == names.gleba:
                 # Sulfur is not easier to get than rocket fuel on Gleba.
                 ingredient_replacements[names.rocket_fuel] = [names.rocket_fuel, names.spoilage][index]
@@ -319,9 +312,6 @@ class Factorio(World):
                     if ingredient_name != new_ingredient_name:
                         ingredient_data["name"] = new_ingredient_name
                         made_any_change = True
-                if recipe_name in recipes_to_shrink:
-                    made_any_change = True
-                    recipe_data["energy_required"] /= small_divisor
                 if made_any_change:
                     # Being minimal about this means avoiding the in-game display of which mods modified things (i think).
                     self.recipe_changes[recipe_name] = recipe_data

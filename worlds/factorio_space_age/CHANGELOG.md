@@ -1,5 +1,9 @@
 # Factorio: Space Age apworld Changelog
 
+## 2.2.3
+
+* Further adjusted balance on `space_technology_level` to no longer reduce crafting time for `space-platform-foundation` and `rocket-silo`.
+
 ## 2.2.2
 
 * Fix item duplication on server restart. Only applies to infinite techs, such as `worker-robot-speed-7`, which is included in `quick_start: true`. Thanks @lepideble for the implementation. [#29](https://github.com/thejoshwolfe/Archipelago/pull/29)
