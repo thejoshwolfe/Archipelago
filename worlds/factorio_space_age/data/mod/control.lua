@@ -353,6 +353,103 @@ script.on_configuration_changed(function()
     register_callbacks()
 end)
 
+local TRAP_TABLE = {
+    ["Attack Trap"] = function ()
+        game.surfaces["nauvis"].build_enemy_base(game.forces["player"].get_spawn_position(game.get_surface(1)), 25)
+    end,
+    ["Evolution Trap"] = function ()
+        local new_factor = game.forces["enemy"].get_evolution_factor("nauvis") +
+            (PARAMS.trap_evo_factor * (1 - game.forces["enemy"].get_evolution_factor("nauvis")))
+        game.forces["enemy"].set_evolution_factor(new_factor, "nauvis")
+        game.print({"", "New evolution factor:", new_factor})
+    end,
+    ["Teleport Trap"] = function()
+        for _, player in ipairs(game.forces["player"].players) do
+            if player.character then
+                attempt_teleport_player(player, 1)
+            end
+        end
+    end,
+    ["Grenade Trap"] = function ()
+        fire_entity_at_players("grenade", 0.1)
+    end,
+    ["Cluster Grenade Trap"] = function ()
+        fire_entity_at_players("cluster-grenade", 0.1)
+    end,
+    ["Artillery Trap"] = function ()
+        fire_entity_at_players("artillery-projectile", 1)
+    end,
+    ["Atomic Rocket Trap"] = function ()
+        fire_entity_at_players("atomic-rocket", 0.1)
+    end,
+    ["Atomic Cliff Remover Trap"] = function ()
+        local cliffs = game.surfaces["nauvis"].find_entities_filtered{type = "cliff"}
+
+        if #cliffs > 0 then
+            fire_entity_at_entities("atomic-rocket", {cliffs[math.random(#cliffs)]}, 0.1)
+        end
+    end,
+    ["Inventory Spill Trap"] = function ()
+        for _, player in ipairs(game.forces["player"].players) do
+            spill_character_inventory(player.character)
+        end
+    end,
+}
+
+
+local function receive_item(force, item_name, source)
+    -- Handle progressive pseudo item names.
+    local tech_stack = PARAMS.progressive_technology_stacks[item_name]
+    if tech_stack ~= nil then
+        for _, tech_name in ipairs(tech_stack) do
+            local tech = force.technologies[tech_name]
+            if tech.researched ~= true then
+                game.print({"", "Received [technology=" .. tech.name .. "] from ", source})
+                game.play_sound({path="utility/research_completed"})
+                tech.researched = true
+                return
+            end
+        end
+        return
+    end
+
+    -- TODO: not sure this has any use.
+    if PARAMS.infinite_technology_name_corrections[item_name] ~= nil then
+        -- Infinite technology names include the level at the end of the name.
+        -- e.g. "electric-weapons-damage-4_location" is at force.technologies["electric-weapons-damage-4_location-4"]
+        item_name = PARAMS.infinite_technology_name_corrections[item_name]
+    end
+
+    -- Handle literal technology names.
+    local tech = force.technologies[item_name]
+    if tech ~= nil then
+        if tech.researched ~= true then
+            game.print({"", "Received [technology=" .. tech.name .. "] from ", source})
+            game.play_sound({path="utility/research_completed"})
+            tech.researched = true
+        end
+        return
+    end
+
+    -- Handle trap names
+    local trap_handler = TRAP_TABLE[item_name]
+    if trap_handler ~= nil then
+        game.print({"", "Received ", item_name, " from ", source})
+        trap_handler()
+        return
+    end
+
+    -- You know what this is.
+    if item_name == "victory" then
+        trigger_victory(force)
+        return
+    end
+
+    -- Should never get here.
+    game.print("Unknown Item " .. item_name)
+    log("DEBUG: Unknown Item " .. item_name)
+end
+
 -- hook into researches done
 script.on_event(defines.events.on_research_finished, function(event)
     local technology = event.research
@@ -362,7 +459,17 @@ script.on_event(defines.events.on_research_finished, function(event)
         --are worked on exclusively in editor mode.
         return
     end
-    if technology.researched and is_ap_technology(technology.name) then
+    if not technology.researched then
+        -- This is an infinite tech.
+        if technology.prototype.max_level ~= 4294967295 then
+            log("DEBUG: I thought that completing unresearched technologies meant an infinite tech: " .. technology.name)
+            return
+        end
+        --log("DEBUG: Completed an infinite tech: " .. technology.name)
+        -- TODO: What do we do with this.
+        return
+    end
+    if is_ap_technology(technology.name) then
         -- Notify the server that we've unlocked an AP location.
         dumpInfo(technology.force)
         return
@@ -471,49 +578,6 @@ commands.add_command("ap-print", "Used by the Archipelago client to print messag
     game.print(call.parameter)
 end)
 
-TRAP_TABLE = {
-    ["Attack Trap"] = function ()
-        game.surfaces["nauvis"].build_enemy_base(game.forces["player"].get_spawn_position(game.get_surface(1)), 25)
-    end,
-    ["Evolution Trap"] = function ()
-        local new_factor = game.forces["enemy"].get_evolution_factor("nauvis") +
-            (PARAMS.trap_evo_factor * (1 - game.forces["enemy"].get_evolution_factor("nauvis")))
-        game.forces["enemy"].set_evolution_factor(new_factor, "nauvis")
-        game.print({"", "New evolution factor:", new_factor})
-    end,
-    ["Teleport Trap"] = function()
-        for _, player in ipairs(game.forces["player"].players) do
-            if player.character then
-                attempt_teleport_player(player, 1)
-            end
-        end
-    end,
-    ["Grenade Trap"] = function ()
-        fire_entity_at_players("grenade", 0.1)
-    end,
-    ["Cluster Grenade Trap"] = function ()
-        fire_entity_at_players("cluster-grenade", 0.1)
-    end,
-    ["Artillery Trap"] = function ()
-        fire_entity_at_players("artillery-projectile", 1)
-    end,
-    ["Atomic Rocket Trap"] = function ()
-        fire_entity_at_players("atomic-rocket", 0.1)
-    end,
-    ["Atomic Cliff Remover Trap"] = function ()
-        local cliffs = game.surfaces["nauvis"].find_entities_filtered{type = "cliff"}
-
-        if #cliffs > 0 then
-            fire_entity_at_entities("atomic-rocket", {cliffs[math.random(#cliffs)]}, 0.1)
-        end
-    end,
-    ["Inventory Spill Trap"] = function ()
-        for _, player in ipairs(game.forces["player"].players) do
-            spill_character_inventory(player.character)
-        end
-    end,
-}
-
 commands.add_command("ap-get-technology", "Grant a technology, used by the Archipelago Client.", function(call)
     if storage.index_sync == nil then
         storage.index_sync = {}
@@ -531,60 +595,25 @@ commands.add_command("ap-get-technology", "Grant a technology, used by the Archi
         game.print("ap-get-technology is only to be used by the Archipelago Factorio Client")
         return
     end
-    if index == "-1" then -- for coop sync and restoring from an older savegame
-        local tech = force.technologies[item_name]
-        if tech.researched ~= true then
-            game.print({"", "Received [technology=" .. tech.name .. "] as it is already checked."})
+    if index == "-1" then
+        -- This indicates that the multiworld knows we've already checked a *location* (not an item).
+        -- This can happen when the Factorio game loads an earlier save and needs to catch up to the multiworld,
+        -- or perhaps when someone collects an item from our multiworld, or perhaps with /send_location.
+        -- Mark these objectives as completed.
+        local location_tech = force.technologies[item_name]
+        if location_tech ~= nil and location_tech.researched ~= true then
+            game.print({"", "Received [technology=" .. location_tech.name .. "] as it is already checked."})
             game.play_sound({path="utility/research_completed"})
-            tech.researched = true
+            location_tech.researched = true
         end
         return
     end
-    if PARAMS.progressive_technology_stacks[item_name] ~= nil then
-        if storage.index_sync[index] ~= item_name then -- not yet received prog item
-            storage.index_sync[index] = item_name
-            local tech_stack = PARAMS.progressive_technology_stacks[item_name]
-            for _, tech_name in ipairs(tech_stack) do
-                local tech = force.technologies[tech_name]
-                if tech.researched ~= true then
-                    game.print({"", "Received [technology=" .. tech.name .. "] from ", source})
-                    game.play_sound({path="utility/research_completed"})
-                    tech.researched = true
-                    return
-                end
-            end
-        end
-        return
-    end
-    if PARAMS.infinite_technology_name_corrections[item_name] ~= nil then
-        -- Infinite technology names include the level at the end of the name.
-        -- e.g. "electric-weapons-damage-4_location" is at force.technologies["electric-weapons-damage-4_location-4"]
-        item_name = PARAMS.infinite_technology_name_corrections[item_name]
-    end
-    if force.technologies[item_name] ~= nil then
-        local tech = force.technologies[item_name]
-        if tech ~= nil and storage.index_sync[index] ~= item_name then
-            storage.index_sync[index] = item_name
-            if tech.researched ~= true then
-                game.print({"", "Received [technology=" .. tech.name .. "] from ", source})
-                game.play_sound({path="utility/research_completed"})
-                tech.researched = true
-            end
-        end
-    elseif TRAP_TABLE[item_name] ~= nil then
-        if storage.index_sync[index] ~= item_name then -- not yet received trap
-            storage.index_sync[index] = item_name
-            game.print({"", "Received ", item_name, " from ", source})
-            TRAP_TABLE[item_name]()
-        end
-    elseif item_name == "victory" then
-        trigger_victory(force)
-    else
-        game.print("Unknown Item " .. item_name)
-        log("DEBUG: Unknown Item " .. item_name)
-    end
-end)
+    -- Allow the AP client to re-send items that we've already received without duplicating the items on our end.
+    if storage.index_sync[index] == item_name then return end -- already received
+    storage.index_sync[index] = item_name
 
+    receive_item(force, item_name, source)
+end)
 
 commands.add_command("ap-rcon-info", "Used by the Archipelago client to get information", function(call)
     rcon.print(helpers.table_to_json({
