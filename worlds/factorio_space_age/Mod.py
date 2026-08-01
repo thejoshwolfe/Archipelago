@@ -163,6 +163,7 @@ def generate_mod(
         description: str
     locale_locations: list[LocaleLocation] = []
     new_technology_data: dict[str, dict] = {}
+    infinite_technology_name_to_progressive_group_name: dict[str, str] = {}
     for location in world_locations:
         technology_name = duplicate_location_to_original_location.get(location.name, location.name.replace("_location", ""))
         if technology_name in infinite_technology_names:
@@ -173,8 +174,8 @@ def generate_mod(
             elif options.infinite_technologies.current_key == "shuffled":
                 item_name = infinite_technology_shuffle[technology_name]
             else: assert False
-            target_props_item_name = item_name
             item_name = technology_name_to_progressive_group_name[item_name]
+            infinite_technology_name_to_progressive_group_name[location.name] = item_name
             target_player = player
             is_goal = False
             is_advancement = False
@@ -271,8 +272,6 @@ def generate_mod(
                 # Infinite.
                 tech_data["level"] = technology_props["level"]
                 tech_data["max_level"] = technology_props["max_level"]
-                target_props = technology_props_lua[target_props_item_name]
-                tech_data["effects"] = target_props["effects"]
         else:
             tech_data["research_trigger"] = technology_props["research_trigger"]
 
@@ -338,6 +337,7 @@ def generate_mod(
         "hide_base_technologies": sorted(technology_props_lua.keys()),
         "new_technology_data": new_technology_data,
         "progressive_technology_stacks": progressive_technology_stacks,
+        "infinite_technology_name_to_progressive_group_name": infinite_technology_name_to_progressive_group_name,
 
         "allow_imported_blueprints": bool(options.allow_imported_blueprints.value),
         "world_gen_preset": world_gen_preset,

@@ -119,6 +119,11 @@ local function is_ap_technology(technology_name)
         return false
     end
 end
+local function strip_level_number_from_technology_name(technology_name)
+    local result = string.match(technology_name, "(.*)-%d+$")
+    if result ~= nil then return result end
+    return technology_name
+end
 
 -- Initialize force data, either from it being created or already being part of the game when the mod was added.
 local function on_force_created(event)
@@ -460,8 +465,14 @@ script.on_event(defines.events.on_research_finished, function(event)
             log("DEBUG: I thought that completing unresearched technologies meant an infinite tech: " .. technology.name)
             return
         end
-        --log("DEBUG: Completed an infinite tech: " .. technology.name)
-        -- TODO: What do we do with this.
+        local technology_name = strip_level_number_from_technology_name(technology.name)
+        local item_name = PARAMS.infinite_technology_name_to_progressive_group_name[technology_name]
+        if item_name == nil then
+            -- The AP *_location technologies trigger the vanilla technologies, which should not recursively trigger anything.
+            return
+        end
+        log("INFO: Completed an infinite tech: " .. technology.name .. " -> " .. item_name)
+        receive_item(technology.force, item_name, technology.name)
         return
     end
     if is_ap_technology(technology.name) then
