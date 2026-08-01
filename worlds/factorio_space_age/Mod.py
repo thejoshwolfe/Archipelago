@@ -30,7 +30,7 @@ locale_template: Optional[jinja2.Template] = None
 
 template_load_lock = threading.Lock()
 
-__version__ = "2.2.2"
+__version__ = "2.2.3"
 
 
 buffed_resources_basic = {
