@@ -175,7 +175,9 @@ local function update_player(index)
     if not character or not character.valid then
         return -- Might be dead
     end
-    -- TODO: test when the character is riding in a space platform or cargo pod.
+    -- The player can still receive free sample items while they're in a space platform, or while traveling to/from them.
+    -- The player can even then receive an inventory spill trap, and leak their free samples all over the space platform.
+
     local data = storage.playerdata[index]
     local samples = data["pending_samples"]
     --player.print(serpent.block(data["pending_samples"]))
@@ -411,13 +413,6 @@ local function receive_item(force, item_name, source)
             end
         end
         return
-    end
-
-    -- TODO: not sure this has any use.
-    if PARAMS.infinite_technology_name_corrections[item_name] ~= nil then
-        -- Infinite technology names include the level at the end of the name.
-        -- e.g. "electric-weapons-damage-4_location" is at force.technologies["electric-weapons-damage-4_location-4"]
-        item_name = PARAMS.infinite_technology_name_corrections[item_name]
     end
 
     -- Handle literal technology names.

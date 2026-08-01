@@ -13,7 +13,6 @@ import jinja2
 import Utils
 import worlds.Files
 from . import Options
-from .FactorioData import parse_level_from_technology_prototype_name
 from .data.ap_data import (
     energy_link_bridge_recipes,
 )
@@ -164,16 +163,9 @@ def generate_mod(
         description: str
     locale_locations: list[LocaleLocation] = []
     new_technology_data: dict[str, dict] = {}
-    infinite_technology_name_corrections: dict[str, str] = {}
     for location in world_locations:
         technology_name = duplicate_location_to_original_location.get(location.name, location.name.replace("_location", ""))
         if technology_name in infinite_technology_names:
-            # At runtime, infinite technology names include the level at the end of the name.
-            # e.g. "electric-weapons-damage-4_location" is at force.technologies["electric-weapons-damage-4_location-4"]
-            infinite_technology_name_corrections[location.name] = "{}-{}".format(
-                location.name,
-                parse_level_from_technology_prototype_name(technology_name)
-            )
             if options.infinite_technologies.current_key == "removed":
                 continue
             elif options.infinite_technologies.current_key == "vanilla":
@@ -346,7 +338,6 @@ def generate_mod(
         "hide_base_technologies": sorted(technology_props_lua.keys()),
         "new_technology_data": new_technology_data,
         "progressive_technology_stacks": progressive_technology_stacks,
-        "infinite_technology_name_corrections": infinite_technology_name_corrections,
 
         "allow_imported_blueprints": bool(options.allow_imported_blueprints.value),
         "world_gen_preset": world_gen_preset,

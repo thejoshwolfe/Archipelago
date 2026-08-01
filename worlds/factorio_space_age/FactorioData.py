@@ -1,7 +1,7 @@
 # This module translates a (pruned) export of data from factorio into a static description of the logic for a given set of options.
 
-# These are the only "public" exports of this module.
-__all__ = ["FactorioData", "parse_level_from_technology_prototype_name"]
+# This is the only "public" export of this module.
+__all__ = ["FactorioData"]
 
 import itertools, typing
 from functools import lru_cache
