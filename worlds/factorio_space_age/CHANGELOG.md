@@ -2,6 +2,10 @@
 
 ## 2.2.3
 
+* Fix infinite technologies interacting weirdly with the multiworld: [#36](https://github.com/thejoshwolfe/Archipelago/issues/36)
+    * When an infinite tech is part of a large progressive group, it gives the next tech in the group out of logic.
+    * Infinite technology locations are no longer part of the multiworld, so they should not confuse trackers anymore. They are local only to the Factorio: Space Age slot.
+    * Fix crash on release/collect.
 * Further adjusted balance on `space_technology_level` to no longer reduce crafting time for `space-platform-foundation` and `rocket-silo`.
 
 ## 2.2.2

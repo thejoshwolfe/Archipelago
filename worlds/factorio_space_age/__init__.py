@@ -635,6 +635,9 @@ class Factorio(World):
             if origin_technology_name in self.skipped_locations:
                 # Don't create a location for this. It's already obtained.
                 continue
+            if origin_technology_name in self.factorio_data.infinite_technology_names:
+                # Infinite technologies are always out of logic and local. Do not create multiworld locations for them.
+                continue
             access_rule_fn = compile_expr(self.logic_events[location_name])
             location = new_location(location_name, access_rule_fn)
             technology_name_to_location[origin_technology_name] = location
@@ -646,6 +649,9 @@ class Factorio(World):
             # This is a receivable technology item.
             if technology_name in self.factorio_data.empty_technology_names:
                 # Let filler fill in later.
+                continue
+            if technology_name in self.factorio_data.infinite_technology_names:
+                # The corresponding location is gone. Don't make an item for this either.
                 continue
             item_name = self.technology_name_to_progressive_group_name.get(technology_name, technology_name)
             item = self.create_item(item_name)
