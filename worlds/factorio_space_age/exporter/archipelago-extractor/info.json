@@ -1,14 +1,14 @@
 {
     "name": "archipelago-extractor",
-    "version": "4.0.1",
+    "version": "5.0.0",
     "title": "Archipelago Extractor",
     "author": "Berserker, Josh Wolfe",
     "homepage": "https://archipelago.gg",
     "description": "Information Extractor for use with the Archipelago Randomizer",
     "dependencies": [
         "? any-planet-start",
-        "base >= 2.0.73",
-        "space-age >= 2.0.73"
+        "quality >= 2.1.14",
+        "space-age >= 2.1.14"
     ],
-    "factorio_version": "2.0"
+    "factorio_version": "2.1"
 }

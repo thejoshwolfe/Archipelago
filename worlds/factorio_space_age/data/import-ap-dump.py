@@ -39,7 +39,7 @@ def main():
 
     ready_yet = check_inputs()
     if not ready_yet:
-        sys.exit("Keep exporting more data with various any-planet-start mod settings")
+        sys.exit("Redo the export with the remaining starting planets")
     process()
     print("Done!")
 

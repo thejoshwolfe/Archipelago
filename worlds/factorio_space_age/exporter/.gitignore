@@ -1,2 +1,4 @@
 /mods/
 /*.zip
+/archipelago-extractor/settings-updates.lua
+/archipelago-extractor/template_parameters.lua
