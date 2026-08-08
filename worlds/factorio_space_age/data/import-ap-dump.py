@@ -296,6 +296,19 @@ Item = {**Base,
     "spoil_result": str,
 }
 
+ItemProduct = {
+    "type": str,
+    "name": str,
+    "amount": int,
+    "amount_min": int,
+    "amount_max": int,
+    "independent_probability": float,
+    "shared_probability": {"min": float, "max": float},
+    "ignored_by_stats": int,
+    "extra_count_fraction": float,
+    "temperature": float,
+}
+
 keep_props = {
     "accumulator": {str: Base},
     "agricultural-tower": {str: Base},
@@ -405,7 +418,7 @@ keep_props = {
     "reactor": {str: Base},
     "recipe": {str: {**Base,
         "enabled": bool,
-        "category": str,
+        "categories": [str],
         "ingredients": [{
             "type": str,
             "name": str,
@@ -419,16 +432,7 @@ keep_props = {
             "fluidbox_multiplier": int,
         }],
         "energy_required": float,
-        "results": [{
-            "type": str,
-            "name": str,
-            "amount": int,
-            # ignoring amount_min and amount_max, as they are never used in vanilla.
-            "probability": float,
-            "ignored_by_stats": int,
-            "extra_count_fraction": float,
-            "temperature": float,
-        }],
+        "results": [ItemProduct],
         "hide_from_player_crafting": bool,
     }},
     "repair-tool": {str: {}},
@@ -458,7 +462,8 @@ keep_props = {
     "technology": {str: {**Base,
         "research_trigger": {
             "type": str,
-            "entity": str,
+            "entity": str, # For type="build-entity"
+            "entities": [str], # For type="mine-entity"
             "item": str,
             "fluid": str,
             "count": int,
@@ -478,10 +483,9 @@ keep_props = {
     "tile": {str: {**Base,
         "fluid": str,
     }},
-    "tool": {str: Item},
     "tree": {str: Base},
     "unit-spawner": {str: {**Base,
-        "loot": [{"item": str}],
+        "loot": [ItemProduct],
     }},
     "wall": {str: Base},
 }
