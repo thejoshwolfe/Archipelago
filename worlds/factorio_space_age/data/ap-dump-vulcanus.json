@@ -96,6 +96,8 @@
             "volcanic-ash-cracks": {}
           }},
           "entity": {"settings": {
+            "big-volcanic-rock-hot": {},
+            "huge-volcanic-rock-hot": {},
             "coal": {},
             "calcite": {},
             "sulfuric-acid-geyser": {},
@@ -460,7 +462,7 @@
     "oil-processing": {
       "research_trigger": {
         "type": "mine-entity",
-        "entity": "sulfuric-acid-geyser"
+        "entities": ["sulfuric-acid-geyser"]
       },
       "prerequisites": ["oil-gathering"],
       "effects": [
@@ -667,11 +669,17 @@
           ["space-science-pack", 1]
         ]
       },
-      "effects": [{
-        "type": "unlock-space-location",
-        "space_location": "vulcanus",
-        "use_icon_overlay_constant": true
-      }]
+      "effects": [
+        {
+          "type": "unlock-space-location",
+          "space_location": "vulcanus",
+          "use_icon_overlay_constant": true
+        },
+        {
+          "type": "unlock-travel-to-space-platforms",
+          "modifier": true
+        }
+      ]
     },
     "planet-discovery-aquilo": {
       "unit": {
@@ -724,7 +732,7 @@
     "calcite-processing": {
       "research_trigger": {
         "type": "mine-entity",
-        "entity": "calcite"
+        "entities": ["calcite"]
       },
       "prerequisites": ["oil-gathering"],
       "effects": [
@@ -745,7 +753,15 @@
     "tungsten-carbide": {
       "research_trigger": {
         "type": "mine-entity",
-        "entity": "big-volcanic-rock"
+        "entities": [
+          "big-volcanic-rock",
+          "big-volcanic-rock-hot",
+          "huge-volcanic-rock",
+          "huge-volcanic-rock-hot",
+          "small-demolisher-corpse",
+          "medium-demolisher-corpse",
+          "big-demolisher-corpse"
+        ]
       },
       "prerequisites": [],
       "effects": [
@@ -809,11 +825,11 @@
         },
         {
           "type": "unlock-recipe",
-          "recipe": "molten-iron"
+          "recipe": "iron-ore-melting"
         },
         {
           "type": "unlock-recipe",
-          "recipe": "molten-copper"
+          "recipe": "copper-ore-melting"
         },
         {
           "type": "unlock-recipe",
@@ -892,7 +908,7 @@
       "prerequisites": ["agricultural-science-pack", "planet-discovery-nauvis"],
       "effects": [{
         "type": "unlock-recipe",
-        "recipe": "wood-processing"
+        "recipe": "tree-seed"
       }]
     },
     "captivity": {
@@ -914,26 +930,19 @@
         "rocketry",
         "planet-discovery-nauvis"
       ],
-      "effects": [
-        {
-          "type": "unlock-recipe",
-          "recipe": "capture-robot-rocket"
-        },
-        {
-          "type": "unlock-recipe",
-          "recipe": "biter-egg"
-        },
-        {
-          "type": "unlock-recipe",
-          "recipe": "nutrients-from-biter-egg"
-        }
-      ]
+      "effects": [{
+        "type": "unlock-recipe",
+        "recipe": "capture-robot-rocket"
+      }]
     },
     "fish-breeding": {
       "unit": {
         "count": 500,
         "time": 60,
         "ingredients": [
+          ["automation-science-pack", 1],
+          ["logistic-science-pack", 1],
+          ["chemical-science-pack", 1],
           ["space-science-pack", 1],
           ["agricultural-science-pack", 1]
         ]
@@ -967,6 +976,10 @@
           "type": "unlock-space-location",
           "space_location": "nauvis",
           "use_icon_overlay_constant": true
+        },
+        {
+          "type": "unlock-travel-to-space-platforms",
+          "modifier": true
         },
         {
           "type": "unlock-recipe",
