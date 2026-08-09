@@ -398,15 +398,15 @@ def generate_mod(
         "author": "Berserker, Josh Wolfe",
         "homepage": "https://archipelago.gg",
         "description": "Integration client for the Archipelago Randomizer",
-        "factorio_version": "2.0",
+        "factorio_version": "2.1",
         "dependencies": [
-            "base >= 2.0.73",
-            "space-age >= 2.0.73",
+            "quality >= 2.1.14",
+            "space-age >= 2.1.14",
             "? respawn-to-any-planet",
         ]
     }
     if starting_planet != names.nauvis:
-        info["dependencies"].append("any-planet-start = 1.1.30"),
+        info["dependencies"].append("any-planet-start = 1.2.2"),
     mod.writing_tasks.append(lambda: (versioned_mod_name + "/info.json",
                                       json.dumps(info, indent=4) + "\n"))
     mod.writing_tasks.append(lambda: ("logic.json",

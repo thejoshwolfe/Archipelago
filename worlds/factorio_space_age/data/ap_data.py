@@ -424,12 +424,14 @@ large_progressive_groups = {
     ],
     "progressive-promethium": [
         "railgun",
+        "stellar-discovery-solar-system-edge",
         "promethium-science-pack",
         "research-productivity", # infinite
     ],
 
     "progressive-captivity": [
         "captivity",
+        "biter-egg-handling",
         "biolab",
         "captive-biter-spawner",
     ],

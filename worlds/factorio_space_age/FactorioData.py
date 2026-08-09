@@ -26,6 +26,24 @@ def parse_level_from_technology_prototype_name(prototype_name):
     except ValueError:
         return 1
 
+def get_amount(p):
+    """ Expected value for an https://lua-api.factorio.com/latest/types/ItemProductPrototype.html """
+    try:
+        amount = p["amount"]
+    except KeyError:
+        amount = (p["amount_min"] + p["amount_max"]) / 2
+    amount += p.get("extra_count_fraction", 0)
+
+    try:
+        amount -= p["ignored_by_stats"]
+    except KeyError: pass
+
+    amount *= p.get("independent_probability", 1)
+    if "shared_probability" in p:
+        amount *= p["shared_probability"]["max"] - p["shared_probability"]["min"]
+
+    return amount
+
 class FactorioData:
     """
     This class represents all the recipes, technologies, etc. in Factorio,
@@ -74,7 +92,6 @@ class FactorioData:
             "rail-planner",
             "repair-tool",
             "space-platform-starter-pack",
-            "tool",
         ]:
             for prototype_name, prototype_data in the_data[prototype_type].items():
                 if prototype_data.get("parameter", False): continue
@@ -373,7 +390,7 @@ class FactorioData:
         for prototype_name, prototype_data in the_data["unit-spawner"].items():
             # https://lua-api.factorio.com/latest/prototypes/EnemySpawnerPrototype.html
             if "loot" not in prototype_data: continue # Not logically interesting
-            results = [p["item"] for p in prototype_data["loot"]]
+            results = [p["name"] for p in prototype_data["loot"]]
             for home in natural_entity_to_locations.get(prototype_name, ()):
                 for result in results:
                     item_to_forage_locations[result].add(home)
@@ -622,7 +639,7 @@ class FactorioData:
         for recipe_name, recipe_data in the_data["recipe"].items():
             if recipe_data.get("parameter", False): continue
             energy = recipe_data.get("energy_required", 0.5) # crafting time in seconds.
-            category = recipe_data.get("category", "crafting")
+            categories = recipe_data.get("categories", ["crafting"])
 
             override_data = override_recipe_data.get(recipe_name, recipe_data)
             extra_products = []
@@ -633,7 +650,7 @@ class FactorioData:
                         # This steam also satisfies the 500C steam requirement.
                         # Effectively produce both to make it work with the logic.
                         "name": STEAM_500C,
-                        "amount": p["amount"],
+                        "amount": 1, # Just needs to be >0.
                     })
 
             inputs = {
@@ -641,26 +658,27 @@ class FactorioData:
                 for i in override_data["ingredients"]
             }
             outputs = {
-                p["name"]: p["amount"] * p.get("probability", 1) + p.get("extra_count_fraction", 0) - p.get("ignored_by_stats", 0)
+                p["name"]: get_amount(p)
                 for p in itertools.chain(override_data["results"], extra_products)
             }
 
             if len(inputs) == len(outputs) == 0:
                 # Ignore recipe-unknown.
                 continue
-            elif any(amount < 0 for amount in outputs.values()):
-                # This only happens for dead-end recycling recipes, such as copper-ore-recycling.
-                assert (
-                    category == "recycling" and
-                    len(inputs) == 1 and
-                    inputs.keys() == outputs.keys() and
-                    all(amount == 0 for amount in inputs.values())
-                ), "expected a negative byproduct to be part of a dead-end recycling recipe: " + recipe_name
-                classification = RecipeClassification.dead_end_recycling
-            elif category == "recycling":
-                # Uncrafting an item.
-                assert len(inputs) == 1 and sum(inputs.values()) == 1, "is this not an un-crafting recipe?: " + recipe_name
-                classification = RecipeClassification.backwards_recycling
+            elif categories == ["recycling"]:
+                if inputs.keys() == outputs.keys():
+                    # This is a dead-end recycling recipes, such as copper-ore-recycling.
+                    assert (
+                        categories == ["recycling"] and
+                        len(inputs) == 1 and
+                        all(amount == 0 for amount in inputs.values()) and
+                        all(amount == 0 for amount in outputs.values())
+                    ), "is this not a dead-end recycling recipe?: " + recipe_name
+                    classification = RecipeClassification.dead_end_recycling
+                else:
+                    # Uncrafting an item.
+                    assert len(inputs) == 1 and sum(inputs.values()) == 1, "is this not an un-crafting recipe?: " + recipe_name
+                    classification = RecipeClassification.backwards_recycling
             elif all(amount == 0 for amount in inputs.values()) and all(amount == 0 for amount in outputs.values()):
                 # This is a lossless conversion recipe, such as barreling/unbarreling or fluoroketone cooling.
                 # Thematically the recipe respects conservation of mass, if you like.
@@ -676,7 +694,7 @@ class FactorioData:
                 classification = RecipeClassification.standard
 
             # What machines can perform this recipe?
-            valid_machines = crafting_category_to_machines[category]
+            valid_machines = set(itertools.chain.from_iterable(crafting_category_to_machines[category] for category in categories))
             # Where can this recipe be performed?
             locations = get_allowed_locations(recipe_data.get("surface_conditions", None))
 
@@ -775,7 +793,7 @@ class FactorioData:
                 elif trigger["type"] == "craft-fluid":
                     requirement = CraftRequirement(trigger["fluid"], trigger.get("count", 1))
                 elif trigger["type"] == "mine-entity":
-                    requirement = MineRequirement(trigger["entity"])
+                    requirement = MineRequirement(tuple(trigger["entities"]))
                 elif trigger["type"] == "build-entity":
                     requirement = BuildRequirement(trigger["entity"])
                 elif trigger["type"] == "capture-spawner":
@@ -1238,20 +1256,21 @@ class FactorioData:
                 expr = fmt_operate_machine(requirement.entity)
             elif type(requirement) == MineRequirement:
                 source_exprs = []
-                if requirement.entity in entity_to_mining_sources:
-                    for mining_source in entity_to_mining_sources[requirement.entity]:
-                        required_capabilities = mining_source.required_capabilities
-                        if not (required_capabilities & Capability.mine_with_fluid):
-                            # The character can hand-mine basic-solid ore patches.
-                            required_capabilities &= ~Capability.automate_mining
-                        source_exprs.append({"and": [
-                            fmt_reach_location(mining_source.location),
-                            *[fmt_capability(capability) for capability in required_capabilities],
-                            *[fmt_access_item(ingredient) for ingredient in mining_source.required_ingredients],
-                        ]})
-                elif requirement.entity in entity_to_forage_locations:
-                    source_exprs.extend(fmt_reach_location(home) for home in entity_to_forage_locations[requirement.entity])
-                else: assert False, "no way to mine for trigger tech: " + requirement.entity
+                for entity in requirement.entities:
+                    if entity in entity_to_mining_sources:
+                        for mining_source in entity_to_mining_sources[entity]:
+                            required_capabilities = mining_source.required_capabilities
+                            if not (required_capabilities & Capability.mine_with_fluid):
+                                # The character can hand-mine basic-solid ore patches.
+                                required_capabilities &= ~Capability.automate_mining
+                            source_exprs.append({"and": [
+                                fmt_reach_location(mining_source.location),
+                                *[fmt_capability(capability) for capability in required_capabilities],
+                                *[fmt_access_item(ingredient) for ingredient in mining_source.required_ingredients],
+                            ]})
+                    elif entity in entity_to_forage_locations:
+                        source_exprs.extend(fmt_reach_location(home) for home in entity_to_forage_locations[entity])
+                    else: assert False, "no way to mine for trigger tech: " + entity
                 expr = {"or": source_exprs}
             elif type(requirement) == CaptureSpawnerRequirement:
                 expr = fmt_capability(Capability.capture_biter_spawners)
@@ -1552,8 +1571,8 @@ class CraftRequirement:
     """ e.g. 50 """
 @dataclass(frozen=True)
 class MineRequirement:
-    entity: str
-    """ e.g. 'fulgoran-ruin-vault' """
+    entities: tuple[str]
+    """ e.g. ['fulgoran-ruin-vault'] """
 @dataclass(frozen=True)
 class BuildRequirement:
     entity: str
@@ -1762,7 +1781,7 @@ override_recipe_data = {
             { "type": "item", "name": "bioflux", "amount": 1, },
         ],
         "results": [
-            { "type": "item", "name": "copper-bacteria", "probability": 1, "amount": 4,
+            { "type": "item", "name": "copper-bacteria", "amount": 4,
                 "ignored_by_stats": 1, # Added this.
                 "ignored_by_productivity": 1, # Added this.
             },
@@ -1776,7 +1795,7 @@ override_recipe_data = {
             { "type": "item", "name": "bioflux", "amount": 1, },
         ],
         "results": [
-            { "type": "item", "name": "iron-bacteria", "probability": 1, "amount": 4,
+            { "type": "item", "name": "iron-bacteria", "amount": 4,
                 "ignored_by_stats": 1, # Added this.
                 "ignored_by_productivity": 1, # Added this.
             },

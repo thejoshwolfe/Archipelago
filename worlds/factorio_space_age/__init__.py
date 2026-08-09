@@ -185,7 +185,7 @@ class Factorio(World):
         if self.options.goal.current_key == "aquilo_orbit_10_science":
             remove_from_progressive_stacks.add(names.planet_discovery_aquilo)
         elif self.options.goal.current_key == "solar_system_edge_11_science":
-            remove_from_progressive_stacks.add(names.promethium_science_pack)
+            remove_from_progressive_stacks.add(names.stellar_discovery_solar_system_edge)
         self.progressive_technology_stacks = {
             group_name: [
                 name for name in stack
@@ -493,6 +493,7 @@ class Factorio(World):
         self.options.pentapod_killers.value = {**self.options.pentapod_killers.default, **self.options.pentapod_killers.value}
 
         self.empty_technologies = sorted(self.factorio_data.empty_technology_names)
+        assert len(self.empty_technologies) > 0
         self.random.shuffle(self.empty_technologies)
 
         extra_location_count = self.options.filler_count.value + (
@@ -601,7 +602,7 @@ class Factorio(World):
             victory_event = "Reach solar-system-edge"
         elif self.options.goal.current_key == "solar_system_edge_11_science":
             victory_event = "Reach solar-system-edge"
-            lock_final_technology_name = names.promethium_science_pack
+            lock_final_technology_name = names.stellar_discovery_solar_system_edge
         elif self.options.goal.current_key == "aquilo_orbit":
             victory_event = "Reach aquilo_orbit"
         elif self.options.goal.current_key == "aquilo_orbit_10_science":
