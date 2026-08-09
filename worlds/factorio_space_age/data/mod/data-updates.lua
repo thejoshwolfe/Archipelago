@@ -170,13 +170,16 @@ end
 -- Disable and hide base technologies.
 for _, tech_name in pairs(PARAMS.hide_base_technologies) do
     local base_tech = data.raw["technology"][tech_name]
-    base_tech.unit = nil
-    base_tech.research_trigger = {
-        type = "scripted",
-        icon = "__" .. PARAMS.mod_name .. "__/graphics/icons/ap.png",
-        icon_size = 128,
-        trigger_description = {"", "This is sent to you from the multiworld"},
-    }
+    -- FIXME: This broke in 2.1.14. Reported here: https://forums.factorio.com/viewtopic.php?t=135579
+    -- base_tech.unit = nil
+    -- base_tech.research_trigger = {
+    --     type = "scripted",
+    --     icon = "__" .. PARAMS.mod_name .. "__/graphics/icons/ap.png",
+    --     icon_size = 128,
+    --     trigger_description = {"", "This is sent to you from the multiworld"},
+    -- }
+    base_tech.hidden = true;
+
     base_tech.prerequisites = {"promethium-science-pack_location"}
     base_tech.upgrade = false
     base_tech.order = "zzzz"
