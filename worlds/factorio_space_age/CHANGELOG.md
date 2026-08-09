@@ -1,5 +1,14 @@
 # Factorio: Space Age apworld Changelog
 
+## 2.3.0
+
+* Now based on Factorio 2.1 🎉
+    * The new `stellar-discovery-solar-system-edge` technology means that the `progressive-promethium` large group has one extra item.
+    * Moving `biter-egg` and `nutrients-from-biter-egg` recipes to `biter-egg-handling` means the `progressive-captivity` large group has one extra item.
+    * The default number of filler nothing items is now 3 instead of 4, because `biter-egg-handling` is no longer an empty technology.
+    * As of writing this, Factorio 2.1.14 itself is still experimental. Please report bugs or incompatibilities, and thanks for being an early tester of both this apworld and Factorio 2.1!
+* Regression: I had to hide the vanilla techs from the technology GUI where you would previously be able to read descriptions of which progressive chains they belong to. See https://forums.factorio.com/viewtopic.php?t=135579 for my bug report against the Factorio modding API to unblock me from turning this back on.
+
 ## 2.2.4
 
 * Fix infinite technologies again. Should work like I intended in the previous release now.
