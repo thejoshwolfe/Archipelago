@@ -1,5 +1,9 @@
 # Factorio: Space Age apworld Changelog
 
+## 2.2.4
+
+* Fix infinite technologies again. Should work like I intended in the previous release now.
+
 ## 2.2.3
 
 * Fix infinite technologies interacting weirdly with the multiworld: [#36](https://github.com/thejoshwolfe/Archipelago/issues/36)
