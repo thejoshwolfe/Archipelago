@@ -2,6 +2,7 @@
 
 import json
 import os
+import itertools
 import shutil
 import threading
 import zipfile
@@ -164,41 +165,27 @@ def generate_mod(
     locale_locations: list[LocaleLocation] = []
     new_technology_data: dict[str, dict] = {}
     infinite_technology_name_to_progressive_group_name: dict[str, str] = {}
-    for location in world_locations:
-        technology_name = duplicate_location_to_original_location.get(location.name, location.name.replace("_location", ""))
-        if technology_name in infinite_technology_names:
-            if options.infinite_technologies.current_key == "removed":
-                continue
-            elif options.infinite_technologies.current_key == "vanilla":
-                item_name = technology_name
-            elif options.infinite_technologies.current_key == "shuffled":
-                item_name = infinite_technology_shuffle[technology_name]
-            else: assert False
-            item_name = technology_name_to_progressive_group_name[item_name]
-            infinite_technology_name_to_progressive_group_name[location.name] = item_name
-            target_player = player
-            is_goal = False
-            is_advancement = False
-            is_useful = True
-            is_trap = False
-        else:
-            item = location.item
-            item_name = item.name
-            target_player = item.player
-            is_goal = item_name == names.victory
-            is_advancement = item.advancement
-            is_useful = item.useful
-            is_trap = item.trap
 
-        display_name = location.name
+    def add_technology_data(
+        technology_name,
+        location_name,
+        is_location_revealed,
+        item_name,
+        target_player,
+        is_advancement,
+        is_useful,
+        is_trap,
+    ):
+        is_goal = item_name == names.victory
+        display_name = location_name
         helpfulness_clause = ""
         icon = "/ap_unimportant.png"
         display_item_name = "something"
         receiver_name = "someone"
-        if location.revealed or options.tech_tree_information.current_key == "full":
+        if is_location_revealed or options.tech_tree_information.current_key == "full":
             # Full information
             receiver_name = multiworld.player_name[target_player]
-            display_name = f"{receiver_name}'s {item_name} ({location.name})"
+            display_name = f"{receiver_name}'s {item_name} ({location_name})"
             display_item_name = item_name
             if is_goal:
                 helpfulness_clause = ", which completes your goal"
@@ -245,7 +232,7 @@ def generate_mod(
                 # Reveal recipient.
                 receiver_name = multiworld.player_name[target_player]
         description = f"Researching this technology sends {display_item_name} to {receiver_name}{helpfulness_clause}."
-        locale_location = LocaleLocation(location.name, display_name, description)
+        locale_location = LocaleLocation(location_name, display_name, description)
 
         technology_props = technology_props_lua[technology_name]
         if options.technology_prerequisites.current_key == "vanilla":
@@ -275,8 +262,36 @@ def generate_mod(
         else:
             tech_data["research_trigger"] = technology_props["research_trigger"]
 
-        new_technology_data[location.name] = tech_data
+        new_technology_data[location_name] = tech_data
         locale_locations.append(locale_location)
+
+    for location in world_locations:
+        technology_name = duplicate_location_to_original_location.get(location.name, location.name.replace("_location", ""))
+        add_technology_data(
+            technology_name,
+            location.name,
+            location.revealed,
+            location.item.name,
+            location.item.player,
+            location.item.advancement,
+            location.item.useful,
+            location.item.trap,
+        )
+    for technology_name in infinite_technology_names:
+        location_name = technology_name + "_location"
+        if options.infinite_technologies.current_key == "removed":
+            continue
+        elif options.infinite_technologies.current_key == "vanilla":
+            item_name = technology_name
+        elif options.infinite_technologies.current_key == "shuffled":
+            item_name = infinite_technology_shuffle[technology_name]
+        else: assert False
+        item_name = technology_name_to_progressive_group_name[item_name]
+        infinite_technology_name_to_progressive_group_name[location_name] = item_name
+        add_technology_data(
+            technology_name, location_name, True,
+            item_name, player, False, True, False,
+        )
 
     world_gen_preset = {
         "default": False,
