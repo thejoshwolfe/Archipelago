@@ -102,6 +102,8 @@ class Factorio(World):
     def generate_output(self, output_directory: str) -> None:
         from .Mod import generate_mod
         from .data import generated_names as names
+        from .data.ap_data import never_give_free_samples_from_recipes
+
         generate_mod(
             player=self.player,
             player_name=self.player_name,
@@ -111,6 +113,7 @@ class Factorio(World):
             logic_events=self.logic_events,
             progressive_technology_stacks=self.progressive_technology_stacks,
             technology_name_to_progressive_group_name=self.technology_name_to_progressive_group_name,
+            never_give_free_samples_from_recipes=never_give_free_samples_from_recipes | self.factorio_data.never_give_free_samples_from_recipes,
             infinite_technology_names=self.factorio_data.infinite_technology_names,
             infinite_technology_shuffle=self.infinite_technology_shuffle,
             duplicate_location_to_original_location={

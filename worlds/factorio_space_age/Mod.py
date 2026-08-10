@@ -18,9 +18,6 @@ from .data.ap_data import (
     energy_link_bridge_recipes,
 )
 from .data.json_dumps_but_smaller import json_dumps
-from .data.ap_data import (
-    never_give_free_samples_from_recipes,
-)
 from .data import generated_names as names
 
 if TYPE_CHECKING:
@@ -119,6 +116,7 @@ def generate_mod(
     logic_events: dict,
     progressive_technology_stacks: dict[str, dict[str, str]],
     technology_name_to_progressive_group_name: dict[str, str],
+    never_give_free_samples_from_recipes: set[str],
     infinite_technology_names: set[str],
     infinite_technology_shuffle: dict[str, str] | None,
     duplicate_location_to_original_location: dict[str, str],
@@ -321,7 +319,7 @@ def generate_mod(
             raise NotImplementedError("TODO: world_gen_spoil_rate must be 100")
 
     def set_to_1(s: set):
-        return {x: 1 for x in s}
+        return {x: 1 for x in sorted(s)}
 
     mod_params = {
         "mod_name": mod_name,

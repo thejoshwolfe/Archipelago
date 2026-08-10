@@ -58,6 +58,7 @@ class FactorioData:
     # Derrived:
     infinite_technology_names: set[str]
     empty_technology_names: set[str]
+    never_give_free_samples_from_recipes: set[str]
     def __init__(self, the_data,
         technology_name_to_progressive_group_name,
         starting_planet,
@@ -78,6 +79,7 @@ class FactorioData:
             name for name, prototype in self.the_data["technology"].items()
             if len(prototype.get("effects", [])) == 0
         }
+        self.never_give_free_samples_from_recipes = set() # Derrived from RecipeClassification below.
 
         self.combined_items: dict[str, dict] = {}
         for prototype_type in [
@@ -679,6 +681,7 @@ class FactorioData:
                     # Uncrafting an item.
                     assert len(inputs) == 1 and sum(inputs.values()) == 1, "is this not an un-crafting recipe?: " + recipe_name
                     classification = RecipeClassification.backwards_recycling
+                self.never_give_free_samples_from_recipes.add(recipe_name)
             elif all(amount == 0 for amount in inputs.values()) and all(amount == 0 for amount in outputs.values()):
                 # This is a lossless conversion recipe, such as barreling/unbarreling or fluoroketone cooling.
                 # Thematically the recipe respects conservation of mass, if you like.
