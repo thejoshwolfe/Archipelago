@@ -579,6 +579,7 @@ starting_planet_to_unrandomized_technologies = {
 never_give_free_samples_from_recipes = {
     # Originally derrived from the .hide_from_player_crafting recipe prototype property.
     # See also: https://github.com/thejoshwolfe/Archipelago/issues/10
+    # Also includes all recycling recipes (other than scrap recylcing).
     "rocket-part",
     "biter-egg",
     "empty-crude-oil-barrel",
@@ -599,6 +600,40 @@ never_give_free_samples_from_recipes = {
     "petroleum-gas-barrel",
     "sulfuric-acid-barrel",
     "water-barrel",
+}
+
+# The `intermediate_technologies: unlocked` option starts you with these technologies unlocked.
+intermediate_recipe_technologies = {
+    "engine",
+    "oil-processing", # Unlocks solid fuel from petroleum, otherwise it's not directly useful without oil-gathering (pumpjacks).
+    "sulfur-processing",
+    "plastics",
+    "advanced-circuit",
+    "explosives",
+    "battery",
+    "lubricant",
+    "electric-engine",
+    "robotics", # flying-robot-frame
+    "low-density-structure",
+    "processing-unit",
+
+    # centrifuges do nothing without uranium ore (seperate unlock) and something to do with the processed uranium.
+    "uranium-processing",
+
+    "jellynut", # You can eat it, but that doesn't count as useful enough to make it a multiworld item.
+    "yumako",   # Same as above.
+    "bioflux",  # Same as above.
+    "carbon-fiber",
+    # "bioflux-processing", # Unlocks alternatives sources for several resources.
+    # "bacteria-cultivation", # Unlocks alternative metal sources.
+    # "calcite-processing", # Unlocks acid power for Vulcanus.
+    "holmium-processing",
+    "tungsten-carbide",
+    "tungsten-steel",
+
+    "biter-egg-handling",
+    "lithium-processing",
+    "quantum-processor",
 }
 
 ap_item_names = [

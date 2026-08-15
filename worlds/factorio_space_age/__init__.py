@@ -88,6 +88,7 @@ class Factorio(World):
     medium_asteroid_upgrade_requirements: set[str]
     early_unrandomized_technologies: set[str]
     skipped_locations: set[str]
+    start_unlocked_technologies: set[str]
     filler_weights_argv: tuple[list[str], list[int]]
     location_to_duplicates: dict[str, list[str]]
 
@@ -97,6 +98,7 @@ class Factorio(World):
         self.asteroid_hp_changes = {}
         self.technology_effect_additions = defaultdict(list)
         self.skipped_locations = set()
+        self.start_unlocked_technologies = set()
         super().__init__(world, player)
 
     def generate_output(self, output_directory: str) -> None:
@@ -114,6 +116,7 @@ class Factorio(World):
             progressive_technology_stacks=self.progressive_technology_stacks,
             technology_name_to_progressive_group_name=self.technology_name_to_progressive_group_name,
             never_give_free_samples_from_recipes=never_give_free_samples_from_recipes | self.factorio_data.never_give_free_samples_from_recipes,
+            never_give_free_samples_from_technologies=self.start_unlocked_technologies,
             infinite_technology_names=self.factorio_data.infinite_technology_names,
             infinite_technology_shuffle=self.infinite_technology_shuffle,
             duplicate_location_to_original_location={
@@ -139,6 +142,7 @@ class Factorio(World):
             trap_names, energy_link_bridge_recipes,
             small_progressive_groups, large_progressive_groups,
             starting_planet_to_unrandomized_technologies,
+            intermediate_recipe_technologies,
         )
         from .data import generated_names as names
 
@@ -162,11 +166,26 @@ class Factorio(World):
                     else:
                         prototypes[prototype_name] = prototype_diff
 
+        start_inventory = set()
         if self.options.skip_starting_trigger_techs.value:
-            self.options.start_inventory.value.update({
-                name: 1 for name in self.early_unrandomized_technologies
-            })
+            # Start with it unlocked.
+            start_inventory.update(self.early_unrandomized_technologies)
+            # And remove the corresponding location from the dependency graph.
             self.skipped_locations.update(self.early_unrandomized_technologies)
+
+        assert intermediate_recipe_technologies <= the_data["technology"].keys()
+        if self.options.intermediate_technologies.current_key == "shuffled":
+            pass
+        elif self.options.intermediate_technologies.current_key == "unlocked":
+            # Start with it unlocked.
+            start_inventory.update(intermediate_recipe_technologies)
+            # And tell the logic that the technologies are always unlocked.
+            self.start_unlocked_technologies.update(intermediate_recipe_technologies)
+        else: assert False, self.options.intermediate_technologies.current_key
+
+        self.options.start_inventory.value.update({
+            name: 1 for name in start_inventory
+        })
 
         infinite_scrap_recycling_productivity = names.scrap_recycling_productivity
         self.progressive_technology_stacks = {
@@ -175,7 +194,7 @@ class Factorio(World):
         }[self.options.progressive_technologies.current_key]
         # Remove unrandomized and removed technologies from progressive stacks.
         remove_from_progressive_stacks = {
-             *self.early_unrandomized_technologies,
+             *start_inventory,
              *{
                  name for name, technology_data in the_data["technology"].items()
                  if technology_data.get("hidden", False)
@@ -422,6 +441,7 @@ class Factorio(World):
             self.starting_planet,
             self.early_unrandomized_technologies,
             self.skipped_locations,
+            self.start_unlocked_technologies,
         )
         unrecognized_recipes = self.factorio_data.unrecognized_recipe_names(self.options.free_sample_excludes.value)
         if unrecognized_recipes:
@@ -665,6 +685,8 @@ class Factorio(World):
                     # It's already granted.
                     continue
                 lock_item(technology_name_to_location[technology_name], item)
+            elif technology_name in self.start_unlocked_technologies:
+                pass # You already have it.
             elif item_name == names.victory:
                 if self.options.goal.current_key == "space_science":
                     lock_item(technology_name_to_location[names.logistic_system], item)

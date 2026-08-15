@@ -487,11 +487,14 @@ script.on_event(defines.events.on_research_finished, function(event)
     if not technology.prototype.effects then
         return  -- No technology effects, so nothing to do.
     end
+    if PARAMS.free_sample_exclude_technologies[technology.name] == 1 then
+        return  -- Excluded from free samples.
+    end
     for _, effect in pairs(technology.prototype.effects) do
         if effect.type == "unlock-recipe" then
             local recipe = prototypes.recipe[effect.recipe]
             for _, result in pairs(recipe.products) do
-                if result.type == "item" and result.amount and PARAMS.free_sample_excludes[effect.recipe] ~= 1 then
+                if result.type == "item" and result.amount and PARAMS.free_sample_exclude_recipes[effect.recipe] ~= 1 then
                     local count
                     if PARAMS.free_sample_amount == "single_craft" then
                         count = result.amount

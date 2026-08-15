@@ -276,6 +276,23 @@ class InfiniteTechs(Choice):
     default = 1
 
 @auto_group
+class IntermediateTechs(Choice):
+    """
+    How to handle technologies that only unlock recipes for items that are not directly useful, e.g. advanced-circuit.
+
+    shuffled: the technologies are shuffled into the multiworld as items just like other technologies.
+    unlocked: (default) intermediate recipes are unlocked from the start and their technologies are removed. This makes multiworld items received more impactful and function less like fragments of something useable. For the full list of technologies unlocked by this option, see https://github.com/thejoshwolfe/Archipelago/blob/space-age/worlds/factorio_space_age/data/ap_data.py . You do not get free samples for the unlocked recipes.
+
+    Unlocking intermediates is recommended to enable Factorio: Space Age advancement keep pace with other games in the multiworld.
+    Particularly these milestones need fewer advancement items: chemical-science-pack (5 fewer), utility-science-pack (11 fewer), launching rockets (9 fewer).
+
+    Shuffling intermediates is recommended for a more authentic Factorio experience, but makes the early game much longer.
+    """
+    option_shuffled = 0
+    option_unlocked = 1
+    default = 1
+
+@auto_group
 class TechTreeInformation(Choice):
     """
     How much information should be displayed in the tech tree.
@@ -306,7 +323,7 @@ class QuickStart(DefaultOnToggle):
 class SkipStartingTriggerTechs(Toggle):
     """
     Instead of needing to craft iron plates, copper plates, and a lab at the start of the run,
-    start with the recipes for steam power, labs, and logistic science pack already unlocked.
+    start with the recipes for steam power, labs, and automation science pack already unlocked.
     The set of technologies changes with the starting_planet setting, and it's recommended particularly on Vulcanus and Gleba.
     The free_samples setting gives items from the early triggers, so on Vulcanus, you can start with foundries straight away without setting up a lubricant build,
     and on Gleba, you can start with biochambers without looting egg rafts.
@@ -863,6 +880,7 @@ class FactorioOptions(PerGameCommonOptions):
     technology_prerequisites: TechnologyPrerequisites
     progressive_technologies: ProgressiveTechs
     infinite_technologies: InfiniteTechs
+    intermediate_technologies: IntermediateTechs
     tech_tree_information: TechTreeInformation
 
     quick_start: QuickStart

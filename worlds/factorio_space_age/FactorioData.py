@@ -55,6 +55,7 @@ class FactorioData:
     technology_name_to_progressive_group_name: dict[str, str]
     unrandomized_technologies: set[str]
     skipped_locations: set[str]
+    start_unlocked_technologies: set[str]
     # Derrived:
     infinite_technology_names: set[str]
     empty_technology_names: set[str]
@@ -64,12 +65,14 @@ class FactorioData:
         starting_planet,
         unrandomized_technologies,
         skipped_locations,
+        start_unlocked_technologies,
     ):
         self.the_data = the_data
         self.starting_planet = starting_planet
         self.technology_name_to_progressive_group_name = technology_name_to_progressive_group_name
         self.unrandomized_technologies = unrandomized_technologies
         self.skipped_locations = skipped_locations
+        self.start_unlocked_technologies = start_unlocked_technologies
         # Derrived:
         self.infinite_technology_names = {
             name for name, prototype in self.the_data["technology"].items()
@@ -1309,10 +1312,16 @@ class FactorioData:
                     ]},
                 ]}
 
+            # How do we get the location?
             if technology_name not in self.skipped_locations:
                 logic_events[fmt_technology_location(technology_name)] = expr
-            if technology_name in self.unrandomized_technologies:
-                # Tell the optimizer how to inline these.
+
+            # How do we get the item?
+            if technology_name in self.start_unlocked_technologies:
+                # E.g. `intermediate_technologies: unlocked` starts with advanced-circuit unlocked.
+                logic_events[fmt_unlock_technology(technology_name)] = ALWAYS
+            elif technology_name in self.unrandomized_technologies:
+                # Tell the optimizer how to inline these. Early game techs optimize to ALWAYS; goal techs don't.
                 logic_events[fmt_unlock_technology(technology_name)] = expr
             else:
                 # The multiworld decides how to get it.

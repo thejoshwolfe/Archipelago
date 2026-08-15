@@ -117,6 +117,7 @@ def generate_mod(
     progressive_technology_stacks: dict[str, dict[str, str]],
     technology_name_to_progressive_group_name: dict[str, str],
     never_give_free_samples_from_recipes: set[str],
+    never_give_free_samples_from_technologies: set[str],
     infinite_technology_names: set[str],
     infinite_technology_shuffle: dict[str, str] | None,
     duplicate_location_to_original_location: dict[str, str],
@@ -153,7 +154,8 @@ def generate_mod(
 
     death_link_setting_name = "archipelago-death-link-{}-{}".format(player, multiworld.seed_name)
 
-    free_sample_excludes = options.free_sample_excludes.value | never_give_free_samples_from_recipes
+    free_sample_exclude_recipes = options.free_sample_excludes.value | never_give_free_samples_from_recipes
+    free_sample_exclude_technologies = never_give_free_samples_from_technologies
 
     @dataclass
     class LocaleLocation:
@@ -337,7 +339,8 @@ def generate_mod(
         "starting_items": options.starting_items.value,
         "free_sample_amount": options.free_samples.current_key,
         "free_sample_quality": options.free_samples_quality.current_key,
-        "free_sample_excludes": set_to_1(free_sample_excludes),
+        "free_sample_exclude_recipes": set_to_1(free_sample_exclude_recipes),
+        "free_sample_exclude_technologies": set_to_1(free_sample_exclude_technologies),
         "recipe_changes": recipe_changes,
         "rocket_parts_per_rocket": rocket_parts_per_rocket,
         "asteroid_hp_changes": asteroid_hp_changes,
