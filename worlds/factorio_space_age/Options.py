@@ -43,6 +43,8 @@ class Goal(Choice):
     solar system edge 11 science: Reach the solar system edge after researching the unrandomized stellar-discovery-solar-system-edge, which requires all 11 non-promethium science packs.
 
     Note that technology_prerequisites adds extra steps to unlocking unrandomized technology locations related to the goal.
+
+    For shorter games, consider also setting production_and_utility_science: removed.
     """
     display_name = "Goal"
     option_space_science = 0
@@ -291,6 +293,18 @@ class IntermediateTechs(Choice):
     option_shuffled = 0
     option_unlocked = 1
     default = 1
+
+@auto_group
+class ProductionAndUtilityScience(Choice):
+    """
+    Should production and utility science (purple and yellow) be removed from the game?
+
+    included: (default)
+    removed: remove the production and utility science pack components from all research objectives. This allows smaller factories and quicker games. The crafting recipes for these science packs will never unlock.
+    """
+    option_included = 0
+    option_removed = 1
+    default = 0
 
 @auto_group
 class TechTreeInformation(Choice):
@@ -881,6 +895,7 @@ class FactorioOptions(PerGameCommonOptions):
     progressive_technologies: ProgressiveTechs
     infinite_technologies: InfiniteTechs
     intermediate_technologies: IntermediateTechs
+    production_and_utility_science: ProductionAndUtilityScience
     tech_tree_information: TechTreeInformation
 
     quick_start: QuickStart

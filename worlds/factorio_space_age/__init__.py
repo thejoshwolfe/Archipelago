@@ -88,6 +88,7 @@ class Factorio(World):
     medium_asteroid_upgrade_requirements: set[str]
     early_unrandomized_technologies: set[str]
     skipped_locations: set[str]
+    removed_items: set[str]
     start_unlocked_technologies: set[str]
     filler_weights_argv: tuple[list[str], list[int]]
     location_to_duplicates: dict[str, list[str]]
@@ -98,6 +99,7 @@ class Factorio(World):
         self.asteroid_hp_changes = {}
         self.technology_effect_additions = defaultdict(list)
         self.skipped_locations = set()
+        self.removed_items = set()
         self.start_unlocked_technologies = set()
         super().__init__(world, player)
 
@@ -187,6 +189,12 @@ class Factorio(World):
             name: 1 for name in start_inventory
         })
 
+        if self.options.production_and_utility_science.current_key == "removed":
+            self.removed_items.update([
+                names.production_science_pack,
+                names.utility_science_pack,
+            ])
+
         infinite_scrap_recycling_productivity = names.scrap_recycling_productivity
         self.progressive_technology_stacks = {
             "only_related": small_progressive_groups,
@@ -195,6 +203,7 @@ class Factorio(World):
         # Remove unrandomized and removed technologies from progressive stacks.
         remove_from_progressive_stacks = {
              *start_inventory,
+             *self.removed_items,
              *{
                  name for name, technology_data in the_data["technology"].items()
                  if technology_data.get("hidden", False)
@@ -435,6 +444,16 @@ class Factorio(World):
             ][:number_of_levels // small_divisor],
         }
 
+        if self.options.production_and_utility_science.current_key == "removed":
+            # Remove production and utility science ingredients.
+            for prototype_data in the_data["technology"].values():
+                if "unit" not in prototype_data: continue
+                prototype_data["unit"]["ingredients"] = [
+                    [name, amount]
+                    for (name, amount) in prototype_data["unit"]["ingredients"]
+                    if name not in (names.production_science_pack, names.utility_science_pack)
+                ]
+
         # Data analysis.
         self.factorio_data = FactorioData(the_data,
             self.technology_name_to_progressive_group_name,
@@ -519,6 +538,7 @@ class Factorio(World):
         assert len(self.empty_technologies) > 0
         self.random.shuffle(self.empty_technologies)
 
+        # TODO: There's no way this is right or a good idea. Move on-demand location filling to after we've determined the location/item imbalance.
         extra_location_count = self.options.filler_count.value + (
             - 4 # The builtin do-nothing technologies.
             + int(self.options.energy_link_technology.value)
@@ -676,6 +696,9 @@ class Factorio(World):
                 continue
             if technology_name in self.factorio_data.infinite_technology_names:
                 # The corresponding location is gone. Don't make an item for this either.
+                continue
+            if technology_name in self.removed_items:
+                # Don't let the player ever craft this useless garbage.
                 continue
             item_name = self.technology_name_to_progressive_group_name.get(technology_name, technology_name)
             item = self.create_item(item_name)

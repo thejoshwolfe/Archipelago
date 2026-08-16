@@ -778,7 +778,7 @@ class FactorioData:
             if "unit" in prototype_data:
                 ingredients = {name: amount for (name, amount) in prototype_data["unit"]["ingredients"]}
                 # Research technology (using science packs and labs).
-                assert set(ingredients.values()) == {1}, "update comment on ResearchRequirement.ingredients to no longer claim the amount is always 1"
+                assert set(ingredients.values()) == {1}, "update comment on ResearchRequirement.ingredients to no longer claim the amount is always 1: " + prototype_name
                 requirement = ResearchRequirement(tuple(ingredients.keys()), not prototype_data.get("ignore_tech_cost_multiplier", False))
                 technology_props["unit"] = prototype_data["unit"]
                 is_infinite = prototype_data.get("max_level", None) == "infinite"
