@@ -831,6 +831,8 @@ class Factorio(World):
             # Use the next name in a (shuffled) rotation so you always see all 4 before any repeats.
             self.empty_technologies.append(self.empty_technologies.pop(0))
             item_name = self.empty_technologies[-1]
+        else:
+            item_name = self.technology_name_to_progressive_group_name.get(item_name, item_name)
         return item_name
 
     def create_item(self, item_name: str) -> FactorioItem:
