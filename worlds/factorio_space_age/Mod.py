@@ -118,9 +118,8 @@ def generate_mod(
     technology_name_to_progressive_group_name: dict[str, str],
     never_give_free_samples_from_recipes: set[str],
     never_give_free_samples_from_technologies: set[str],
-    infinite_technology_names: set[str],
-    infinite_technology_shuffle: dict[str, str] | None,
-    duplicate_location_to_original_location: dict[str, str],
+    infinite_technology_to_location_technology: dict[str, str] | None,
+    duplicate_location_name_to_origin_technology_name: dict[str, str],
     technology_props_lua: dict[str, dict],
     recipe_changes: dict[str, dict[str, object]],
     rocket_parts_per_rocket: int,
@@ -167,7 +166,7 @@ def generate_mod(
     infinite_technology_name_to_progressive_group_name: dict[str, str] = {}
 
     def add_technology_data(
-        technology_name,
+        location_technology_name,
         location_name,
         is_location_revealed,
         item_name,
@@ -234,7 +233,7 @@ def generate_mod(
         description = f"Researching this technology sends {display_item_name} to {receiver_name}{helpfulness_clause}."
         locale_location = LocaleLocation(location_name, display_name, description)
 
-        technology_props = technology_props_lua[technology_name]
+        technology_props = technology_props_lua[location_technology_name]
         if options.technology_prerequisites.current_key == "vanilla":
             # Translate preprequisite tech names to the AP names.
             prerequisites = [name + "_location" for name in technology_props["prerequisites"]]
@@ -266,9 +265,9 @@ def generate_mod(
         locale_locations.append(locale_location)
 
     for location in world_locations:
-        technology_name = duplicate_location_to_original_location.get(location.name, location.name.replace("_location", ""))
+        location_technology_name = duplicate_location_name_to_origin_technology_name.get(location.name, location.name.replace("_location", ""))
         add_technology_data(
-            technology_name,
+            location_technology_name,
             location.name,
             location.revealed,
             location.item.name,
@@ -277,21 +276,15 @@ def generate_mod(
             location.item.useful,
             location.item.trap,
         )
-    for technology_name in infinite_technology_names:
-        location_name = technology_name + "_location"
-        if options.infinite_technologies.current_key == "removed":
-            continue
-        elif options.infinite_technologies.current_key == "vanilla":
-            item_name = technology_name
-        elif options.infinite_technologies.current_key == "shuffled":
-            item_name = infinite_technology_shuffle[technology_name]
-        else: assert False
-        item_name = technology_name_to_progressive_group_name[item_name]
-        infinite_technology_name_to_progressive_group_name[location_name] = item_name
-        add_technology_data(
-            technology_name, location_name, True,
-            item_name, player, False, True, False,
-        )
+    if options.infinite_technologies.current_key != "removed":
+        for technology_name, location_technology_name in infinite_technology_to_location_technology.items():
+            location_name = technology_name + "_location"
+            item_name = technology_name_to_progressive_group_name[technology_name]
+            infinite_technology_name_to_progressive_group_name[location_name] = item_name
+            add_technology_data(
+                location_technology_name, location_name, True,
+                item_name, player, False, True, False,
+            )
 
     world_gen_preset = {
         "default": False,

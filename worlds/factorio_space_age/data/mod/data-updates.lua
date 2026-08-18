@@ -179,8 +179,9 @@ for _, tech_name in pairs(PARAMS.hide_base_technologies) do
     --     trigger_description = {"", "This is sent to you from the multiworld"},
     -- }
     base_tech.hidden = true;
+    base_tech.enabled = false;
 
-    base_tech.prerequisites = {"promethium-science-pack_location"}
+    --base_tech.prerequisites = {"promethium-science-pack_location"}
     base_tech.upgrade = false
     base_tech.order = "zzzz"
 

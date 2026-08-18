@@ -81,7 +81,7 @@ class Factorio(World):
     technology_effect_additions: dict[str, dict]
     logic_events: dict
     advancement_technologies: set[str]
-    infinite_technology_shuffle: dict[str, str] | None = None
+    infinite_technology_to_location_technology: dict[str, str] | None = None
     empty_technologies: list[str]
     starting_planet: str
     enemies_enabled: bool
@@ -91,7 +91,7 @@ class Factorio(World):
     removed_items: set[str]
     start_unlocked_technologies: set[str]
     filler_weights_argv: tuple[list[str], list[int]]
-    location_to_duplicates: dict[str, list[str]]
+    duplicate_location_name_to_origin_technology_name: dict[str, str]
 
     def __init__(self, world, player: int):
         self.locations = []
@@ -119,13 +119,8 @@ class Factorio(World):
             technology_name_to_progressive_group_name=self.technology_name_to_progressive_group_name,
             never_give_free_samples_from_recipes=never_give_free_samples_from_recipes | self.factorio_data.never_give_free_samples_from_recipes,
             never_give_free_samples_from_technologies=self.start_unlocked_technologies,
-            infinite_technology_names=self.factorio_data.infinite_technology_names,
-            infinite_technology_shuffle=self.infinite_technology_shuffle,
-            duplicate_location_to_original_location={
-                duplicate: origin_location
-                for origin_location, duplicates in self.location_to_duplicates.items()
-                for duplicate in duplicates
-            },
+            infinite_technology_to_location_technology=self.infinite_technology_to_location_technology,
+            duplicate_location_name_to_origin_technology_name=self.duplicate_location_name_to_origin_technology_name,
             technology_props_lua=self.technology_props_lua,
             recipe_changes=self.recipe_changes,
             rocket_parts_per_rocket=self.rocket_parts_per_rocket,
@@ -468,12 +463,6 @@ class Factorio(World):
         unrecognized_items = self.factorio_data.unrecognized_item_names(self.options.starting_items.value.keys())
         if unrecognized_items:
             raise KeyError("starting_items contains unrecognized item names: " + repr(unrecognized_items))
-        if self.options.infinite_technologies.current_key == "shuffled":
-            infinite_list = sorted(self.factorio_data.infinite_technology_names)
-            target_list = list(infinite_list)
-            self.random.shuffle(target_list)
-            self.infinite_technology_shuffle = {src: dst for src, dst in zip(infinite_list, target_list)}
-        else: assert self.options.infinite_technologies.current_key in ("removed", "vanilla")
 
         filler_weights = {
             names.artillery_shell_damage_1:           self.options.filler_artillery_shell_damage_weight.value,
@@ -537,22 +526,6 @@ class Factorio(World):
         self.empty_technologies = sorted(self.factorio_data.empty_technology_names)
         assert len(self.empty_technologies) > 0
         self.random.shuffle(self.empty_technologies)
-
-        # TODO: There's no way this is right or a good idea. Move on-demand location filling to after we've determined the location/item imbalance.
-        extra_location_count = self.options.filler_count.value + (
-            - 4 # The builtin do-nothing technologies.
-            + int(self.options.energy_link_technology.value)
-            + 3*int(self.options.goal.current_key == "any_other_planet_science")
-            - sum(self.options.start_inventory_from_pool.values())
-        )
-        assert extra_location_count < 1000, "didn't think this was possible"
-        if extra_location_count > 0:
-            location_candidates = sorted(self.factorio_data.get_location_dupe_candidates())
-            self.location_to_duplicates = defaultdict(list)
-            for i, dupe_target in enumerate(self.random.choices(location_candidates, k=extra_location_count)):
-                self.location_to_duplicates[dupe_target].append("ap-{:03}_location".format(i))
-        else:
-            self.location_to_duplicates = {}
 
         # Generate logic.
         if self.options.energy_link.value:
@@ -673,6 +646,54 @@ class Factorio(World):
                 # This is a receivable technology item.
                 item_names.append(event_name)
 
+        victory_location_technology_names = set()
+        if self.options.goal.current_key == "space_science":
+            sciences_beyond_goal = {
+                names.space_science_pack,
+                names.metallurgic_science_pack,
+                names.agricultural_science_pack,
+                names.electromagnetic_science_pack,
+                names.cryogenic_science_pack,
+                names.promethium_science_pack,
+            }
+            victory_location_technology_names = {
+                names.logistic_system,
+            }
+        elif self.options.goal.current_key == "any_other_planet_science":
+            sciences_beyond_goal = {
+                names.metallurgic_science_pack,
+                names.agricultural_science_pack,
+                names.electromagnetic_science_pack,
+                names.cryogenic_science_pack,
+                names.promethium_science_pack,
+            }
+            if self.starting_planet != names.vulcanus:
+                victory_location_technology_names.add(names.asteroid_reprocessing)
+            if self.starting_planet != names.gleba:
+                victory_location_technology_names.add(names.carbon_fiber)
+            if self.starting_planet != names.fulgora:
+                victory_location_technology_names.add(names.lightning_collector)
+        elif self.options.goal.current_key in ("aquilo_orbit", "aquilo_orbit_10_science"):
+            sciences_beyond_goal = {
+                names.cryogenic_science_pack,
+                names.promethium_science_pack,
+            }
+        elif self.options.goal.current_key in ("solar_system_edge", "solar_system_edge_11_science"):
+            sciences_beyond_goal = {
+                names.promethium_science_pack,
+            }
+        else: assert False
+
+        def is_beyond_goal(technology_name):
+            if technology_name in victory_location_technology_names: return False
+            technology_props = self.technology_props_lua[technology_name]
+            if "unit" not in technology_props:
+                # Trigger techs are beyond the goal if their dependencies are beyond the goal.
+                prerequisites = technology_props.get("prerequisites", [])
+                if len(prerequisites) == 0: return False # Starting trigger tech.
+                return any(is_beyond_goal(prerequisite) for prerequisite in prerequisites)
+            return any(name in sciences_beyond_goal for (name, amount) in technology_props["unit"]["ingredients"])
+
         technology_name_to_location = {}
         for location_name in location_names:
             origin_technology_name = location_name[:-len("_location")]
@@ -682,12 +703,12 @@ class Factorio(World):
             if origin_technology_name in self.factorio_data.infinite_technology_names:
                 # Infinite technologies are always out of logic and local. Do not create multiworld locations for them.
                 continue
+            if is_beyond_goal(origin_technology_name):
+                # Don't add inaccessible locations to the tech tree.
+                continue
             access_rule_fn = compile_expr(self.logic_events[location_name])
             location = new_location(location_name, access_rule_fn)
             technology_name_to_location[origin_technology_name] = location
-            for duplicate_name in self.location_to_duplicates.get(origin_technology_name, []):
-                # Another one.
-                new_location(duplicate_name, access_rule_fn)
         randomized_items = []
         for technology_name in item_names:
             # This is a receivable technology item.
@@ -711,26 +732,60 @@ class Factorio(World):
             elif technology_name in self.start_unlocked_technologies:
                 pass # You already have it.
             elif item_name == names.victory:
-                if self.options.goal.current_key == "space_science":
-                    lock_item(technology_name_to_location[names.logistic_system], item)
-                elif self.options.goal.current_key == "any_other_planet_science":
-                    # We actually want 2 or 3 of these.
-                    if self.starting_planet != names.vulcanus:
-                        lock_item(technology_name_to_location[names.asteroid_reprocessing], self.create_item(names.victory))
-                    if self.starting_planet != names.gleba:
-                        lock_item(technology_name_to_location[names.carbon_fiber], self.create_item(names.victory))
-                    if self.starting_planet != names.fulgora:
-                        lock_item(technology_name_to_location[names.lightning_collector], self.create_item(names.victory))
-                else:
-                    pass # Don't create victory items for this goal.
+                # There are 0, 1, 2, or 3 of these depending on settings.
+                for technology_name in sorted(victory_location_technology_names):
+                    lock_item(technology_name_to_location[technology_name], self.create_item(names.victory))
             else:
                 randomized_items.append(item)
 
+        if self.options.infinite_technologies.current_key == "shuffled":
+            technology_list = sorted(self.factorio_data.infinite_technology_names)
+            location_technology_list = [name for name in technology_list if not is_beyond_goal(name)]
+            assert len(location_technology_list) > 0, "all infinite techs beyond goal? change the code to fallback to the remove behavior"
+            if len(location_technology_list) < len(technology_list):
+                # Repeat some infinite locations so that every item is accessible from some location.
+                import math
+                location_technology_list = location_technology_list * math.ceil(len(technology_list) / len(location_technology_list))
+            assert len(location_technology_list) >= len(technology_list)
+            self.random.shuffle(location_technology_list)
+            self.infinite_technology_to_location_technology = {src: dst for src, dst in zip(technology_list, location_technology_list)}
+        elif self.options.infinite_technologies.current_key == "vanilla":
+            technology_list = sorted(name for name in self.factorio_data.infinite_technology_names if not is_beyond_goal(name))
+            self.infinite_technology_to_location_technology = {name: name for name in technology_list}
+        else: assert self.options.infinite_technologies.current_key == "removed"
+
         # Create filler items.
-        empty_slots = sum(1 for location in self.locations if location.item == None)
-        if empty_slots < len(randomized_items):
-            assert False, "TODO: generate more locations"
-        while len(randomized_items) < empty_slots:
+        extra_location_count = self.options.filler_count.value + (
+            - 4 # The builtin do-nothing technologies.
+            + int(self.options.energy_link_technology.value)
+            + 3*int(self.options.goal.current_key == "any_other_planet_science")
+            - sum(self.options.start_inventory_from_pool.values())
+        )
+        duplicatable_technology_names = [
+            name for name, prototype_data in self.factorio_data.the_data["technology"].items()
+            if not prototype_data.get("hidden", False) # Not removed by Any Planet Start
+            and not is_beyond_goal(name) # Not removed by goal
+            and prototype_data.get("unit", None) # Not a trigger tech
+            and prototype_data.get("max_level", None) != "infinite" # Not infinite
+        ]
+
+        target_item_count = len(randomized_items) + self.options.filler_count.value
+        unfilled_location_count = sum(1 for location in self.locations if location.item == None)
+        self.duplicate_location_name_to_origin_technology_name = {}
+        while unfilled_location_count < target_item_count:
+            # Need more locations to fit these items.
+            duplicate_location_name = "ap-{:03}_location".format(len(self.duplicate_location_name_to_origin_technology_name))
+            origin_technology_name = self.random.choice(duplicatable_technology_names)
+            self.duplicate_location_name_to_origin_technology_name[duplicate_location_name] = origin_technology_name
+            assert len(self.duplicate_location_name_to_origin_technology_name) < 1000, "didn't think this was possible"
+            access_rule_fn = compile_expr(self.logic_events[origin_technology_name + "_location"])
+            new_location(duplicate_location_name, access_rule_fn)
+            unfilled_location_count += 1
+        if target_item_count < unfilled_location_count:
+            # Need more items
+            target_item_count = unfilled_location_count
+        while len(randomized_items) < target_item_count:
+            # Need filler items to fill these locations.
             randomized_items.append(self.create_item(self.get_filler_item_name()))
         self.multiworld.itempool.extend(randomized_items)
 
