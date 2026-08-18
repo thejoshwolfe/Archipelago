@@ -170,18 +170,23 @@ end
 -- Disable and hide base technologies.
 for _, tech_name in pairs(PARAMS.hide_base_technologies) do
     local base_tech = data.raw["technology"][tech_name]
-    -- FIXME: This broke in 2.1.14. Reported here: https://forums.factorio.com/viewtopic.php?t=135579
-    -- base_tech.unit = nil
-    -- base_tech.research_trigger = {
-    --     type = "scripted",
-    --     icon = "__" .. PARAMS.mod_name .. "__/graphics/icons/ap.png",
-    --     icon_size = 128,
-    --     trigger_description = {"", "This is sent to you from the multiworld"},
-    -- }
-    base_tech.hidden = true;
-    base_tech.enabled = false;
+    if base_tech.unit ~= nil and base_tech.unit.count_formula ~= nil then
+        -- As of 2.1.14, you can't have scripted triggers on infinite techs.
+        -- Reported here: https://forums.factorio.com/viewtopic.php?t=135579
+        -- Instead, let's add promethium science pack as an ingredient so that it's always beyond the goal.
+        base_tech.unit.ingredients = { {"promethium-science-pack", 1} }
+    else
+        -- For all finite technologies, block the player from researching them by using a scripted trigger.
+        base_tech.unit = nil
+        base_tech.research_trigger = {
+            type = "scripted",
+            icon = "__" .. PARAMS.mod_name .. "__/graphics/icons/ap.png",
+            icon_size = 128,
+            trigger_description = {"", "This is sent to you from the multiworld"},
+        }
+    end
 
-    --base_tech.prerequisites = {"promethium-science-pack_location"}
+    base_tech.prerequisites = PARAMS.last_technology_location_names
     base_tech.upgrade = false
     base_tech.order = "zzzz"
 

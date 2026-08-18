@@ -117,6 +117,7 @@ class Factorio(World):
             logic_events=self.logic_events,
             progressive_technology_stacks=self.progressive_technology_stacks,
             technology_name_to_progressive_group_name=self.technology_name_to_progressive_group_name,
+            last_technology_location_names=self.last_technology_location_names,
             never_give_free_samples_from_recipes=never_give_free_samples_from_recipes | self.factorio_data.never_give_free_samples_from_recipes,
             never_give_free_samples_from_technologies=self.start_unlocked_technologies,
             infinite_technology_to_location_technology=self.infinite_technology_to_location_technology,
@@ -659,6 +660,7 @@ class Factorio(World):
             victory_location_technology_names = {
                 names.logistic_system,
             }
+            self.last_technology_location_names = sorted(victory_location_technology_names)
         elif self.options.goal.current_key == "any_other_planet_science":
             sciences_beyond_goal = {
                 names.metallurgic_science_pack,
@@ -673,16 +675,21 @@ class Factorio(World):
                 victory_location_technology_names.add(names.carbon_fiber)
             if self.starting_planet != names.fulgora:
                 victory_location_technology_names.add(names.lightning_collector)
+            self.last_technology_location_names = sorted(victory_location_technology_names)
         elif self.options.goal.current_key in ("aquilo_orbit", "aquilo_orbit_10_science"):
             sciences_beyond_goal = {
                 names.cryogenic_science_pack,
                 names.promethium_science_pack,
             }
+            self.last_technology_location_names = [names.planet_discovery_aquilo]
         elif self.options.goal.current_key in ("solar_system_edge", "solar_system_edge_11_science"):
             sciences_beyond_goal = {
                 names.promethium_science_pack,
             }
+            self.last_technology_location_names = [names.promethium_science_pack]
         else: assert False
+        assert len(self.last_technology_location_names) > 0
+        self.last_technology_location_names = [name + "_location" for name in self.last_technology_location_names]
 
         def is_beyond_goal(technology_name):
             if technology_name in victory_location_technology_names: return False

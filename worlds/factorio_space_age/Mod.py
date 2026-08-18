@@ -116,6 +116,7 @@ def generate_mod(
     logic_events: dict,
     progressive_technology_stacks: dict[str, dict[str, str]],
     technology_name_to_progressive_group_name: dict[str, str],
+    last_technology_location_names: list[str],
     never_give_free_samples_from_recipes: set[str],
     never_give_free_samples_from_technologies: set[str],
     infinite_technology_to_location_technology: dict[str, str] | None,
@@ -347,6 +348,7 @@ def generate_mod(
         "new_technology_data": new_technology_data,
         "progressive_technology_stacks": progressive_technology_stacks,
         "infinite_technology_name_to_progressive_group_name": infinite_technology_name_to_progressive_group_name,
+        "last_technology_location_names": last_technology_location_names,
 
         "allow_imported_blueprints": bool(options.allow_imported_blueprints.value),
         "world_gen_preset": world_gen_preset,
