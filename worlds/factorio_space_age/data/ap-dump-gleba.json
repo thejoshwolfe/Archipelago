@@ -144,7 +144,7 @@
     "steam-power": {
       "research_trigger": {
         "type": "mine-entity",
-        "entity": "iron-stromatolite"
+        "entities": ["iron-stromatolite"]
       },
       "effects": [
         {
@@ -172,7 +172,7 @@
     "electronics": {
       "research_trigger": {
         "type": "mine-entity",
-        "entity": "copper-stromatolite"
+        "entities": ["copper-stromatolite"]
       },
       "effects": [
         {
@@ -218,7 +218,7 @@
     "landfill": {
       "research_trigger": {
         "type": "mine-entity",
-        "entity": "stone"
+        "entities": ["stone"]
       },
       "effects": [{
         "type": "unlock-recipe",
@@ -337,7 +337,7 @@
       "hidden": true,
       "research_trigger": {
         "type": "mine-entity",
-        "entity": "crude-oil"
+        "entities": ["crude-oil"]
       },
       "effects": [
         {
@@ -481,6 +481,10 @@
           "use_icon_overlay_constant": true
         },
         {
+          "type": "unlock-travel-to-space-platforms",
+          "modifier": true
+        },
+        {
           "type": "unlock-recipe",
           "recipe": "pumpjack"
         }
@@ -498,11 +502,17 @@
           ["space-science-pack", 1]
         ]
       },
-      "effects": [{
-        "type": "unlock-space-location",
-        "space_location": "gleba",
-        "use_icon_overlay_constant": true
-      }]
+      "effects": [
+        {
+          "type": "unlock-space-location",
+          "space_location": "gleba",
+          "use_icon_overlay_constant": true
+        },
+        {
+          "type": "unlock-travel-to-space-platforms",
+          "modifier": true
+        }
+      ]
     },
     "planet-discovery-fulgora": {
       "unit": {
@@ -525,6 +535,10 @@
           "type": "unlock-space-location",
           "space_location": "fulgora",
           "use_icon_overlay_constant": true
+        },
+        {
+          "type": "unlock-travel-to-space-platforms",
+          "modifier": true
         },
         {
           "type": "unlock-recipe",
@@ -626,7 +640,7 @@
     "calcite-processing": {
       "research_trigger": {
         "type": "mine-entity",
-        "entity": "calcite"
+        "entities": ["calcite"]
       },
       "prerequisites": ["planet-discovery-vulcanus"],
       "effects": [
@@ -690,7 +704,7 @@
       "prerequisites": ["agricultural-science-pack", "planet-discovery-nauvis"],
       "effects": [{
         "type": "unlock-recipe",
-        "recipe": "wood-processing"
+        "recipe": "tree-seed"
       }]
     },
     "stack-inserter": {
@@ -762,20 +776,10 @@
         "rocketry",
         "planet-discovery-nauvis"
       ],
-      "effects": [
-        {
-          "type": "unlock-recipe",
-          "recipe": "capture-robot-rocket"
-        },
-        {
-          "type": "unlock-recipe",
-          "recipe": "biter-egg"
-        },
-        {
-          "type": "unlock-recipe",
-          "recipe": "nutrients-from-biter-egg"
-        }
-      ]
+      "effects": [{
+        "type": "unlock-recipe",
+        "recipe": "capture-robot-rocket"
+      }]
     },
     "carbon-fiber": {
       "unit": {
@@ -799,6 +803,9 @@
         "count": 500,
         "time": 60,
         "ingredients": [
+          ["automation-science-pack", 1],
+          ["logistic-science-pack", 1],
+          ["chemical-science-pack", 1],
           ["space-science-pack", 1],
           ["agricultural-science-pack", 1]
         ]
@@ -904,6 +911,10 @@
           "type": "unlock-space-location",
           "space_location": "nauvis",
           "use_icon_overlay_constant": true
+        },
+        {
+          "type": "unlock-travel-to-space-platforms",
+          "modifier": true
         },
         {
           "type": "unlock-recipe",

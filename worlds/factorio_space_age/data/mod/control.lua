@@ -203,12 +203,12 @@ local function update_player(index)
                 sent = 0
             end
             if sent > 0 then
-                player.print("Received " .. sent .. "x [item=" .. name .. ",quality=" .. PARAMS.free_sample_quality .. "]")
+                player.print({"archipelago.msg-received-free-sample", tostring(sent), "[item=" .. name .. ",quality=" .. PARAMS.free_sample_quality .. "]"})
                 data.suppress_full_inventory_message = false
             end
             if sent ~= count then               -- Couldn't full send.
                 if not data.suppress_full_inventory_message then
-                    player.print("Additional items will be sent when inventory space is available.", {r=1, g=1, b=0.25})
+                    player.print({"archipelago.msg-free-sample-inventory-full"}, {r=1, g=1, b=0.25})
                 end
                 data.suppress_full_inventory_message = true -- Avoid spamming them with repeated full inventory messages.
                 samples[name] = count - sent    -- Buffer the remaining items
@@ -217,6 +217,7 @@ local function update_player(index)
                 samples[name] = nil             -- Remove from the list
             end
         else
+            -- Should never happen.
             player.print("Unable to receive " .. count .. "x [item=" .. name .. "] as this item does not exist.")
             samples[name] = nil
         end
@@ -368,7 +369,7 @@ local TRAP_TABLE = {
         local new_factor = game.forces["enemy"].get_evolution_factor("nauvis") +
             (PARAMS.trap_evo_factor * (1 - game.forces["enemy"].get_evolution_factor("nauvis")))
         game.forces["enemy"].set_evolution_factor(new_factor, "nauvis")
-        game.print({"", "New evolution factor:", new_factor})
+        game.print({"archipelago.msg-evolution-factor", new_factor})
     end,
     ["Teleport Trap"] = function()
         for _, player in ipairs(game.forces["player"].players) do
@@ -411,7 +412,7 @@ local function receive_item(force, item_name, source)
         for _, tech_name in ipairs(tech_stack) do
             local tech = force.technologies[tech_name]
             if tech.researched ~= true then
-                game.print({"", "Received [technology=" .. tech.name .. "] from ", source})
+                game.print({"archipelago.msg-received", "[technology=" .. tech.name .. "]", source})
                 game.play_sound({path="utility/research_completed"})
                 tech.researched = true
                 return
@@ -424,7 +425,7 @@ local function receive_item(force, item_name, source)
     local tech = force.technologies[item_name]
     if tech ~= nil then
         if tech.researched ~= true then
-            game.print({"", "Received [technology=" .. tech.name .. "] from ", source})
+            game.print({"archipelago.msg-received", "[technology=" .. tech.name .. "]", source})
             game.play_sound({path="utility/research_completed"})
             tech.researched = true
         end
@@ -434,7 +435,7 @@ local function receive_item(force, item_name, source)
     -- Handle trap names
     local trap_handler = TRAP_TABLE[item_name]
     if trap_handler ~= nil then
-        game.print({"", "Received ", item_name, " from ", source})
+        game.print({"archipelago.msg-received", item_name, source})
         trap_handler()
         return
     end
@@ -487,11 +488,14 @@ script.on_event(defines.events.on_research_finished, function(event)
     if not technology.prototype.effects then
         return  -- No technology effects, so nothing to do.
     end
+    if PARAMS.free_sample_exclude_technologies[technology.name] == 1 then
+        return  -- Excluded from free samples.
+    end
     for _, effect in pairs(technology.prototype.effects) do
         if effect.type == "unlock-recipe" then
             local recipe = prototypes.recipe[effect.recipe]
             for _, result in pairs(recipe.products) do
-                if result.type == "item" and result.amount and PARAMS.free_sample_excludes[effect.recipe] ~= 1 then
+                if result.type == "item" and result.amount and PARAMS.free_sample_exclude_recipes[effect.recipe] ~= 1 then
                     local count
                     if PARAMS.free_sample_amount == "single_craft" then
                         count = result.amount
@@ -608,7 +612,7 @@ commands.add_command("ap-get-technology", "Grant a technology, used by the Archi
         -- Mark these objectives as completed.
         local location_tech = force.technologies[item_name]
         if location_tech ~= nil and location_tech.researched ~= true then
-            game.print({"", "Received [technology=" .. location_tech.name .. "] as it is already checked."})
+            game.print({"archipelago.msg-collect", "[technology=" .. location_tech.name .. "]"})
             game.play_sound({path="utility/research_completed"})
             location_tech.researched = true
         end
@@ -634,7 +638,7 @@ commands.add_command("ap-deathlink", "Kill all players", function(call)
     local force = game.forces["player"]
     local source = call.parameter or "Archipelago"
     kill_players(force)
-    game.print("Death was granted by " .. source)
+    game.print({"archipelago.msg-death-link", source})
 end)
 
 commands.add_command("ap-energylink", "Used by the Archipelago client to manage Energy Link", function(call)

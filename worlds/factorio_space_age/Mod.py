@@ -4,12 +4,9 @@ import json
 import os
 import itertools
 import shutil
-import threading
 import zipfile
 from dataclasses import dataclass
 from typing import Optional, TYPE_CHECKING, Any, List, Callable, Tuple, Union
-
-import jinja2
 
 import Utils
 import worlds.Files
@@ -18,20 +15,12 @@ from .data.ap_data import (
     energy_link_bridge_recipes,
 )
 from .data.json_dumps_but_smaller import json_dumps
-from .data.ap_data import (
-    never_give_free_samples_from_recipes,
-)
 from .data import generated_names as names
 
 if TYPE_CHECKING:
     from . import Factorio
 
-template_parameters_template: Optional[jinja2.Template] = None
-locale_template: Optional[jinja2.Template] = None
-
-template_load_lock = threading.Lock()
-
-__version__ = "2.2.4"
+__version__ = "2.3.0"
 
 
 buffed_resources_basic = {
@@ -119,9 +108,11 @@ def generate_mod(
     logic_events: dict,
     progressive_technology_stacks: dict[str, dict[str, str]],
     technology_name_to_progressive_group_name: dict[str, str],
-    infinite_technology_names: set[str],
-    infinite_technology_shuffle: dict[str, str] | None,
-    duplicate_location_to_original_location: dict[str, str],
+    last_technology_location_names: list[str],
+    never_give_free_samples_from_recipes: set[str],
+    never_give_free_samples_from_technologies: set[str],
+    infinite_technology_to_location_technology: dict[str, str] | None,
+    duplicate_location_name_to_origin_technology_name: dict[str, str],
     technology_props_lua: dict[str, dict],
     recipe_changes: dict[str, dict[str, object]],
     rocket_parts_per_rocket: int,
@@ -133,41 +124,20 @@ def generate_mod(
     output_directory: str,
 ):
 
-    global template_parameters_template, locale_template
-    with template_load_lock:
-        if not template_parameters_template:
-            def load_template(name: str):
-                import pkgutil
-                data = pkgutil.get_data(__name__, "data/mod_template/" + name).decode()
-                return data, name, lambda: False
-
-            template_env = jinja2.Environment(
-                loader=jinja2.FunctionLoader(load_template),
-                undefined=jinja2.StrictUndefined,
-            )
-
-            template_parameters_template = template_env.get_template("template_parameters.lua")
-            locale_template = template_env.get_template("locale/en/locale.cfg")
-
     # get data for templates
     mod_name = f"AP-{multiworld.seed_name}-P{player}-{multiworld.get_file_safe_player_name(player)}"
     versioned_mod_name = f"{mod_name}_{__version__}"
 
     death_link_setting_name = "archipelago-death-link-{}-{}".format(player, multiworld.seed_name)
 
-    free_sample_excludes = options.free_sample_excludes.value | never_give_free_samples_from_recipes
+    free_sample_exclude_recipes = options.free_sample_excludes.value | never_give_free_samples_from_recipes
+    free_sample_exclude_technologies = never_give_free_samples_from_technologies
 
-    @dataclass
-    class LocaleLocation:
-        name: str
-        display_name: str
-        description: str
-    locale_locations: list[LocaleLocation] = []
     new_technology_data: dict[str, dict] = {}
     infinite_technology_name_to_progressive_group_name: dict[str, str] = {}
 
     def add_technology_data(
-        technology_name,
+        location_technology_name,
         location_name,
         is_location_revealed,
         item_name,
@@ -177,28 +147,28 @@ def generate_mod(
         is_trap,
     ):
         is_goal = item_name == names.victory
-        display_name = location_name
-        helpfulness_clause = ""
+        display_name = location_name # Without better information, display the internal location name.
         icon = "/ap_unimportant.png"
-        display_item_name = "something"
-        receiver_name = "someone"
+        display_item_name = "SOMETHING"
+        receiver_name = "SOMEONE"
         if is_location_revealed or options.tech_tree_information.current_key == "full":
             # Full information
             receiver_name = multiworld.player_name[target_player]
-            display_name = f"{receiver_name}'s {item_name} ({location_name})"
+            display_name = ["archipelago.technology-name-full", receiver_name, item_name, location_name]
             display_item_name = item_name
             if is_goal:
-                helpfulness_clause = ", which completes your goal"
+                description_key = "archipelago.technology-description-full-goal"
                 icon = "/trophy.png"
             elif is_advancement:
-                helpfulness_clause = ", which is considered a logical advancement"
+                description_key = "archipelago.technology-description-full-advancement"
                 icon = "/ap.png"
             elif is_useful:
-                helpfulness_clause = ", which is considered useful"
-                icon = "/ap_unimportant.png"
+                description_key = "archipelago.technology-description-full-useful"
             elif is_trap:
-                helpfulness_clause = ", which is considered fun"
-                icon = "/ap_unimportant.png"
+                description_key = "archipelago.technology-description-full-trap"
+            else:
+                description_key = "archipelago.technology-description-full"
+
             if item_name in technology_props_lua:
                 # This is an item for Factorio (probably). Use the built in icon.
                 icon = item_name
@@ -218,23 +188,35 @@ def generate_mod(
             elif item_name == names.ap_energy_link_bridge:
                 # Handled specially in data-updates.lua.
                 icon = item_name
-        else:
-            # Partial or no information.
-            if options.tech_tree_information.current_key in ("advancement", "recipient_advancement"):
-                # Reveal flags.
-                if is_advancement or is_trap:
-                    helpfulness_clause = ", which is considered a logical advancement"
-                    icon = "/ap.png"
-                elif is_useful:
-                    helpfulness_clause = ", which is considered useful"
-                    icon = "/ap_unimportant.png"
-            if options.tech_tree_information.current_key in ("recipient", "recipient_advancement"):
-                # Reveal recipient.
-                receiver_name = multiworld.player_name[target_player]
-        description = f"Researching this technology sends {display_item_name} to {receiver_name}{helpfulness_clause}."
-        locale_location = LocaleLocation(location_name, display_name, description)
 
-        technology_props = technology_props_lua[technology_name]
+        elif options.tech_tree_information.current_key == "recipient_advancement":
+            if is_advancement or is_trap:
+                description_key = "archipelago.technology-description-recipient-advancement"
+                icon = "/ap.png"
+            elif is_useful:
+                description_key = "archipelago.technology-description-recipient-useful"
+            else:
+                description_key = "archipelago.technology-description-recipient"
+            # Reveal recipient.
+            receiver_name = multiworld.player_name[target_player]
+        elif options.tech_tree_information.current_key == "advancement":
+            if is_advancement or is_trap:
+                description_key = "archipelago.technology-description-advancement"
+                icon = "/ap.png"
+            elif is_useful:
+                description_key = "archipelago.technology-description-useful"
+            else:
+                description_key = "archipelago.technology-description-unknown"
+        elif options.tech_tree_information.current_key == "recipient":
+            description_key = "archipelago.technology-description-recipient"
+            # Reveal recipient.
+            receiver_name = multiworld.player_name[target_player]
+        elif options.tech_tree_information.current_key == "none":
+            description_key = "archipelago.technology-description-unknown"
+        else: assert False
+
+        description = [description_key, display_item_name, receiver_name]
+        technology_props = technology_props_lua[location_technology_name]
         if options.technology_prerequisites.current_key == "vanilla":
             # Translate preprequisite tech names to the AP names.
             prerequisites = [name + "_location" for name in technology_props["prerequisites"]]
@@ -243,6 +225,8 @@ def generate_mod(
         else: assert False, options.technology_prerequisites.current_key
         # https://lua-api.factorio.com/latest/prototypes/TechnologyPrototype.html
         tech_data = {
+            "localised_name": display_name,
+            "localised_description": description,
             "icon": icon,
             "prerequisites": prerequisites,
         }
@@ -263,12 +247,11 @@ def generate_mod(
             tech_data["research_trigger"] = technology_props["research_trigger"]
 
         new_technology_data[location_name] = tech_data
-        locale_locations.append(locale_location)
 
     for location in world_locations:
-        technology_name = duplicate_location_to_original_location.get(location.name, location.name.replace("_location", ""))
+        location_technology_name = duplicate_location_name_to_origin_technology_name.get(location.name, location.name.replace("_location", ""))
         add_technology_data(
-            technology_name,
+            location_technology_name,
             location.name,
             location.revealed,
             location.item.name,
@@ -277,21 +260,15 @@ def generate_mod(
             location.item.useful,
             location.item.trap,
         )
-    for technology_name in infinite_technology_names:
-        location_name = technology_name + "_location"
-        if options.infinite_technologies.current_key == "removed":
-            continue
-        elif options.infinite_technologies.current_key == "vanilla":
-            item_name = technology_name
-        elif options.infinite_technologies.current_key == "shuffled":
-            item_name = infinite_technology_shuffle[technology_name]
-        else: assert False
-        item_name = technology_name_to_progressive_group_name[item_name]
-        infinite_technology_name_to_progressive_group_name[location_name] = item_name
-        add_technology_data(
-            technology_name, location_name, True,
-            item_name, player, False, True, False,
-        )
+    if options.infinite_technologies.current_key != "removed":
+        for technology_name, location_technology_name in infinite_technology_to_location_technology.items():
+            location_name = technology_name + "_location"
+            item_name = technology_name_to_progressive_group_name[technology_name]
+            infinite_technology_name_to_progressive_group_name[location_name] = item_name
+            add_technology_data(
+                location_technology_name, location_name, True,
+                item_name, player, False, True, False,
+            )
 
     world_gen_preset = {
         "default": False,
@@ -321,7 +298,7 @@ def generate_mod(
             raise NotImplementedError("TODO: world_gen_spoil_rate must be 100")
 
     def set_to_1(s: set):
-        return {x: 1 for x in s}
+        return {x: 1 for x in sorted(s)}
 
     mod_params = {
         "mod_name": mod_name,
@@ -339,7 +316,8 @@ def generate_mod(
         "starting_items": options.starting_items.value,
         "free_sample_amount": options.free_samples.current_key,
         "free_sample_quality": options.free_samples_quality.current_key,
-        "free_sample_excludes": set_to_1(free_sample_excludes),
+        "free_sample_exclude_recipes": set_to_1(free_sample_exclude_recipes),
+        "free_sample_exclude_technologies": set_to_1(free_sample_exclude_technologies),
         "recipe_changes": recipe_changes,
         "rocket_parts_per_rocket": rocket_parts_per_rocket,
         "asteroid_hp_changes": asteroid_hp_changes,
@@ -353,16 +331,15 @@ def generate_mod(
         "new_technology_data": new_technology_data,
         "progressive_technology_stacks": progressive_technology_stacks,
         "infinite_technology_name_to_progressive_group_name": infinite_technology_name_to_progressive_group_name,
+        "last_technology_location_names": last_technology_location_names,
 
         "allow_imported_blueprints": bool(options.allow_imported_blueprints.value),
         "world_gen_preset": world_gen_preset,
     }
-    template_parameters_contents = template_parameters_template.render(mod_params=render_lua_value(mod_params))
-
-    locale_contents = locale_template.render(
-        locations=locale_locations,
-        death_link_setting=death_link_setting_name,
-    )
+    template_parameters_contents = (
+        "-- This is generated in Mod.py. To make finding it easier, search for keyword: pumpernickel" "\n"
+        "PARAMS = {}\n"
+    ).format(render_lua_value(mod_params))
 
     zf_path = os.path.join(output_directory, versioned_mod_name + ".zip")
     mod = FactorioModFile(zf_path, player=player, player_name=player_name)
@@ -378,6 +355,7 @@ def generate_mod(
         "graphics/icons/ap.png",
         "graphics/icons/ap_unimportant.png",
         "graphics/icons/trophy.png",
+        "locale/en/locale.cfg",
     ]:
         def f(
             arcpath=versioned_mod_name+"/"+path,
@@ -388,8 +366,6 @@ def generate_mod(
 
     mod.writing_tasks.append(lambda: (versioned_mod_name + "/template_parameters.lua",
                                       template_parameters_contents))
-    mod.writing_tasks.append(lambda: (versioned_mod_name + "/locale/en/locale.cfg",
-                                      locale_contents))
 
     info = {
         "name": mod_name,
@@ -398,15 +374,15 @@ def generate_mod(
         "author": "Berserker, Josh Wolfe",
         "homepage": "https://archipelago.gg",
         "description": "Integration client for the Archipelago Randomizer",
-        "factorio_version": "2.0",
+        "factorio_version": "2.1",
         "dependencies": [
-            "base >= 2.0.73",
-            "space-age >= 2.0.73",
+            "quality >= 2.1.14",
+            "space-age >= 2.1.14",
             "? respawn-to-any-planet",
         ]
     }
     if starting_planet != names.nauvis:
-        info["dependencies"].append("any-planet-start = 1.1.30"),
+        info["dependencies"].append("any-planet-start = 1.2.2"),
     mod.writing_tasks.append(lambda: (versioned_mod_name + "/info.json",
                                       json.dumps(info, indent=4) + "\n"))
     mod.writing_tasks.append(lambda: ("logic.json",

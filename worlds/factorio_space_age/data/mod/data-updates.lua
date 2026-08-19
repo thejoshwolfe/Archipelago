@@ -23,6 +23,8 @@ for tech_name, tech_data in pairs(PARAMS.new_technology_data) do
     local new_tech = {
         type = "technology",
         name = tech_name,
+        localised_name = tech_data.localised_name,
+        localised_description = tech_data.localised_description,
         level = tech_data.level,
         max_level = tech_data.max_level,
         unit = tech_data.unit,
@@ -65,7 +67,7 @@ if PARAMS.energy_link_increment > 0 then
     local entity = table.deepcopy(data.raw["accumulator"]["accumulator"])
     entity.name = "ap-energy-link-bridge"
     entity.minable.result = "ap-energy-link-bridge"
-    entity.localised_name = "Archipelago EnergyLink Bridge" -- TODO: move to locale.cfg
+    entity.localised_name = {"archipelago.ap-energy-link-bridge"}
     entity.energy_source.buffer_capacity = "50MJ"
     entity.energy_source.input_flow_limit = "1MW"
     entity.energy_source.output_flow_limit = "1MW"
@@ -77,7 +79,7 @@ if PARAMS.energy_link_increment > 0 then
 
     local item = table.deepcopy(data.raw["item"]["accumulator"])
     item.name = "ap-energy-link-bridge"
-    item.localised_name = "Archipelago EnergyLink Bridge"
+    item.localised_name = {"archipelago.ap-energy-link-bridge"}
     item.place_result = entity.name
     tint_icon(item, energy_bridge_tint())
     data.raw["item"]["ap-energy-link-bridge"] = item
@@ -88,12 +90,13 @@ if PARAMS.energy_link_increment > 0 then
     recipe.results = { {type = "item", name = item.name, amount = 1} }
     recipe.energy_required = 10
     recipe.enabled = PARAMS.energy_link_bridge_starts_unlocked
-    recipe.localised_name = "Archipelago EnergyLink Bridge"
+    recipe.localised_name = {"archipelago.ap-energy-link-bridge"}
     data.raw["recipe"]["ap-energy-link-bridge"] = recipe
 
     local technology = {
         type = "technology",
         name = "ap-energy-link-bridge",
+        localised_name = {"archipelago.ap-energy-link-bridge"},
         icons = table.deepcopy(item.icons),
         effects = {
             {type="unlock-recipe", recipe="ap-energy-link-bridge"},
@@ -108,7 +111,7 @@ if PARAMS.enable_alternate_explosives then
     -- Alternate explosives.
     local recipe = table.deepcopy(data.raw["recipe"]["biosulfur"])
     recipe.name = "explosives-from-bioflux"
-    recipe.localised_name = "Explosives from bioflux"
+    recipe.localised_name = {"archipelago.biosulfur"}
     recipe.icon = "__base__/graphics/technology/explosives.png"
     recipe.icon_size = 256
     recipe.ingredients = {
@@ -125,7 +128,7 @@ if PARAMS.enable_alternate_explosives then
     -- Alternate grenades.
     local recipe = table.deepcopy(data.raw["recipe"]["grenade"])
     recipe.name = "grenade-from-explosives"
-    recipe.localised_name = "Grenade from explosives"
+    recipe.localised_name = {"archipelago.grenade-from-explosives"}
     recipe.ingredients = {
         -- This must be synchronized with __init__.py.
         {type="item", name="iron-plate", amount=5},
@@ -161,31 +164,63 @@ for name, effects in pairs(PARAMS.technology_effect_additions) do
     end
 end
 
-local technology_name_to_progressive_group_name = {}
-for stack_name, stack in pairs(PARAMS.progressive_technology_stacks) do
-    for _, stack_item in pairs(stack) do
-        technology_name_to_progressive_group_name[stack_item] = stack_name
+local function set_source_description(base_tech, source_description)
+    if base_tech.research_trigger ~= nil then
+        base_tech.research_trigger.trigger_description = source_description
+    else
+        -- For infinite techs, just put it in the description I guess.
+        base_tech.localised_description = source_description
     end
 end
--- Disable and hide base technologies.
+
+-- Disable directly researching base technologies.
 for _, tech_name in pairs(PARAMS.hide_base_technologies) do
     local base_tech = data.raw["technology"][tech_name]
-    base_tech.unit = nil
-    base_tech.research_trigger = {
-        type = "scripted",
-        icon = "__" .. PARAMS.mod_name .. "__/graphics/icons/ap.png",
-        icon_size = 128,
-        trigger_description = {"", "This is sent to you from the multiworld"},
-    }
-    base_tech.prerequisites = {"promethium-science-pack_location"}
+    if base_tech.unit ~= nil and base_tech.unit.count_formula ~= nil then
+        -- As of 2.1.14, you can't have scripted triggers on infinite techs.
+        -- Reported here: https://forums.factorio.com/viewtopic.php?t=135579
+        -- Instead, let's add promethium science pack as an ingredient so that it's always beyond the goal.
+        base_tech.unit.ingredients = { {"promethium-science-pack", 1} }
+    else
+        -- For all finite technologies, block the player from researching them by using a scripted trigger.
+        base_tech.unit = nil
+        base_tech.research_trigger = {
+            type = "scripted",
+            icon = "__" .. PARAMS.mod_name .. "__/graphics/icons/ap.png",
+            icon_size = 128,
+            trigger_description = {"", "This is sent to you from the multiworld"},
+        }
+    end
+
+    -- Unless overridden below, sort all base technologies after the goal.
+    base_tech.prerequisites = table.deepcopy(PARAMS.last_technology_location_names)
     base_tech.upgrade = false
     base_tech.order = "zzzz"
 
-    -- Explain where to get this.
-    local stack_name = technology_name_to_progressive_group_name[tech_name]
-    if stack_name ~= nil then
-        base_tech.localised_description = {"", "Unlocked as part of the progressive chain: " .. stack_name}
-    else
-        base_tech.localised_description = {"", "The item in the multiworld is named: " .. tech_name}
+    -- Unless overridden below, explain where to get this.
+    set_source_description(base_tech, {"archipelago.multiworld-item-is-named", tech_name})
+end
+
+-- Show progressive chains in base technologies.
+for stack_name, stack in pairs(PARAMS.progressive_technology_stacks) do
+    local previous_item = nil
+    for i, item in pairs(stack) do
+        local base_tech = data.raw["technology"][item]
+        if base_tech.research_trigger ~= nil then
+            set_source_description(base_tech, {"archipelago.multiworld-item-in-stack", tostring(i), stack_name})
+        else
+            set_source_description(base_tech, {"archipelago.multiworld-item-infinite-last-in-stack", tostring(i), stack_name})
+        end
+
+        if previous_item ~= nil then
+            -- Even though the GUI doesn't show transitively redundant dependencies,
+            -- it's important to append this dependency instead of replacing the list.
+            -- If 100% of the direct dependencies are completed, then the prerequisites are satisfied,
+            -- and the technology turns yellow in the GUI. We want it to stay red
+            -- despite its apparently only prerequisite being completed.
+            -- To resolve this, keep an additional not-shown dependency on the goal tech that will almost never be satisfied.
+            table.insert(base_tech.prerequisites, previous_item)
+        end
+        previous_item = item
     end
 end

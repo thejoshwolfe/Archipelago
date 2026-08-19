@@ -1,4 +1,4 @@
-import itertools, typing
+import itertools, typing, functools
 from collections import Counter
 
 # Type hints
@@ -215,8 +215,12 @@ def compile_expr(expr) -> typing.Callable[[dict[str, int]], bool]:
                 return "({})".format(" and ".join(recurse(clause) for clause in expr["and"]))
             else: assert False
         code = recurse(expr)
-        fn = eval("lambda d: " + code)
+        fn = eval_cached("lambda d: " + code)
         return fn
+
+@functools.lru_cache(maxsize=None)
+def eval_cached(s):
+    return eval(s)
 
 if __name__ == "__main__":
     # Some tests

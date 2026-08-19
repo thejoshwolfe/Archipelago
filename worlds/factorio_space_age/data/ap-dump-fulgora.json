@@ -75,8 +75,10 @@
       "map_gen_settings": {
         "autoplace_settings": {
           "tile": {"settings": {
+            "oil-ocean-shallow-2": {},
             "oil-ocean-shallow": {},
             "oil-ocean-deep": {},
+            "oil-ocean-deep-2": {},
             "fulgoran-rock": {},
             "fulgoran-dust": {},
             "fulgoran-sand": {},
@@ -88,6 +90,8 @@
           }},
           "entity": {"settings": {
             "scrap": {},
+            "fulgora-sunk-ruin-big": {},
+            "fulgora-sunk-ruin-medium-tall": {},
             "fulgoran-ruin-vault": {},
             "fulgoran-ruin-attractor": {},
             "fulgoran-ruin-colossal": {},
@@ -132,7 +136,7 @@
     },
     "medium-electric-pole": {
       "enabled": true,
-      "category": "electronics",
+      "categories": ["crafting", "electromagnetics"],
       "ingredients": [
         {
           "type": "item",
@@ -158,7 +162,7 @@
     },
     "accumulator": {
       "enabled": true,
-      "category": "electronics",
+      "categories": ["crafting", "electromagnetics"],
       "ingredients": [
         {
           "type": "item",
@@ -185,7 +189,7 @@
         "max": 99
       }],
       "enabled": true,
-      "category": "electronics",
+      "categories": ["electromagnetics", "crafting"],
       "ingredients": [
         {
           "type": "item",
@@ -729,7 +733,7 @@
     "recycling": {
       "research_trigger": {
         "type": "mine-entity",
-        "entity": "fulgoran-ruin-vault"
+        "entities": ["fulgoran-ruin-vault"]
       },
       "prerequisites": [],
       "effects": [
@@ -740,6 +744,1566 @@
         {
           "type": "unlock-recipe",
           "recipe": "scrap-recycling"
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "speed-module-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "speed-module-2-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "speed-module-3-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "productivity-module-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "productivity-module-2-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "productivity-module-3-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "efficiency-module-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "efficiency-module-2-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "efficiency-module-3-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "bulk-inserter-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "barrel-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "night-vision-equipment-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "belt-immunity-equipment-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "energy-shield-equipment-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "energy-shield-mk2-equipment-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "battery-equipment-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "battery-mk2-equipment-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "solar-panel-equipment-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "fission-reactor-equipment-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "personal-laser-defense-equipment-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "discharge-defense-equipment-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "exoskeleton-equipment-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "personal-roboport-equipment-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "personal-roboport-mk2-equipment-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "laser-turret-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "flamethrower-turret-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "artillery-turret-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "gun-turret-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "wooden-chest-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "display-panel-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "iron-stick-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "stone-furnace-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "boiler-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "steam-engine-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "iron-gear-wheel-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "electronic-circuit-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "transport-belt-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "electric-mining-drill-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "burner-mining-drill-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "inserter-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "fast-inserter-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "long-handed-inserter-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "burner-inserter-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "pipe-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "offshore-pump-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "copper-cable-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "small-electric-pole-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "submachine-gun-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "firearm-magazine-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "light-armor-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "radar-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "small-lamp-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "pipe-to-ground-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "assembling-machine-1-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "repair-pack-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "lab-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "stone-wall-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "assembling-machine-2-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "splitter-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "underground-belt-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "loader-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "car-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "engine-unit-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "iron-chest-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "big-electric-pole-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "medium-electric-pole-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "shotgun-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "shotgun-shell-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "piercing-rounds-magazine-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "grenade-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "steel-furnace-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "gate-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "heavy-armor-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "steel-chest-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "fast-underground-belt-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "fast-splitter-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "concrete-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "hazard-concrete-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "refined-concrete-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "refined-hazard-concrete-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "fast-transport-belt-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "solar-panel-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "rail-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "locomotive-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "cargo-wagon-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "rail-signal-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "rail-chain-signal-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "train-stop-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "arithmetic-combinator-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "decider-combinator-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "constant-combinator-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "selector-combinator-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "power-switch-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "programmable-speaker-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "poison-capsule-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "slowdown-capsule-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "cluster-grenade-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "defender-capsule-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "distractor-capsule-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "destroyer-capsule-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "cliff-explosives-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "uranium-rounds-magazine-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "rocket-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "explosive-rocket-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "atomic-bomb-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "piercing-shotgun-shell-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "cannon-shell-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "explosive-cannon-shell-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "uranium-cannon-shell-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "explosive-uranium-cannon-shell-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "artillery-shell-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "express-transport-belt-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "assembling-machine-3-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "tank-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "spidertron-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "fluid-wagon-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "artillery-wagon-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "modular-armor-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "power-armor-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "power-armor-mk2-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "flamethrower-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "land-mine-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "rocket-launcher-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "combat-shotgun-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "express-underground-belt-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "fast-loader-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "express-loader-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "express-splitter-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "advanced-circuit-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "processing-unit-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "logistic-robot-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "construction-robot-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "passive-provider-chest-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "active-provider-chest-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "storage-chest-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "buffer-chest-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "requester-chest-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "rocket-silo-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "cargo-landing-pad-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "roboport-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "substation-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "accumulator-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "electric-furnace-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "beacon-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "pumpjack-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "oil-refinery-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "electric-engine-unit-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "flying-robot-frame-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "battery-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "storage-tank-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "pump-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "chemical-plant-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "low-density-structure-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "rocket-fuel-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "nuclear-reactor-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "centrifuge-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "nuclear-fuel-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "heat-exchanger-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "heat-pipe-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "steam-turbine-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "rail-support-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "rail-ramp-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "recycler-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "quality-module-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "quality-module-2-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "quality-module-3-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "artificial-yumako-soil-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "overgrowth-yumako-soil-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "artificial-jellynut-soil-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "overgrowth-jellynut-soil-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "nutrients-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "toolbelt-equipment-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "battery-mk3-equipment-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "space-platform-foundation-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "stack-inserter-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "rocket-turret-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "infinity-chest-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "infinity-pipe-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "heat-interface-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "space-platform-starter-pack-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "cargo-bay-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "landing-pad-unloading-bay-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "asteroid-collector-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "crusher-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "thruster-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "foundry-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "turbo-transport-belt-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "turbo-underground-belt-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "turbo-splitter-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "turbo-loader-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "big-mining-drill-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "mech-armor-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "railgun-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "railgun-turret-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "railgun-ammo-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "agricultural-tower-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "biochamber-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "capture-robot-rocket-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "lightning-rod-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "electromagnetic-plant-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "supercapacitor-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "lightning-collector-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "teslagun-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "tesla-turret-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "tesla-ammo-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "heating-tower-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "cryogenic-plant-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "quantum-processor-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "fusion-reactor-equipment-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "fusion-reactor-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "fusion-generator-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "ice-platform-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "foundation-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "water-barrel-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "sulfuric-acid-barrel-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "crude-oil-barrel-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "heavy-oil-barrel-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "light-oil-barrel-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "petroleum-gas-barrel-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "lubricant-barrel-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "fluoroketone-cold-barrel-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "fluoroketone-hot-barrel-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "flamethrower-ammo-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "blueprint-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "blueprint-book-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "raw-fish-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "yumako-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "jellynut-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "yumako-mash-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "jelly-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "bioflux-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "deconstruction-planner-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "pistol-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "item-unknown-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "stone-brick-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "wood-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "coal-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "stone-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "iron-ore-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "copper-ore-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "iron-plate-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "copper-plate-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "automation-science-pack-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "logistic-science-pack-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "steel-plate-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "solid-fuel-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "landfill-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "uranium-ore-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "chemical-science-pack-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "military-science-pack-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "production-science-pack-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "utility-science-pack-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "space-science-pack-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "lane-splitter-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "coin-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "sulfur-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "plastic-bar-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "explosives-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "electric-energy-interface-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "uranium-235-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "uranium-238-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "uranium-fuel-cell-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "depleted-uranium-fuel-cell-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "simple-entity-with-force-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "simple-entity-with-owner-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "infinity-cargo-wagon-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "burner-generator-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "linked-chest-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "proxy-container-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "bottomless-chest-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "linked-belt-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "one-way-valve-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "overflow-valve-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "top-up-valve-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "empty-module-slot-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "electric-energy-interface-equipment-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "science-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "metallurgic-science-pack-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "agricultural-science-pack-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "electromagnetic-science-pack-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "cryogenic-science-pack-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "promethium-science-pack-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "metallic-asteroid-chunk-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "carbonic-asteroid-chunk-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "oxide-asteroid-chunk-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "promethium-asteroid-chunk-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "ice-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "carbon-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "calcite-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "tungsten-ore-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "tungsten-plate-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "tungsten-carbide-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "copper-bacteria-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "iron-bacteria-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "yumako-seed-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "jellynut-seed-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "biolab-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "captive-biter-spawner-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "biter-egg-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "pentapod-egg-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "carbon-fiber-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "holmium-ore-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "holmium-plate-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "lithium-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "lithium-plate-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "superconductor-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "fusion-power-cell-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "spoilage-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "space-platform-hub-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "tree-seed-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "selection-tool-recycling",
+          "hidden": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "upgrade-planner-recycling",
+          "hidden": true
         }
       ]
     },
@@ -787,6 +2351,10 @@
           "type": "unlock-space-location",
           "space_location": "fulgora",
           "use_icon_overlay_constant": true
+        },
+        {
+          "type": "unlock-travel-to-space-platforms",
+          "modifier": true
         },
         {
           "type": "unlock-recipe",
@@ -860,33 +2428,10 @@
         "recipe": "battery-mk3-equipment"
       }]
     },
-    "rocket-turret": {
-      "unit": {
-        "count": 1000,
-        "time": 30,
-        "ingredients": [
-          ["automation-science-pack", 1],
-          ["logistic-science-pack", 1],
-          ["military-science-pack", 1],
-          ["chemical-science-pack", 1],
-          ["space-science-pack", 1],
-          ["agricultural-science-pack", 1]
-        ]
-      },
-      "prerequisites": [
-        "rocketry",
-        "carbon-fiber",
-        "stronger-explosives-2"
-      ],
-      "effects": [{
-        "type": "unlock-recipe",
-        "recipe": "rocket-turret"
-      }]
-    },
     "calcite-processing": {
       "research_trigger": {
         "type": "mine-entity",
-        "entity": "calcite"
+        "entities": ["calcite"]
       },
       "prerequisites": ["planet-discovery-vulcanus"],
       "effects": [
@@ -942,7 +2487,7 @@
       "prerequisites": ["agricultural-science-pack", "planet-discovery-nauvis"],
       "effects": [{
         "type": "unlock-recipe",
-        "recipe": "wood-processing"
+        "recipe": "tree-seed"
       }]
     },
     "captivity": {
@@ -964,26 +2509,19 @@
         "rocketry",
         "planet-discovery-nauvis"
       ],
-      "effects": [
-        {
-          "type": "unlock-recipe",
-          "recipe": "capture-robot-rocket"
-        },
-        {
-          "type": "unlock-recipe",
-          "recipe": "biter-egg"
-        },
-        {
-          "type": "unlock-recipe",
-          "recipe": "nutrients-from-biter-egg"
-        }
-      ]
+      "effects": [{
+        "type": "unlock-recipe",
+        "recipe": "capture-robot-rocket"
+      }]
     },
     "fish-breeding": {
       "unit": {
         "count": 500,
         "time": 60,
         "ingredients": [
+          ["automation-science-pack", 1],
+          ["logistic-science-pack", 1],
+          ["chemical-science-pack", 1],
           ["space-science-pack", 1],
           ["agricultural-science-pack", 1]
         ]
@@ -1144,6 +2682,10 @@
           "type": "unlock-space-location",
           "space_location": "nauvis",
           "use_icon_overlay_constant": true
+        },
+        {
+          "type": "unlock-travel-to-space-platforms",
+          "modifier": true
         },
         {
           "type": "unlock-recipe",

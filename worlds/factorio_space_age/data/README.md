@@ -2,5 +2,9 @@
 
 How to recreate all the data:
 
-1. See https://github.com/thejoshwolfe/FactorioInformationExtractor . The result is a file `ap-dump.json`.
-2. Run `./import-ap-dump.py .../path/to/ap-dump.json`. This creates all the `generated*.py` files. There is an additional `ap-dump.json` file (gitignored) that can be useful for debugging.
+0. Delete `*.json` from this directory.
+1. See ../exporter . There's a bunch of steps there to run factorio and export some data. The result is a file `ap-dump.json`.
+2. Run `./import-ap-dump.py .../path/to/ap-dump.json`.
+3. You may be prompted by `./import-ap-dump.py` to run through steps 1-3 again with other starting planets.
+
+You will then end up with several git controlled and git ignored files in this directory.

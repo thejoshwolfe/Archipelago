@@ -39,10 +39,12 @@ class Goal(Choice):
     any other planet science: (default) Research victory with 5 science packs: automation, logistic, chemical, space, and one of metallurgic, agricultural, or electromagnetic. If you start on another planet, then that science doesn't count.
     aquilo orbit: Reach Aquilo orbit with a space platform. planet-discovery-aquilo is shuffled into the multiworld.
     aquilo orbit 10 science: Reach Aquilo orbit after researching the unrandomized planet-discovery-aquilo, which requires 10 science packs (everything except cryogenic and promethium).
-    solar system edge: Reach the solar system edge with a space platform. promethium-science-pack (which unlocks the solar system edge) is shuffled into the multiworld.
-    solar system edge 11 science: Reach the solar system edge after researching the unrandomized promethium-science-pack, which requires all 11 non-promethium science packs.
+    solar system edge: Reach the solar system edge with a space platform. stellar-discovery-solar-system-edge is shuffled into the multiworld.
+    solar system edge 11 science: Reach the solar system edge after researching the unrandomized stellar-discovery-solar-system-edge, which requires all 11 non-promethium science packs.
 
     Note that technology_prerequisites adds extra steps to unlocking unrandomized technology locations related to the goal.
+
+    For shorter games, consider also setting production_and_utility_science: removed.
     """
     display_name = "Goal"
     option_space_science = 0
@@ -266,7 +268,7 @@ class InfiniteTechs(Choice):
     """
     How to handle infinitely researchable technologies, e.g. steel-plate-productivity.
     vanilla: They are not randomized, e.g. research productivity always requires promethium science packs.
-    shuffled: The cost and prerequisites of the infinite techs are shuffled, e.g. research productivity might require only military, utility, and agricultural science packs (the location of the health technology).
+    shuffled: The cost and prerequisites of the infinite techs are shuffled, e.g. research productivity might require only red, greend, blue, and purple science (the location of the steel-plate-productivity technology).
     removed: Infinite technologies are removed.
     """
     display_name = "Infinite Technologies"
@@ -274,6 +276,35 @@ class InfiniteTechs(Choice):
     option_shuffled = 1
     option_removed = 2
     default = 1
+
+@auto_group
+class IntermediateTechs(Choice):
+    """
+    How to handle technologies that only unlock recipes for items that are not directly useful, e.g. advanced-circuit.
+
+    shuffled: the technologies are shuffled into the multiworld as items just like other technologies.
+    unlocked: (default) intermediate recipes are unlocked from the start and their technologies are removed. This makes multiworld items received more impactful and function less like fragments of something useable. For the full list of technologies unlocked by this option, see https://github.com/thejoshwolfe/Archipelago/blob/space-age/worlds/factorio_space_age/data/ap_data.py . You do not get free samples for the unlocked recipes.
+
+    Unlocking intermediates is recommended to enable Factorio: Space Age advancement keep pace with other games in the multiworld.
+    Particularly these milestones need fewer advancement items: chemical-science-pack (5 fewer), utility-science-pack (11 fewer), launching rockets (9 fewer).
+
+    Shuffling intermediates is recommended for a more authentic Factorio experience, but makes the early game much longer.
+    """
+    option_shuffled = 0
+    option_unlocked = 1
+    default = 1
+
+@auto_group
+class ProductionAndUtilityScience(Choice):
+    """
+    Should production and utility science (purple and yellow) be removed from the game?
+
+    included: (default)
+    removed: remove the production and utility science pack components from all research objectives. This allows smaller factories and quicker games. The crafting recipes for these science packs will never unlock.
+    """
+    option_included = 0
+    option_removed = 1
+    default = 0
 
 @auto_group
 class TechTreeInformation(Choice):
@@ -306,7 +337,7 @@ class QuickStart(DefaultOnToggle):
 class SkipStartingTriggerTechs(Toggle):
     """
     Instead of needing to craft iron plates, copper plates, and a lab at the start of the run,
-    start with the recipes for steam power, labs, and logistic science pack already unlocked.
+    start with the recipes for steam power, labs, and automation science pack already unlocked.
     The set of technologies changes with the starting_planet setting, and it's recommended particularly on Vulcanus and Gleba.
     The free_samples setting gives items from the early triggers, so on Vulcanus, you can start with foundries straight away without setting up a lubricant build,
     and on Gleba, you can start with biochambers without looting egg rafts.
@@ -706,9 +737,11 @@ class FillerCount(Range):
     The settings below can be used to specify the weighted chance that filler items are helpful, harmful, or nothing.
 
     New locations, if needed, are generated by creating copies of random existing (finite, non-trigger) research objectives.
+
+    With progressive_technologies: large_groups, many of the filler items configurable below will provide meaningful advancement.
     """
     range_end = 700
-    default = 4
+    default = 3
 
 class FillerWeight(Range):
     range_end = 1000
@@ -718,7 +751,7 @@ class FillerWeight(Range):
 class FillerNothingWeight(FillerWeight):
     """
     Weighted chance that a filler item does literally nothing.
-    The name of a nothing item is chosen randomly from: laser, flammables, modules, biter-egg-handling.
+    The name of a nothing item is chosen randomly from: laser, flammables, modules.
     """
 
 @auto_group
@@ -863,6 +896,8 @@ class FactorioOptions(PerGameCommonOptions):
     technology_prerequisites: TechnologyPrerequisites
     progressive_technologies: ProgressiveTechs
     infinite_technologies: InfiniteTechs
+    intermediate_technologies: IntermediateTechs
+    production_and_utility_science: ProductionAndUtilityScience
     tech_tree_information: TechTreeInformation
 
     quick_start: QuickStart

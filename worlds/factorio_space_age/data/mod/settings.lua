@@ -24,5 +24,7 @@ data:extend({
         name = PARAMS.death_link_setting,
         setting_type = "runtime-global",
         default_value = PARAMS.default_death_link,
+        localised_name = {"archipelago.death-link-setting-name"},
+        localised_description = {"archipelago.death-link-setting-description"},
     }
 })
