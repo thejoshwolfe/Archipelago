@@ -23,6 +23,8 @@ for tech_name, tech_data in pairs(PARAMS.new_technology_data) do
     local new_tech = {
         type = "technology",
         name = tech_name,
+        localised_name = tech_data.localised_name,
+        localised_description = tech_data.localised_description,
         level = tech_data.level,
         max_level = tech_data.max_level,
         unit = tech_data.unit,

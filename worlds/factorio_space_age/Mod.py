@@ -4,12 +4,9 @@ import json
 import os
 import itertools
 import shutil
-import threading
 import zipfile
 from dataclasses import dataclass
 from typing import Optional, TYPE_CHECKING, Any, List, Callable, Tuple, Union
-
-import jinja2
 
 import Utils
 import worlds.Files
@@ -22,11 +19,6 @@ from .data import generated_names as names
 
 if TYPE_CHECKING:
     from . import Factorio
-
-template_parameters_template: Optional[jinja2.Template] = None
-locale_template: Optional[jinja2.Template] = None
-
-template_load_lock = threading.Lock()
 
 __version__ = "2.3.0"
 
@@ -132,22 +124,6 @@ def generate_mod(
     output_directory: str,
 ):
 
-    global template_parameters_template, locale_template
-    with template_load_lock:
-        if not template_parameters_template:
-            def load_template(name: str):
-                import pkgutil
-                data = pkgutil.get_data(__name__, "data/mod_template/" + name).decode()
-                return data, name, lambda: False
-
-            template_env = jinja2.Environment(
-                loader=jinja2.FunctionLoader(load_template),
-                undefined=jinja2.StrictUndefined,
-            )
-
-            template_parameters_template = template_env.get_template("template_parameters.lua")
-            locale_template = template_env.get_template("locale/en/locale.cfg")
-
     # get data for templates
     mod_name = f"AP-{multiworld.seed_name}-P{player}-{multiworld.get_file_safe_player_name(player)}"
     versioned_mod_name = f"{mod_name}_{__version__}"
@@ -157,12 +133,6 @@ def generate_mod(
     free_sample_exclude_recipes = options.free_sample_excludes.value | never_give_free_samples_from_recipes
     free_sample_exclude_technologies = never_give_free_samples_from_technologies
 
-    @dataclass
-    class LocaleLocation:
-        name: str
-        display_name: str
-        description: str
-    locale_locations: list[LocaleLocation] = []
     new_technology_data: dict[str, dict] = {}
     infinite_technology_name_to_progressive_group_name: dict[str, str] = {}
 
@@ -232,8 +202,6 @@ def generate_mod(
                 # Reveal recipient.
                 receiver_name = multiworld.player_name[target_player]
         description = f"Researching this technology sends {display_item_name} to {receiver_name}{helpfulness_clause}."
-        locale_location = LocaleLocation(location_name, display_name, description)
-
         technology_props = technology_props_lua[location_technology_name]
         if options.technology_prerequisites.current_key == "vanilla":
             # Translate preprequisite tech names to the AP names.
@@ -243,6 +211,8 @@ def generate_mod(
         else: assert False, options.technology_prerequisites.current_key
         # https://lua-api.factorio.com/latest/prototypes/TechnologyPrototype.html
         tech_data = {
+            "localised_name": display_name,
+            "localised_description": description,
             "icon": icon,
             "prerequisites": prerequisites,
         }
@@ -263,7 +233,6 @@ def generate_mod(
             tech_data["research_trigger"] = technology_props["research_trigger"]
 
         new_technology_data[location_name] = tech_data
-        locale_locations.append(locale_location)
 
     for location in world_locations:
         location_technology_name = duplicate_location_name_to_origin_technology_name.get(location.name, location.name.replace("_location", ""))
@@ -353,11 +322,10 @@ def generate_mod(
         "allow_imported_blueprints": bool(options.allow_imported_blueprints.value),
         "world_gen_preset": world_gen_preset,
     }
-    template_parameters_contents = template_parameters_template.render(mod_params=render_lua_value(mod_params))
-
-    locale_contents = locale_template.render(
-        locations=locale_locations,
-    )
+    template_parameters_contents = (
+        "-- This is generated in Mod.py. To make finding it easier, search for keyword: pumpernickel" "\n"
+        "PARAMS = {}\n"
+    ).format(render_lua_value(mod_params))
 
     zf_path = os.path.join(output_directory, versioned_mod_name + ".zip")
     mod = FactorioModFile(zf_path, player=player, player_name=player_name)
@@ -373,6 +341,7 @@ def generate_mod(
         "graphics/icons/ap.png",
         "graphics/icons/ap_unimportant.png",
         "graphics/icons/trophy.png",
+        "locale/en/locale.cfg",
     ]:
         def f(
             arcpath=versioned_mod_name+"/"+path,
@@ -383,8 +352,6 @@ def generate_mod(
 
     mod.writing_tasks.append(lambda: (versioned_mod_name + "/template_parameters.lua",
                                       template_parameters_contents))
-    mod.writing_tasks.append(lambda: (versioned_mod_name + "/locale/en/locale.cfg",
-                                      locale_contents))
 
     info = {
         "name": mod_name,

@@ -36,8 +36,7 @@ files=(
     data/mod/graphics/icons/ap.png
     data/mod/graphics/icons/ap_unimportant.png
     data/mod/graphics/icons/trophy.png
-    data/mod_template/template_parameters.lua
-    data/mod_template/locale/en/locale.cfg
+    data/mod/locale/en/locale.cfg
 
     docs/en_Factorio_Space_Age.md
     docs/setup_en.md
