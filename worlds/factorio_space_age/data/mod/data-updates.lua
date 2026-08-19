@@ -111,7 +111,7 @@ if PARAMS.enable_alternate_explosives then
     -- Alternate explosives.
     local recipe = table.deepcopy(data.raw["recipe"]["biosulfur"])
     recipe.name = "explosives-from-bioflux"
-    recipe.localised_name = {"achipelago.biosulfur"}
+    recipe.localised_name = {"archipelago.biosulfur"}
     recipe.icon = "__base__/graphics/technology/explosives.png"
     recipe.icon_size = 256
     recipe.ingredients = {
