@@ -65,7 +65,7 @@ if PARAMS.energy_link_increment > 0 then
     local entity = table.deepcopy(data.raw["accumulator"]["accumulator"])
     entity.name = "ap-energy-link-bridge"
     entity.minable.result = "ap-energy-link-bridge"
-    entity.localised_name = "Archipelago EnergyLink Bridge" -- TODO: move to locale.cfg
+    entity.localised_name = {"archipelago.ap-energy-link-bridge"}
     entity.energy_source.buffer_capacity = "50MJ"
     entity.energy_source.input_flow_limit = "1MW"
     entity.energy_source.output_flow_limit = "1MW"
@@ -77,7 +77,7 @@ if PARAMS.energy_link_increment > 0 then
 
     local item = table.deepcopy(data.raw["item"]["accumulator"])
     item.name = "ap-energy-link-bridge"
-    item.localised_name = "Archipelago EnergyLink Bridge"
+    item.localised_name = {"archipelago.ap-energy-link-bridge"}
     item.place_result = entity.name
     tint_icon(item, energy_bridge_tint())
     data.raw["item"]["ap-energy-link-bridge"] = item
@@ -88,12 +88,13 @@ if PARAMS.energy_link_increment > 0 then
     recipe.results = { {type = "item", name = item.name, amount = 1} }
     recipe.energy_required = 10
     recipe.enabled = PARAMS.energy_link_bridge_starts_unlocked
-    recipe.localised_name = "Archipelago EnergyLink Bridge"
+    recipe.localised_name = {"archipelago.ap-energy-link-bridge"}
     data.raw["recipe"]["ap-energy-link-bridge"] = recipe
 
     local technology = {
         type = "technology",
         name = "ap-energy-link-bridge",
+        localised_name = {"archipelago.ap-energy-link-bridge"},
         icons = table.deepcopy(item.icons),
         effects = {
             {type="unlock-recipe", recipe="ap-energy-link-bridge"},
@@ -108,7 +109,7 @@ if PARAMS.enable_alternate_explosives then
     -- Alternate explosives.
     local recipe = table.deepcopy(data.raw["recipe"]["biosulfur"])
     recipe.name = "explosives-from-bioflux"
-    recipe.localised_name = "Explosives from bioflux"
+    recipe.localised_name = {"achipelago.biosulfur"}
     recipe.icon = "__base__/graphics/technology/explosives.png"
     recipe.icon_size = 256
     recipe.ingredients = {
@@ -125,7 +126,7 @@ if PARAMS.enable_alternate_explosives then
     -- Alternate grenades.
     local recipe = table.deepcopy(data.raw["recipe"]["grenade"])
     recipe.name = "grenade-from-explosives"
-    recipe.localised_name = "Grenade from explosives"
+    recipe.localised_name = {"archipelago.grenade-from-explosives"}
     recipe.ingredients = {
         -- This must be synchronized with __init__.py.
         {type="item", name="iron-plate", amount=5},

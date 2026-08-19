@@ -357,7 +357,6 @@ def generate_mod(
 
     locale_contents = locale_template.render(
         locations=locale_locations,
-        death_link_setting=death_link_setting_name,
     )
 
     zf_path = os.path.join(output_directory, versioned_mod_name + ".zip")
