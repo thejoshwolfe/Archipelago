@@ -167,7 +167,8 @@ for stack_name, stack in pairs(PARAMS.progressive_technology_stacks) do
         technology_name_to_progressive_group_name[stack_item] = stack_name
     end
 end
--- Disable and hide base technologies.
+
+-- Disable directly researching base technologies.
 for _, tech_name in pairs(PARAMS.hide_base_technologies) do
     local base_tech = data.raw["technology"][tech_name]
     if base_tech.unit ~= nil and base_tech.unit.count_formula ~= nil then
@@ -186,6 +187,7 @@ for _, tech_name in pairs(PARAMS.hide_base_technologies) do
         }
     end
 
+    -- Unless overriden below, sort all base technologies after the goal.
     base_tech.prerequisites = PARAMS.last_technology_location_names
     base_tech.upgrade = false
     base_tech.order = "zzzz"
@@ -196,5 +198,15 @@ for _, tech_name in pairs(PARAMS.hide_base_technologies) do
         base_tech.localised_description = {"", "Unlocked as part of the progressive chain: " .. stack_name}
     else
         base_tech.localised_description = {"", "The item in the multiworld is named: " .. tech_name}
+    end
+end
+-- Show progressive chains in base technology dependencies.
+for _, stack in pairs(PARAMS.progressive_technology_stacks) do
+    local previous_item = nil
+    for _, item in pairs(stack) do
+        if previous_item ~= nil then
+            data.raw["technology"][item].prerequisites = {previous_item}
+        end
+        previous_item = item
     end
 end
