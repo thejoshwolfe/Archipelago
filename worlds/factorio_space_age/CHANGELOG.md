@@ -13,6 +13,7 @@
 * Fix filler items not contributing to their progressive group like they're supposed to.
 * Improved information in the technology GUI:
     * Progressive chains are shown as dependencies between the inaccessible vanilla technologies.
+    * Move localizable strings to `locale/en/locale.cfg` (no longer dynamically generated), which should enable third-party translations. Thanks @Enderdraak/@CosmicWolf for the reference implementation in [#30](https://github.com/thejoshwolfe/Archipelago/pull/30).
 
 ## 2.2.4
 
