@@ -164,10 +164,12 @@ for name, effects in pairs(PARAMS.technology_effect_additions) do
     end
 end
 
-local technology_name_to_progressive_group_name = {}
-for stack_name, stack in pairs(PARAMS.progressive_technology_stacks) do
-    for _, stack_item in pairs(stack) do
-        technology_name_to_progressive_group_name[stack_item] = stack_name
+local function set_source_description(base_tech, source_description)
+    if base_tech.research_trigger ~= nil then
+        base_tech.research_trigger.trigger_description = source_description
+    else
+        -- For infinite techs, just put it in the description I guess.
+        base_tech.localised_description = source_description
     end
 end
 
@@ -190,25 +192,34 @@ for _, tech_name in pairs(PARAMS.hide_base_technologies) do
         }
     end
 
-    -- Unless overriden below, sort all base technologies after the goal.
-    base_tech.prerequisites = PARAMS.last_technology_location_names
+    -- Unless overridden below, sort all base technologies after the goal.
+    base_tech.prerequisites = table.deepcopy(PARAMS.last_technology_location_names)
     base_tech.upgrade = false
     base_tech.order = "zzzz"
 
-    -- Explain where to get this.
-    local stack_name = technology_name_to_progressive_group_name[tech_name]
-    if stack_name ~= nil then
-        base_tech.localised_description = {"", "Unlocked as part of the progressive chain: " .. stack_name}
-    else
-        base_tech.localised_description = {"", "The item in the multiworld is named: " .. tech_name}
-    end
+    -- Unless overridden below, explain where to get this.
+    set_source_description(base_tech, {"archipelago.multiworld-item-is-named", tech_name})
 end
--- Show progressive chains in base technology dependencies.
-for _, stack in pairs(PARAMS.progressive_technology_stacks) do
+
+-- Show progressive chains in base technologies.
+for stack_name, stack in pairs(PARAMS.progressive_technology_stacks) do
     local previous_item = nil
-    for _, item in pairs(stack) do
+    for i, item in pairs(stack) do
+        local base_tech = data.raw["technology"][item]
+        if base_tech.research_trigger ~= nil then
+            set_source_description(base_tech, {"archipelago.multiworld-item-in-stack", tostring(i), stack_name})
+        else
+            set_source_description(base_tech, {"archipelago.multiworld-item-infinite-last-in-stack", tostring(i), stack_name})
+        end
+
         if previous_item ~= nil then
-            data.raw["technology"][item].prerequisites = {previous_item}
+            -- Even though the GUI doesn't show transitively redundant dependencies,
+            -- it's important to append this dependency instead of replacing the list.
+            -- If 100% of the direct dependencies are completed, then the prerequisites are satisfied,
+            -- and the technology turns yellow in the GUI. We want it to stay red
+            -- despite its apparently only prerequisite being completed.
+            -- To resolve this, keep an additional not-shown dependency on the goal tech that will almost never be satisfied.
+            table.insert(base_tech.prerequisites, previous_item)
         end
         previous_item = item
     end

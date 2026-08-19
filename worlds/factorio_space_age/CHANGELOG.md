@@ -12,7 +12,8 @@
 * Research objectives beyond your configured goal are removed. For example, `goal: aquilo_orbit` will remove all research locations involving cryogenic science packs. When combined with `infinite_technologies: shuffle` (the default), infinite technologies beyond the goal are moved earlier instead of removed, copying the ingredients, prerequisites, and count formula of an earlier infinite technology. This can enable Factorio: Space Age players to unblock themselves by researching large progressive groups from infinite technology locations out of logic once enough science packs are unlocked, always at least chemical science. [#11](https://github.com/thejoshwolfe/Archipelago/issues/11)
 * Fix filler items not contributing to their progressive group like they're supposed to.
 * Improved information in the technology GUI:
-    * Progressive chains are shown as dependencies between the inaccessible vanilla technologies.
+    * Progressive chains are shown as dependencies between the inaccessible vanilla technologies, visualizing progressive chains. [#19](https://github.com/thejoshwolfe/Archipelago/issues/19)
+    * Move multiworld item name from description to trigger description. Thanks @Enderdraak/@CosmicWolf for suggesting this in [#31](https://github.com/thejoshwolfe/Archipelago/issues/31) and [#30](https://github.com/thejoshwolfe/Archipelago/pull/30).
     * Move localizable strings to `locale/en/locale.cfg` (no longer dynamically generated), which should enable third-party translations. Thanks @Enderdraak/@CosmicWolf for the reference implementation in [#30](https://github.com/thejoshwolfe/Archipelago/pull/30).
 
 ## 2.2.4
