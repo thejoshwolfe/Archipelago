@@ -762,18 +762,14 @@ class Factorio(World):
         else: assert self.options.infinite_technologies.current_key == "removed"
 
         # Create filler items.
-        extra_location_count = self.options.filler_count.value + (
-            - 4 # The builtin do-nothing technologies.
-            + int(self.options.energy_link_technology.value)
-            + 3*int(self.options.goal.current_key == "any_other_planet_science")
-            - sum(self.options.start_inventory_from_pool.values())
-        )
         duplicatable_technology_names = [
             name for name, prototype_data in self.factorio_data.the_data["technology"].items()
             if not prototype_data.get("hidden", False) # Not removed by Any Planet Start
             and not is_beyond_goal(name) # Not removed by goal
             and prototype_data.get("unit", None) # Not a trigger tech
             and prototype_data.get("max_level", None) != "infinite" # Not infinite
+            and name not in self.early_unrandomized_technologies # Not visible to the multiworld
+            and name not in victory_location_technology_names # Too late
         ]
 
         target_item_count = len(randomized_items) + self.options.filler_count.value
