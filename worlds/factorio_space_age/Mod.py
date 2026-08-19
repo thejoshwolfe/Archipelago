@@ -147,28 +147,28 @@ def generate_mod(
         is_trap,
     ):
         is_goal = item_name == names.victory
-        display_name = location_name
-        helpfulness_clause = ""
+        display_name = location_name # Without better information, display the internal location name.
         icon = "/ap_unimportant.png"
-        display_item_name = "something"
-        receiver_name = "someone"
+        display_item_name = "SOMETHING"
+        receiver_name = "SOMEONE"
         if is_location_revealed or options.tech_tree_information.current_key == "full":
             # Full information
             receiver_name = multiworld.player_name[target_player]
-            display_name = f"{receiver_name}'s {item_name} ({location_name})"
+            display_name = ["archipelago.technology-name-full", receiver_name, item_name, location_name]
             display_item_name = item_name
             if is_goal:
-                helpfulness_clause = ", which completes your goal"
+                description_key = "archipelago.technology-description-full-goal"
                 icon = "/trophy.png"
             elif is_advancement:
-                helpfulness_clause = ", which is considered a logical advancement"
+                description_key = "archipelago.technology-description-full-advancement"
                 icon = "/ap.png"
             elif is_useful:
-                helpfulness_clause = ", which is considered useful"
-                icon = "/ap_unimportant.png"
+                description_key = "archipelago.technology-description-full-useful"
             elif is_trap:
-                helpfulness_clause = ", which is considered fun"
-                icon = "/ap_unimportant.png"
+                description_key = "archipelago.technology-description-full-trap"
+            else:
+                description_key = "archipelago.technology-description-full"
+
             if item_name in technology_props_lua:
                 # This is an item for Factorio (probably). Use the built in icon.
                 icon = item_name
@@ -188,20 +188,34 @@ def generate_mod(
             elif item_name == names.ap_energy_link_bridge:
                 # Handled specially in data-updates.lua.
                 icon = item_name
-        else:
-            # Partial or no information.
-            if options.tech_tree_information.current_key in ("advancement", "recipient_advancement"):
-                # Reveal flags.
-                if is_advancement or is_trap:
-                    helpfulness_clause = ", which is considered a logical advancement"
-                    icon = "/ap.png"
-                elif is_useful:
-                    helpfulness_clause = ", which is considered useful"
-                    icon = "/ap_unimportant.png"
-            if options.tech_tree_information.current_key in ("recipient", "recipient_advancement"):
-                # Reveal recipient.
-                receiver_name = multiworld.player_name[target_player]
-        description = f"Researching this technology sends {display_item_name} to {receiver_name}{helpfulness_clause}."
+
+        elif options.tech_tree_information.current_key == "recipient_advancement":
+            if is_advancement or is_trap:
+                description_key = "archipelago.technology-description-recipient-advancement"
+                icon = "/ap.png"
+            elif is_useful:
+                description_key = "archipelago.technology-description-recipient-useful"
+            else:
+                description_key = "archipelago.technology-description-recipient"
+            # Reveal recipient.
+            receiver_name = multiworld.player_name[target_player]
+        elif options.tech_tree_information.current_key == "advancement":
+            if is_advancement or is_trap:
+                description_key = "archipelago.technology-description-advancement"
+                icon = "/ap.png"
+            elif is_useful:
+                description_key = "archipelago.technology-description-useful"
+            else:
+                description_key = "archipelago.technology-description-unknown"
+        elif options.tech_tree_information.current_key == "recipient":
+            description_key = "archipelago.technology-description-recipient"
+            # Reveal recipient.
+            receiver_name = multiworld.player_name[target_player]
+        elif options.tech_tree_information.current_key == "none":
+            description_key = "archipelago.technology-description-unknown"
+        else: assert False
+
+        description = [description_key, display_item_name, receiver_name]
         technology_props = technology_props_lua[location_technology_name]
         if options.technology_prerequisites.current_key == "vanilla":
             # Translate preprequisite tech names to the AP names.
