@@ -1,5 +1,9 @@
 # Factorio: Space Age apworld Changelog
 
+## 2.3.1
+
+* Guard against version mismatches between generation and runtime client.
+
 ## 2.3.0
 
 * Now based on Factorio 2.1 🎉
