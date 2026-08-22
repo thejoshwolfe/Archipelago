@@ -23,6 +23,7 @@ from Utils import async_start, get_file_safe_name, is_windows, Version, format_S
 from .settings import FactorioSettings
 from settings import get_settings
 from worlds import network_data_package
+from .data.ap_data import __version__
 
 
 def check_stdin() -> None:
@@ -282,6 +283,15 @@ async def game_watcher(ctx: FactorioContext):
                     continue
                 if not ctx.auth:
                     pass  # auth failed, wait for new attempt
+                elif not (ctx.mod_version.as_simple_string() == __version__ == data.get("version", None)):
+                    found_version = data.get('version')
+                    if not found_version:
+                        found_version = getattr(ctx, 'mod_version', None)
+                        if found_version:
+                            found_version = found_version.as_simple_string()
+                        else:
+                            found_version = 'unknown (something before 2.3.1)'
+                    bridge_logger.warning(f"The factorio_space_age.apworld you have installed is version {__version__}, which does not match the factorio_space_age.apworld version used during multiworld generation: {found_version}")
                 elif data["slot_name"] != ctx.auth:
                     bridge_logger.warning(f"Connected World is not the expected one {data['slot_name']} != {ctx.auth}")
                 elif data["seed_name"] != ctx.seed_name:

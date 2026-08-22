@@ -1,6 +1,8 @@
 # This file is somewhat arbitrary constants chosen for the randomizer.
 # This file is inputs to both import-ap-dump.py and also the apworld proper.
 
+__version__ = "2.3.0"
+
 # progressive_technologies: only_related
 small_progressive_groups = {
     #"progressive-advanced-material-processing": [
@@ -624,7 +626,7 @@ intermediate_recipe_technologies = {
     "yumako",   # Same as above.
     "bioflux",  # Same as above.
     "carbon-fiber",
-    # "bioflux-processing", # Unlocks alternatives sources for several resources.
+    # "bioflux-processing", # Unlocks alternative sources for several resources.
     # "bacteria-cultivation", # Unlocks alternative metal sources.
     # "calcite-processing", # Unlocks acid power for Vulcanus.
     "holmium-processing",

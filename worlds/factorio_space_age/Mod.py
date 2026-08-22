@@ -13,14 +13,13 @@ import worlds.Files
 from . import Options
 from .data.ap_data import (
     energy_link_bridge_recipes,
+    __version__,
 )
 from .data.json_dumps_but_smaller import json_dumps
 from .data import generated_names as names
 
 if TYPE_CHECKING:
     from . import Factorio
-
-__version__ = "2.3.0"
 
 
 buffed_resources_basic = {
@@ -303,6 +302,7 @@ def generate_mod(
     mod_params = {
         "mod_name": mod_name,
         "seed_name": multiworld.seed_name,
+        "mod_version": __version__,
         "slot_name": player_name,
         "goal": options.goal.current_key,
 

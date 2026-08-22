@@ -581,7 +581,12 @@ commands.add_command("ap-sync", "Used by the Archipelago client to get progress 
             research_done[tech_name] = tech.researched
         end
     end
-    rcon.print(helpers.table_to_json({["slot_name"] = PARAMS.slot_name, ["seed_name"] = PARAMS.seed_name, ["info"] = data_collection}))
+    rcon.print(helpers.table_to_json({
+        ["slot_name"] = PARAMS.slot_name,
+        ["seed_name"] = PARAMS.seed_name,
+        ["version"] = PARAMS.mod_version,
+        ["info"] = data_collection,
+    }))
 end)
 
 commands.add_command("ap-print", "Used by the Archipelago client to print messages", function (call)
