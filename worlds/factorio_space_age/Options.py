@@ -6,7 +6,7 @@ import typing
 from schema import Schema, Optional, And, Or, SchemaError
 
 from Options import Choice, OptionDict, OptionSet, DefaultOnToggle, Range, DeathLink, Toggle, \
-    StartInventoryPool, PerGameCommonOptions, OptionGroup, NamedRange
+    StartInventoryPool, PerGameCommonOptions, OptionGroup, NamedRange, FreeText, Removed
 
 
 # schema helpers
@@ -78,149 +78,46 @@ option_groups.append(OptionGroup("World Gen", []))
 @auto_group
 class WorldGen(Choice):
     """
-    vanilla: The vanilla Default settings.
-    buffed resources: All resource patches cranked to the max, cliffs disabled, oceans reduced, Fulgoran islands max size.
-    custom: use the world_gen_custom property.
+    buffed_resources: (the default value for this YAML option) All resource patches cranked to the max, cliffs disabled, oceans reduced, Fulgoran islands max size.
+    custom: use the map_exchange_string for most settings, but the seed is randomized. If world_gen_enemies is set to false, then that setting is applied as well.
+    custom_verbatim: use the map_exchange_string exactly as is.
+    default (or vanilla): The vanilla Default settings. (Not the default selection for this YAML option.)
+    rich_resources, marathon, death_world, etc.: The builtin presets of the same name.
     """
-    option_vanilla = 0
-    option_buffed_resources = 1
-    option_custom = 2
-    default = 1
+    option_buffed_resources = 0
+    default = 0
+    option_custom = 1
+    option_custom_verbatim = 2
+    option_default = 3
+    alias_vanilla = 3
+    option_rich_resources = 4
+    option_marathon = 5
+    option_death_world = 6
+    option_death_world_marathon = 7
+    option_rail_world = 8
+    option_ribbon_world = 9
+    option_lakes = 10
+    option_island = 11
+
+
+@auto_group
+class MapExchangeString(FreeText):
+    """
+    Customize the world gen settings.
+    Open Factorio normally, click into the menu to create a new Freeplay game, mess with the settings all you want,
+    then find the "Map exchange string" export button near the bottom.
+    Paste the string into this option including >>>these<<< things.
+
+    Ignored unless world_gen is set to 'custom' or 'custom_verbatim'.
+    If you want to play the exact seed you previewed, use 'custom_verbatim'.
+    """
 
 @auto_group
 class WorldGenEnemies(DefaultOnToggle):
     """
     Enable enemies. Turning this off checks the 'No enemies' mode during world gen and disables pollution.
-    Ignored when world_gen is set to 'custom'.
+    Ignored when world_gen is set to custom_verbatim.
     """
-
-@auto_group
-class WorldGenAsteroids(Range):
-    """
-    Percentage modifier for spawning asteroids.
-    Ignored when world_gen is set to 'custom'.
-    TODO: unimplemented.
-    """
-    range_start = 10
-    range_end = 400
-    default = 100
-
-@auto_group
-class WorldGenSpoilage(Range):
-    """
-    Percentage modifier for spoiling rate. Higher rate is faster spoiling.
-    Ignored when world_gen is set to 'custom'.
-    TODO: unimplemented.
-    """
-    range_start = 10
-    range_end = 1000
-    default = 100
-
-@auto_group
-class WorldGenCustom(OptionDict):
-    """
-    Only used when world_gen is set to 'custom'.
-    Overview of options at https://wiki.factorio.com/Map_generator,
-    with in-depth documentation at https://lua-api.factorio.com/latest/concepts/MapGenSettings.html .
-
-    Other resources that may help:
-    * https://lua-api.factorio.com/latest/types/MapGenPreset.html
-    * https://github.com/wube/factorio-data/blob/master/map-gen-settings.example.json
-    * https://github.com/wube/factorio-data/blob/master/map-settings.example.json
-    * https://fesc.pages.dev/ ( https://github.com/rfvgyhn/factorio-exchange-string-parser )
-
-    Specify a combination of the 'basic' and 'advanced' settings in this object; they will be pulled apart appropriately.
-    TODO: currently only preset settings can be used, not regular settings. If you don't know what that means, neither do I,
-    but it means you can't fiddle with the spoil rate for example.
-
-    If you wish you could just use a map exchange string, please contribute to this forum discussion:
-    https://forums.factorio.com/viewtopic.php?p=689150
-    """
-    display_name = "Custom World Generation"
-    # FIXME: do we want default be a rando-optimized default or in-game DS?
-    value: dict[str, dict[str, typing.Any]]
-    default = {}
-    schema = Schema({
-        "basic": {
-            Optional("autoplace_controls"): {
-                str: {
-                    "frequency": FloatRange(0, 6),
-                    "size": FloatRange(0, 6),
-                    "richness": FloatRange(0.166, 6)
-                }
-            },
-            Optional("seed"): Or(None, And(int, lambda n: n >= 0)),
-            Optional("width"): And(int, lambda n: n >= 0),
-            Optional("height"): And(int, lambda n: n >= 0),
-            Optional("starting_area"): FloatRange(0.166, 6),
-            Optional("peaceful_mode"): LuaBool,
-            Optional("no_enemies_mode"): LuaBool,
-            Optional("cliff_settings"): {
-                "name": str, "cliff_elevation_0": FloatRange(0, 99),
-                "cliff_elevation_interval": FloatRange(0.066, 241),  # 40/frequency
-                "richness": FloatRange(0, 6)
-            },
-            Optional("property_expression_names"): Schema({
-                Optional("control-setting:moisture:bias"): FloatRange(-0.5, 0.5),
-                Optional("control-setting:moisture:frequency:multiplier"): FloatRange(0.166, 6),
-                Optional("control-setting:aux:bias"): FloatRange(-0.5, 0.5),
-                Optional("control-setting:aux:frequency:multiplier"): FloatRange(0.166, 6),
-                Optional(str): object  # allow overriding all properties
-            }),
-        },
-        "advanced": {
-            Optional("pollution"): {
-                Optional("enabled"): LuaBool,
-                Optional("diffusion_ratio"): FloatRange(0, 0.25),
-                Optional("ageing"): FloatRange(0.1, 4),
-                Optional("enemy_attack_pollution_consumption_modifier"): FloatRange(0.1, 4),
-                Optional("min_pollution_to_damage_trees"): FloatRange(0, 9999),
-                Optional("pollution_restored_per_tree_damage"): FloatRange(0, 9999)
-            },
-            Optional("enemy_evolution"): {
-                Optional("enabled"): LuaBool,
-                Optional("time_factor"): FloatRange(0, 1000e-7),
-                Optional("destroy_factor"): FloatRange(0, 1000e-5),
-                Optional("pollution_factor"): FloatRange(0, 1000e-7),
-            },
-            Optional("enemy_expansion"): {
-                Optional("enabled"): LuaBool,
-                Optional("max_expansion_distance"): FloatRange(2, 20),
-                Optional("settler_group_min_size"): FloatRange(1, 20),
-                Optional("settler_group_max_size"): FloatRange(1, 50),
-                Optional("min_expansion_cooldown"): FloatRange(3600, 216000),
-                Optional("max_expansion_cooldown"): FloatRange(18000, 648000)
-            },
-            Optional("difficulty_settings"): {
-                Optional("technology_price_multiplier"): FloatRange(0.01, 1000),
-            },
-        }
-    })
-
-    def __init__(self, value: dict[str, typing.Any]):
-        advanced = {"pollution", "enemy_evolution", "enemy_expansion"}
-        self.value = {
-            "basic": {k: v for k, v in value.items() if k not in advanced},
-            "advanced": {k: v for k, v in value.items() if k in advanced}
-        }
-
-        # verify min_values <= max_values
-        def optional_min_lte_max(container, min_key, max_key):
-            min_val = container.get(min_key, None)
-            max_val = container.get(max_key, None)
-            if min_val is not None and max_val is not None and min_val > max_val:
-                raise ValueError(f"{min_key} can't be bigger than {max_key}")
-
-        enemy_expansion = self.value["advanced"].get("enemy_expansion", {})
-        optional_min_lte_max(enemy_expansion, "settler_group_min_size", "settler_group_max_size")
-        optional_min_lte_max(enemy_expansion, "min_expansion_cooldown", "max_expansion_cooldown")
-
-    @classmethod
-    def from_any(cls, data: dict[str, typing.Any]) -> WorldGenCustom:
-        if type(data) == dict:
-            return cls(data)
-        else:
-            raise NotImplementedError(f"Cannot Convert from non-dictionary, got {type(data)}")
 
 
 option_groups.append(OptionGroup("Technologies", []))
@@ -334,6 +231,7 @@ class QuickStart(DefaultOnToggle):
     and a chunk of materials to help get through the early game.
     """
 
+@auto_group
 class SkipStartingTriggerTechs(Toggle):
     """
     Instead of needing to craft iron plates, copper plates, and a lab at the start of the run,
@@ -401,6 +299,7 @@ class TechCostDivisor(Range):
     """
     Reduce the cost of research technologies by dividing by this number.
     1 = Vanilla. 10 = All technologies require 1/10th as much science.
+    This is applied before tech_cost_max_count, and does not apply to infinite technologies.
     """
     range_start = 1
     range_end = 10
@@ -411,6 +310,8 @@ class TechCostMaxCount(Range):
     """
     Cap the number of units a research technology can require. Vanilla technologies max out at 5000 (e.g. mech-armor).
     This limit is applied after tech_cost_divisor, and does not apply to infinite technologies.
+    If a technology price multiplier is included in a map_exchange_string, that is applied last.
+    The order is: tech_cost_divisor -> tech_cost_max_count -> map_exchange_string.technology_price_multiplier
     """
     range_start = 1
     range_end = 5000
@@ -631,7 +532,7 @@ class LogicHeatingTower(DefaultOnToggle):
 class LogicDemolisherKillers(OptionDict):
     """
     What should the logic consider viable methods for killing small demolishers?
-    When enemies are enabled (according to `world_gen_enemies` or `world_gen_custom.no_enemies_mode`),
+    When enemies are enabled (according to `world_gen_enemies` and/or `map_exchange_string`),
     killing small demolishers is logically required for automating tungsten ore.
     WARNING: military bonuses for damage, weapon speed, etc. are not considered by the logic.
     """
@@ -653,7 +554,7 @@ class LogicDemolisherKillers(OptionDict):
 class LogicPentapodKillers(OptionDict):
     """
     What should the logic consider viable methods for killing Gleba enemies and defending your base against their attacks?
-    When enemies are enabled (according to `world_gen_enemies` or `world_gen_custom.no_enemies_mode`),
+    When enemies are enabled (according to `world_gen_enemies` and/or `map_exchange_string`),
     killing Gleba enemies is logically required for automating agricultural science,
     and if starting on Gelba, also required for automating chemical science.
     WARNING: military bonuses for damage, weapon speed, etc. are not considered by the logic.
@@ -888,10 +789,8 @@ class FactorioOptions(PerGameCommonOptions):
     allow_imported_blueprints: AllowImportedBlueprints
 
     world_gen: WorldGen
+    map_exchange_string: MapExchangeString
     world_gen_enemies: WorldGenEnemies
-    world_gen_asteroid_spawn_rate: WorldGenAsteroids
-    world_gen_spoil_rate: WorldGenSpoilage
-    world_gen_custom: WorldGenCustom
 
     technology_prerequisites: TechnologyPrerequisites
     progressive_technologies: ProgressiveTechs
@@ -977,3 +876,7 @@ class FactorioOptions(PerGameCommonOptions):
 
     death_link: DeathLink
     start_inventory_from_pool: StartInventoryPool
+
+    world_gen_asteroid_spawn_rate: Removed
+    world_gen_spoil_rate: Removed
+    world_gen_custom: Removed

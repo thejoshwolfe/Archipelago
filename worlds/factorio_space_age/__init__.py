@@ -130,13 +130,16 @@ class Factorio(World):
             starting_planet=self.starting_planet,
             vulcanus_rock_multiplier=self.options.vulcanus_rocks.value,
             enable_alternate_explosives=self.starting_planet == names.gleba and self.options.gleba_coal.current_key == "alternate_explosives",
+            map_exchange_string=self.map_exchange_string,
             output_directory=output_directory,
         )
 
     def generate_early(self) -> None:
         import json
         from .FactorioData import FactorioData
+        from .MapExchangeString import parse_map_exchange_string, format_map_exchange_string
         from .data.ap_data import (
+            map_exchange_strings,
             trap_names, energy_link_bridge_recipes,
             small_progressive_groups, large_progressive_groups,
             starting_planet_to_unrandomized_technologies,
@@ -144,12 +147,22 @@ class Factorio(World):
         )
         from .data import generated_names as names
 
+        # World gen
+        if self.options.world_gen.current_key in ("custom", "custom_verbatim"):
+            map_exchange_string = self.options.map_exchange_string.value
+        else:
+            map_exchange_string = map_exchange_strings[self.options.world_gen.current_key]
+        map_exchange_settings = parse_map_exchange_string(map_exchange_string)
+        # Modify the world gen settings, maybe.
+        if self.options.world_gen.current_key != "custom_verbatim":
+            map_exchange_settings["map_gen_settings"]["seed"] = self.random.randint(0, 0xffffffff)
+            if self.options.world_gen_enemies.value == False:
+                map_exchange_settings["map_gen_settings"]["no_enemies_mode"] = True
+                map_exchange_settings["map_settings"]["pollution"]["enabled"] = True
+        self.enemies_enabled = not map_exchange_settings["map_gen_settings"]["no_enemies_mode"]
+        self.map_exchange_string = format_map_exchange_string(map_exchange_settings)
+
         self.starting_planet = self.options.starting_planet.current_key
-        self.enemies_enabled = (
-            not self.options.world_gen_custom.value["basic"].get("no_enemies_mode", False)
-            if self.options.world_gen.current_key == "custom" else
-            self.options.world_gen_enemies.value
-        )
         self.early_unrandomized_technologies = starting_planet_to_unrandomized_technologies[self.starting_planet]
 
         the_data = json.loads(read_local_path("data/ap-dump.json"))
@@ -798,11 +811,6 @@ class Factorio(World):
 
 
     def generate_basic(self):
-        if self.options.world_gen.current_key == "custom":
-            map_basic_settings = self.options.world_gen_custom.value["basic"]
-            if map_basic_settings.get("seed", None) is None: # allow seed 0
-                map_basic_settings["seed"] = self.random.randint(0, 2 ** 32 - 1) # 32 bit uint
-
         start_location_hints: typing.Set[str] = self.options.start_location_hints.value
         for location in self.locations:
             if location.name in start_location_hints:

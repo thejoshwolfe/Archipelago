@@ -584,7 +584,6 @@ commands.add_command("ap-sync", "Used by the Archipelago client to get progress 
     rcon.print(helpers.table_to_json({
         ["slot_name"] = PARAMS.slot_name,
         ["seed_name"] = PARAMS.seed_name,
-        ["version"] = PARAMS.mod_version,
         ["info"] = data_collection,
     }))
 end)
@@ -636,6 +635,7 @@ commands.add_command("ap-rcon-info", "Used by the Archipelago client to get info
         ["seed_name"] = PARAMS.seed_name,
         ["death_link"] = DEATH_LINK,
         ["energy_link"] = PARAMS.energy_link_increment,
+        ["map_exchange_string"] = PARAMS.map_exchange_string,
     }))
 end)
 

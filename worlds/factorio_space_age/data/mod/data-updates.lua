@@ -138,9 +138,6 @@ if PARAMS.enable_alternate_explosives then
     table.insert(data.raw["technology"]["military-2"].effects, {type="unlock-recipe", recipe="grenade-from-explosives"})
 end
 
--- Create map preset.
-data.raw["map-gen-presets"].default["archipelago"] = PARAMS.world_gen_preset
-
 
 -- UPDATES TO EXISTING STUFF.
 

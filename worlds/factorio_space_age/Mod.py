@@ -120,6 +120,7 @@ def generate_mod(
     starting_planet: str,
     vulcanus_rock_multiplier: float,
     enable_alternate_explosives: bool,
+    map_exchange_string: str,
     output_directory: str,
 ):
 
@@ -269,41 +270,14 @@ def generate_mod(
                 item_name, player, False, True, False,
             )
 
-    world_gen_preset = {
-        "default": False,
-        "order": "a",
-        "basic_settings": {},
-        "advanced_settings": {},
-    }
-    if options.world_gen.current_key == "custom":
-        world_gen_preset["basic_settings"] = options.world_gen_custom.value["basic"]
-        world_gen_preset["advanced_settings"] = options.world_gen_custom.value["advanced"]
-    else:
-        if options.world_gen.current_key == "vanilla":
-            pass # No modifications.
-        elif options.world_gen.current_key == "buffed_resources":
-            world_gen_preset["basic_settings"] = buffed_resources_basic
-        else: assert False
-        # Additional adjustments when not custom.
-        if options.world_gen_enemies.value == False:
-            world_gen_preset["basic_settings"]["no_enemies_mode"] = True
-            world_gen_preset["advanced_settings"]["pollution"] = {"enabled": False}
-        # These next two don't go into the preset for some reason??
-        # In order to implement these, we'd need to give world gen settings directly to the --create invocation
-        # using one of the json file interfaces, not through a preset created by a mod.
-        if options.world_gen_asteroid_spawn_rate.value != 100:
-            raise NotImplementedError("TODO: world_gen_asteroid_spawn_rate must be 100")
-        if options.world_gen_spoil_rate.value != 100:
-            raise NotImplementedError("TODO: world_gen_spoil_rate must be 100")
-
     def set_to_1(s: set):
         return {x: 1 for x in sorted(s)}
 
     mod_params = {
         "mod_name": mod_name,
         "seed_name": multiworld.seed_name,
-        "mod_version": __version__,
         "slot_name": player_name,
+        "map_exchange_string": map_exchange_string,
         "goal": options.goal.current_key,
 
         "default_death_link": bool(options.death_link.value),
@@ -334,7 +308,6 @@ def generate_mod(
         "last_technology_location_names": last_technology_location_names,
 
         "allow_imported_blueprints": bool(options.allow_imported_blueprints.value),
-        "world_gen_preset": world_gen_preset,
     }
     template_parameters_contents = (
         "-- This is generated in Mod.py. To make finding it easier, search for keyword: pumpernickel" "\n"

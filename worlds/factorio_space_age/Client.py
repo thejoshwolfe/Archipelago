@@ -155,15 +155,14 @@ class FactorioContext(CommonContext):
 
     @property
     def server_args(self) -> tuple[str, ...]:
+        args = [
+            "--rcon-port", str(self.rcon_port),
+            "--rcon-password", self.rcon_password,
+        ]
         if self.server_settings_path:
-            return (
-                "--rcon-port", str(self.rcon_port),
-                "--rcon-password", self.rcon_password,
-                "--server-settings", self.server_settings_path,
-                *self.additional_factorio_server_args)
-        else:
-            return ("--rcon-port", str(self.rcon_port), "--rcon-password", self.rcon_password,
-                    *self.additional_factorio_server_args)
+            args.extend(["--server-settings", self.server_settings_path])
+        args.extend(self.additional_factorio_server_args)
+        return args
 
     @property
     def energy_link_status(self) -> str:
@@ -283,15 +282,6 @@ async def game_watcher(ctx: FactorioContext):
                     continue
                 if not ctx.auth:
                     pass  # auth failed, wait for new attempt
-                elif not (ctx.mod_version.as_simple_string() == __version__ == data.get("version", None)):
-                    found_version = data.get('version')
-                    if not found_version:
-                        found_version = getattr(ctx, 'mod_version', None)
-                        if found_version:
-                            found_version = found_version.as_simple_string()
-                        else:
-                            found_version = 'unknown (something before 2.3.1)'
-                    bridge_logger.warning(f"The factorio_space_age.apworld you have installed is version {__version__}, which does not match the factorio_space_age.apworld version used during multiworld generation: {found_version}")
                 elif data["slot_name"] != ctx.auth:
                     bridge_logger.warning(f"Connected World is not the expected one {data['slot_name']} != {ctx.auth}")
                 elif data["seed_name"] != ctx.seed_name:
@@ -378,18 +368,19 @@ async def factorio_server_watcher(ctx: FactorioContext):
     if not os.path.exists(savegame_name):
         logger.info(f"Creating savegame {savegame_name}")
         subprocess.run((
-            executable, "--create", savegame_name, "--preset", "archipelago"
+            executable, "--create", savegame_name, "--exchange-string", ctx.map_exchange_string,
         ))
-    factorio_process = subprocess.Popen((executable, "--start-server", savegame_name,
-                                         *ctx.server_args),
-                                        stderr=subprocess.PIPE,
-                                        stdout=subprocess.PIPE,
-                                        stdin=subprocess.DEVNULL,
-                                        encoding="utf-8")
+    factorio_process = subprocess.Popen(
+        (executable, "--start-server", savegame_name, *ctx.server_args),
+        stderr=subprocess.PIPE,
+        stdout=subprocess.PIPE,
+        stdin=subprocess.DEVNULL,
+        encoding="utf-8")
     factorio_server_logger.info("Started Factorio Server")
     factorio_queue = Queue()
     stream_factorio_output(factorio_process.stdout, factorio_queue, factorio_process)
     stream_factorio_output(factorio_process.stderr, factorio_queue, factorio_process)
+
     try:
         while not ctx.exit_event.is_set():
             if factorio_process.poll() is not None:
@@ -480,6 +471,7 @@ async def get_info(ctx: FactorioContext, rcon_client: factorio_rcon.RCONClient):
     ctx.auth = info["slot_name"]
     ctx.seed_name = info["seed_name"]
     death_link = info["death_link"]
+    ctx.map_exchange_string = info["map_exchange_string"]
     ctx.energy_link_increment = int(info.get("energy_link", 0))
     logger.debug(f"Energy Link Increment: {ctx.energy_link_increment}")
     if ctx.energy_link_increment and ctx.ui:
@@ -488,7 +480,7 @@ async def get_info(ctx: FactorioContext, rcon_client: factorio_rcon.RCONClient):
 
 
 async def factorio_spinup_server(ctx: FactorioContext) -> bool:
-    savegame_name = os.path.abspath("Archipelago.zip")
+    savegame_name = os.path.abspath("ArchipelagoTemporaryServerQuery.zip")
     if not os.path.exists(savegame_name):
         logger.info(f"Creating savegame {savegame_name}")
         subprocess.run((
@@ -507,13 +499,18 @@ async def factorio_spinup_server(ctx: FactorioContext) -> bool:
     rcon_client = None
     try:
         while not ctx.auth:
+            if factorio_process.poll() is not None:
+                raise Exception(f"factorio process exited unexpectedly with code: {factorio_process.returncode}")
+
             while not factorio_queue.empty():
                 msg = factorio_queue.get()
                 factorio_server_logger.info(msg)
                 # Example: "0.307 Loading mod AP-14613752113758896254-P1-factorio 1.1.2 (data-updates.lua)"
                 if match := re.search(r'Loading mod AP-.* (\d+\.\d+\.\d+) \((?:settings|data)(?:-updates|-final-fixes)?\.lua\)$', msg):
-                    version_str = match.group(1)
-                    ctx.mod_version = Version(*(int(number) for number in version_str.split(".")))
+                    found_version = match.group(1)
+                    if found_version != __version__:
+                        raise Exception(f"The factorio_space_age.apworld you have installed is version {__version__}, which does not match the factorio_space_age.apworld version used during multiworld generation: {found_version}")
+                    ctx.mod_version = Version(*(int(number) for number in found_version.split(".")))
                 elif "Write data path: " in msg:
                     ctx.write_data_path = get_text_between(msg, "Write data path: ", " [")
                     if "AppData" in ctx.write_data_path:
