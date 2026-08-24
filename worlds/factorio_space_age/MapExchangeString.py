@@ -4,6 +4,7 @@
 supported_versions = {
     (2, 1, 14, 1),
     (2, 1, 15, 2),
+    (2, 1, 16, 0),
 }
 
 import base64, struct, zlib
