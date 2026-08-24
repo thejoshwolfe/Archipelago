@@ -1,7 +1,10 @@
 # This is based on the work in: https://github.com/rfvgyhn/factorio-exchange-string-parser
 # (with https://github.com/rfvgyhn/factorio-exchange-string-parser/pull/7 )
 
-the_only_supported_version = (2, 1, 14, 1)
+supported_versions = {
+    (2, 1, 14, 1),
+    (2, 1, 15, 2),
+}
 
 import base64, struct, zlib
 from io import BytesIO
@@ -13,8 +16,8 @@ def parse_map_exchange_string(s):
     b = zlib.decompress(base64.b64decode(s[3:-3]))
     f = BytesIO(b)
     version = struct.unpack("<HHHH", f.read(8))
-    if version != the_only_supported_version:
-        raise NotImplementedError(f"Map exchange string was generated with Factorio version {'.'.join(version)}. Only version {'.'.join(the_only_supported_version)} is supported.")
+    if version not in supported_versions:
+        raise NotImplementedError(f"Map exchange string was generated with Factorio version {'.'.join(str(x) for x in version)}. The only supported versions are: {', '.join('.'.join(str(x) for x in v) for v in sorted(supported_versions))} is supported.")
 
     _unknown = f.read(1)
 
@@ -30,7 +33,7 @@ def parse_map_exchange_string(s):
 
 def format_map_exchange_string(value):
     f = BytesIO()
-    f.write(struct.pack("<HHHH", *the_only_supported_version))
+    f.write(struct.pack("<HHHH", *sorted(supported_versions)[0]))
     f.write(b"\x00") # _unknown
 
     write_map_exchange_settings(f, value)
@@ -371,7 +374,7 @@ read_map_exchange_settings, write_map_exchange_settings = Struct({
 # A test #
 ##########
 
-assert parse_map_exchange_string(">>>eNp1Uj2IE0EUnjGuibkfwxEE4ThTaBnB01KyqyAioq3lOtlM4uBmJs5P5O4KU1gqNjbaeK3NdYLlgSJnd2gpyImNFkoE0UaIM7uZzf7EgTf7zffevPe9t3MIQLCsDazW0F1FQuYHXHWwz0gIwMi1Vg5QGBCJ09zhgKFMUDVggwHmTcYzcUejjM1cxiqmuL/RbCORCV7qhopxQrE/xFRmPSrsMY78ICTdbtpzzHqICBHtiLRvoRfi9pw7tZiPRPh5EYuxc6CzyXnZhGQUz+HvIYl5mq8Qzmh+HkshkbeJ6vtt02emLkVqSERRrcNZcCejxBEBR4M0c1xIxCWhPR9xjPw+I0KqbGWnILwuVNhVnAQ+CkjH7+ENke3AkRzjTOVFqWhPSEz9XF8LiiOq+yr0O1RhgKjSfeUezEriGTIDiOhnahfmCeDpVytvRg/WgLHJfdCYTIxpdABAZACO4mioSbuc6URB46K2S7N0EG7Vd6583nziwjjyjDcF4ymz27bMVQtueP91nbLgfCoPhI++v9z+83a/Bf+++Pn+evuWC89erv8Yr++0tNMxoktmO5Kg+O6BVVXx8owGz56a9c2NE1Rn1xoe3H6oT7vXSgBWyhrVlvUWcY3VJKxlk9Y92I3Wbxeei9YXCz4UFOgOL5hSa2bbM5szqww83U8MHnvQO2m9J2Yh+v46SGvomFPcyztb9nWqfk5IccLpPnJMElxJgWhSnWT7WkrPe79sT95zL/oXwET9gtM/E3lsqvhb82Bdf0rJaxu72SdkgEmyd/PTx3/Z3iXN<<<") == {
+assert parse_map_exchange_string(">>>eNp1Uj2LE0EYnrm4JubuvHAEQTjOFFpG8BRsJLsKIiJa2q6TzSQObmbifEROC1NYKjY22nitzXXClQeKaHfoHzix0UKJKNoIcWY3s9mP3MA7+8zzvvO8HzsLAIIVsADAWg3dVSRkfsBVB/uMhACMXGvlAIUBkTjNHQoYygRVAzYYYN5kPBN3JFJs5hSrmOL+ZrONRCZ4uRsqxgnF/hBTmfWosMc48oOQdLtpz4r1EBEi2hFp32IvxO05d2oxHxXh54tYip0DrSbnqQnJKJ7D30MS8zRfIZzR/DyWQyJvE9X326bPTF6K1JCIYrUOZ8GdTCWOCDgapJljQiIuCe35iGPk9xkRUmUzO4XC60KFXcVJ4KOAdPwe3hTZDhzJMc5kXpKK9oTE1M/1tag4orqvQr9DFQaIKt1X7sGsJp4hM4CIfiZ3YZ4AntpZfTt6tA6MTR6CxmRiTKN9ACIDcBRHQ03a5UwnChoXtV2ayUH4oL595fP9Zy6MI097UzCeMrtty1y14IZ3oOukBedSOhA++f566++7vRb89+rnx+vtWy48c7n+Y7yx3dJOxxRdMtvhBMV3921VFS/PaPDiuVnf3FigOrvW8ODWY33avVYCsFLWqHZUbxHXWEvCWla07sFutP648Gy0vljwqVCB7vCCSbVutvdmc2aZgaf7icFTD3onrPf4LETf3wDpGjrmFPfywaZ9k8qfK6Q44XQfOSYJrqRANKlOsn0tpee9V7Yn76UX/Qtgon7D6Z+JPFYq/tY8WNefUvLaxm72CRlgRHbO3/z1H+McJS8=<<<") == {
     "map_gen_settings": {
         "autoplace_controls": {
             "aquilo_crude_oil": { "frequency": 1.0, "size": 1.0, "richness": 1.0 },

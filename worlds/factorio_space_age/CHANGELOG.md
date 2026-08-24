@@ -1,5 +1,9 @@
 # Factorio: Space Age apworld Changelog
 
+## 3.0.1
+
+* Confirmed map exchange string compatibility with Factorio 2.1.15.
+
 ## 3.0.0
 
 * Added `map_exchange_string` YAML option to allow arbitrarily customizable world generation settings. [#38](https://github.com/thejoshwolfe/Archipelago/issues/38)
