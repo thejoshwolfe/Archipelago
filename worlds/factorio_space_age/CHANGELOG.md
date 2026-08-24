@@ -1,11 +1,11 @@
 # Factorio: Space Age apworld Changelog
 
-## 2.4.0
+## 3.0.0
 
 * Added `map_exchange_string` YAML option to allow arbitrarily customizable world generation settings. [#38](https://github.com/thejoshwolfe/Archipelago/issues/38)
     * Thanks to Rseding91 [here](https://forums.factorio.com/viewtopic.php?t=132784) and rfvgyhn [here](https://github.com/rfvgyhn/factorio-exchange-string-parser) for providing the support needed to make this happen.
     * This apworld is now version locked with specifically Factorio 2.1.14. This is because during the public beta experimental phase, Factorio is breaking the map exchange string format without warning. Once Factorio 2.1 is stable, the version locking can be relaxed.
-* The `world_gen_custom` option is gone. Nobody (including me) knew how to use it properly; good riddance. The `world_gen_asteroid_spawn_rate` and `world_gen_spoil_rate` placeholder options are also gone. Use `map_exchange_string` instead.
+* (BREAKING) The `world_gen_custom` option is gone. Nobody (including me) knew how to use it properly; good riddance. The `world_gen_asteroid_spawn_rate` and `world_gen_spoil_rate` placeholder options are also gone. Use `map_exchange_string` instead.
 * The `world_gen` option is overhauled:
     * `custom` now uses `map_exchange_string` instead of `world_gen_custom`, but still respects `world_gen_enemies` and randomizes the seed.
     * `custom_verbatim` (new) uses `map_exchange_string` and makes no modifications.
