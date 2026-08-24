@@ -3,6 +3,7 @@
 ## 3.0.1
 
 * Confirmed map exchange string compatibility with Factorio 2.1.15.
+* Moved `ArchipelagoTemporaryServerQuery.zip` from cwd into `<Archipelago>/factorio/saves/` to match the behavior of the core Factorio apworld. Thanks Ginja on Discord for suggesting this, and lepideble for the reference implementation in [Archipelago#5646](https://github.com/ArchipelagoMW/Archipelago/pull/5646).
 
 ## 3.0.0
 
