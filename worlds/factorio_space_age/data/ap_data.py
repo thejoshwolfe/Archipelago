@@ -1,7 +1,7 @@
 # This file is somewhat arbitrary constants chosen for the randomizer.
 # This file is inputs to both import-ap-dump.py and also the apworld proper.
 
-__version__ = "3.0.2"
+__version__ = "3.0.3"
 
 # progressive_technologies: only_related
 small_progressive_groups = {

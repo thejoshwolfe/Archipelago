@@ -1,5 +1,9 @@
 # Factorio: Space Age apworld Changelog
 
+## 3.0.3
+
+* Fix apworld being completely broken.
+
 ## 3.0.2
 
 * Confirmed map exchange string compatibility with Factorio 2.1.16.

@@ -15,6 +15,7 @@ files=(
     settings.py
     Logic.py
     FactorioData.py
+    MapExchangeString.py
 
     data/__init__.py
     data/ap_data.py
