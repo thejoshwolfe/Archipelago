@@ -1,11 +1,7 @@
 # This is based on the work in: https://github.com/rfvgyhn/factorio-exchange-string-parser
-# (with https://github.com/rfvgyhn/factorio-exchange-string-parser/pull/7 )
 
-supported_versions = {
-    (2, 1, 14, 1),
-    (2, 1, 15, 2),
-    (2, 1, 16, 0),
-}
+# The most recent breaking change was in 2.1.13.
+earliest_supported_version = (2, 1, 14, 1)
 
 import base64, struct, zlib
 from io import BytesIO
@@ -17,8 +13,8 @@ def parse_map_exchange_string(s):
     b = zlib.decompress(base64.b64decode(s[3:-3]))
     f = BytesIO(b)
     version = struct.unpack("<HHHH", f.read(8))
-    if version not in supported_versions:
-        raise NotImplementedError(f"Map exchange string was generated with Factorio version {'.'.join(str(x) for x in version)}. The only supported versions are: {', '.join('.'.join(str(x) for x in v) for v in sorted(supported_versions))} is supported.")
+    if version < earliest_supported_version:
+        raise NotImplementedError(f"Map exchange string was generated with Factorio version {'.'.join(str(x) for x in version)}. Please update to at least Factorio version: {'.'.join(str(x) for x in earliest_supported_version)}")
 
     _unknown = f.read(1)
 
@@ -34,7 +30,7 @@ def parse_map_exchange_string(s):
 
 def format_map_exchange_string(value):
     f = BytesIO()
-    f.write(struct.pack("<HHHH", *sorted(supported_versions)[0]))
+    f.write(struct.pack("<HHHH", *earliest_supported_version))
     f.write(b"\x00") # _unknown
 
     write_map_exchange_settings(f, value)
@@ -283,6 +279,7 @@ EnemyExpansionSettings = Struct({
     "evolution_group_size_factor": Optional(Float64),
     "min_expansion_cooldown": Optional(Uint32),
     "max_expansion_cooldown": Optional(Uint32),
+    "build_base_unit_dispatch_cooldown": Optional(Uint32),
 })
 
 # https"://lua-api.factorio.com/latest/types/UnitGroupSettings.html
@@ -290,7 +287,6 @@ UnitGroupSettings = Struct({
     "min_group_gathering_time": Optional(Uint32),
     "max_group_gathering_time": Optional(Uint32),
     "max_wait_time_for_late_members": Optional(Uint32),
-    "unknown": Optional(Uint32),
     "max_group_radius": Optional(Float64),
     "min_group_radius": Optional(Float64),
     "max_member_speedup_when_behind": Optional(Float64),
@@ -430,7 +426,7 @@ assert parse_map_exchange_string(">>>eNp1Uj2LE0EYnrm4JubuvHAEQTjOFFpG8BRsJLsKIiJ
             "richness": 1.0,
             "cliff_smoothing": 1.0
         },
-        "territory_settings": None,
+        "territory_settings": None
     },
     "map_settings": {
         "pollution": {
@@ -468,13 +464,13 @@ assert parse_map_exchange_string(">>>eNp1Uj2LE0EYnrm4JubuvHAEQTjOFFpG8BRsJLsKIiJ
             "settler_group_max_size": 10,
             "evolution_group_size_factor": 8.0,
             "min_expansion_cooldown": 36000,
-            "max_expansion_cooldown": 216000
+            "max_expansion_cooldown": 216000,
+            "build_base_unit_dispatch_cooldown": 1800
         },
         "unit_group": {
-            "min_group_gathering_time": 1800,
-            "max_group_gathering_time": 3600,
-            "max_wait_time_for_late_members": 36000,
-            "unknown": 7200,
+            "min_group_gathering_time": 3600,
+            "max_group_gathering_time": 36000,
+            "max_wait_time_for_late_members": 7200,
             "max_group_radius": 30.0,
             "min_group_radius": 5.0,
             "max_member_speedup_when_behind": 1.4,

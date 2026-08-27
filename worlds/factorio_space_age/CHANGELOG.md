@@ -1,5 +1,9 @@
 # Factorio: Space Age apworld Changelog
 
+## 3.0.4
+
+* Remove map exchange string version locking with Factorio 2.1.{14,15,16} etc. It's probably going to be fine to just require `>= 2.1.14`.
+
 ## 3.0.3
 
 * Fix apworld being completely broken.
