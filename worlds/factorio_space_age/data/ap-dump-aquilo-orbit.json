@@ -1,0 +1,2737 @@
+{
+  "assembling-machine": {"aos-basic-crusher": {
+    "minable": {"result": "aos-basic-crusher"},
+    "energy_source": {"type": "void"},
+    "surface_conditions": [{
+      "property": "gravity",
+      "min": 0,
+      "max": 0
+    }],
+    "heating_energy": "200kW",
+    "crafting_categories": ["crushing"]
+  }},
+  "asteroid-collector": {"aos-basic-asteroid-collector": {
+    "minable": {"result": "aos-basic-asteroid-collector"},
+    "energy_source": {"type": "void"},
+    "surface_conditions": [{
+      "property": "pressure",
+      "min": 0,
+      "max": 0
+    }]
+  }},
+  "furnace": {"aos-space-furnace": {
+    "minable": {"result": "aos-space-furnace"},
+    "energy_source": {"type": "void"},
+    "surface_conditions": [{
+      "property": "gravity",
+      "min": 0,
+      "max": 0
+    }],
+    "heating_energy": "100kW",
+    "crafting_categories": ["smelting"]
+  }},
+  "item": {
+    "aos-basic-asteroid-collector": {"place_result": "aos-basic-asteroid-collector"},
+    "aos-basic-crusher": {"place_result": "aos-basic-crusher"},
+    "aos-space-furnace": {"place_result": "aos-space-furnace"}
+  },
+  "planet": {"aquilo": {
+    "solar_power_in_space": 60,
+    "asteroid_spawn_definitions": [
+      {"asteroid": "metallic-asteroid-chunk"},
+      {"asteroid": "carbonic-asteroid-chunk"},
+      {"asteroid": "oxide-asteroid-chunk"}
+    ],
+    "map_gen_settings": {
+      "autoplace_settings": {
+        "tile": {"settings": {
+          "snow-flat": {},
+          "snow-crests": {},
+          "snow-lumpy": {},
+          "snow-patchy": {},
+          "ice-rough": {},
+          "ice-smooth": {},
+          "brash-ice": {},
+          "ammoniacal-ocean": {},
+          "ammoniacal-ocean-2": {}
+        }},
+        "entity": {"settings": {
+          "crude-oil": {},
+          "lithium-brine": {},
+          "fluorine-vent": {},
+          "lithium-iceberg-huge": {},
+          "lithium-iceberg-big": {}
+        }}
+      },
+      "autoplace_controls": {
+        "lithium_brine": {},
+        "fluorine_vent": {},
+        "aquilo_crude_oil": {}
+      }
+    },
+    "surface_properties": {
+      "day-night-cycle": 72000,
+      "magnetic-field": 10,
+      "solar-power": 1,
+      "robot-energy-usage": 5,
+      "pressure": 300,
+      "gravity": 15
+    },
+    "entities_require_heating": true
+  }},
+  "recipe": {
+    "wooden-chest": {
+      "enabled": false,
+      "ingredients": [{
+        "type": "item",
+        "name": "wood",
+        "amount": 2
+      }],
+      "results": [{
+        "type": "item",
+        "name": "wooden-chest",
+        "amount": 1
+      }]
+    },
+    "stone-furnace": {
+      "enabled": false,
+      "ingredients": [{
+        "type": "item",
+        "name": "stone",
+        "amount": 5
+      }],
+      "results": [{
+        "type": "item",
+        "name": "stone-furnace",
+        "amount": 1
+      }]
+    },
+    "transport-belt": {
+      "enabled": false,
+      "categories": ["crafting", "metallurgy"],
+      "ingredients": [
+        {
+          "type": "item",
+          "name": "iron-plate",
+          "amount": 1
+        },
+        {
+          "type": "item",
+          "name": "iron-gear-wheel",
+          "amount": 1
+        }
+      ],
+      "results": [{
+        "type": "item",
+        "name": "transport-belt",
+        "amount": 2
+      }]
+    },
+    "burner-mining-drill": {
+      "enabled": false,
+      "ingredients": [
+        {
+          "type": "item",
+          "name": "iron-gear-wheel",
+          "amount": 3
+        },
+        {
+          "type": "item",
+          "name": "stone-furnace",
+          "amount": 1
+        },
+        {
+          "type": "item",
+          "name": "iron-plate",
+          "amount": 3
+        }
+      ],
+      "energy_required": 2,
+      "results": [{
+        "type": "item",
+        "name": "burner-mining-drill",
+        "amount": 1
+      }]
+    },
+    "burner-inserter": {
+      "enabled": false,
+      "ingredients": [
+        {
+          "type": "item",
+          "name": "iron-plate",
+          "amount": 1
+        },
+        {
+          "type": "item",
+          "name": "iron-gear-wheel",
+          "amount": 1
+        }
+      ],
+      "results": [{
+        "type": "item",
+        "name": "burner-inserter",
+        "amount": 1
+      }]
+    },
+    "iron-chest": {
+      "enabled": false,
+      "ingredients": [{
+        "type": "item",
+        "name": "iron-plate",
+        "amount": 8
+      }],
+      "results": [{
+        "type": "item",
+        "name": "iron-chest",
+        "amount": 1
+      }]
+    },
+    "stone-brick": {
+      "enabled": false,
+      "categories": ["smelting"],
+      "ingredients": [{
+        "type": "item",
+        "name": "stone",
+        "amount": 2
+      }],
+      "energy_required": 3.2,
+      "results": [{
+        "type": "item",
+        "name": "stone-brick",
+        "amount": 1
+      }]
+    },
+    "metallic-asteroid-crushing": {
+      "enabled": true,
+      "categories": ["crushing", "hand-crafting"],
+      "ingredients": [{
+        "type": "item",
+        "name": "metallic-asteroid-chunk",
+        "amount": 1,
+        "ignored_by_stats": 1
+      }],
+      "energy_required": 2,
+      "results": [
+        {
+          "type": "item",
+          "name": "iron-ore",
+          "amount": 20
+        },
+        {
+          "type": "item",
+          "name": "metallic-asteroid-chunk",
+          "amount": 1,
+          "independent_probability": 0.3,
+          "ignored_by_stats": 1
+        }
+      ]
+    },
+    "carbonic-asteroid-crushing": {
+      "enabled": true,
+      "categories": ["crushing", "hand-crafting"],
+      "ingredients": [{
+        "type": "item",
+        "name": "carbonic-asteroid-chunk",
+        "amount": 1,
+        "ignored_by_stats": 1
+      }],
+      "energy_required": 2,
+      "results": [
+        {
+          "type": "item",
+          "name": "carbon",
+          "amount": 10
+        },
+        {
+          "type": "item",
+          "name": "carbonic-asteroid-chunk",
+          "amount": 1,
+          "independent_probability": 0.3,
+          "ignored_by_stats": 1
+        }
+      ]
+    },
+    "oxide-asteroid-crushing": {
+      "enabled": true,
+      "categories": ["crushing", "hand-crafting"],
+      "ingredients": [{
+        "type": "item",
+        "name": "oxide-asteroid-chunk",
+        "amount": 1,
+        "ignored_by_stats": 1
+      }],
+      "energy_required": 2,
+      "results": [
+        {
+          "type": "item",
+          "name": "ice",
+          "amount": 5
+        },
+        {
+          "type": "item",
+          "name": "oxide-asteroid-chunk",
+          "amount": 1,
+          "independent_probability": 0.3,
+          "ignored_by_stats": 1
+        }
+      ]
+    },
+    "advanced-metallic-asteroid-crushing": {
+      "enabled": true,
+      "categories": ["crushing", "hand-crafting"],
+      "ingredients": [{
+        "type": "item",
+        "name": "metallic-asteroid-chunk",
+        "amount": 1,
+        "ignored_by_stats": 1
+      }],
+      "energy_required": 5,
+      "results": [
+        {
+          "type": "item",
+          "name": "iron-ore",
+          "amount": 10
+        },
+        {
+          "type": "item",
+          "name": "copper-ore",
+          "amount": 4
+        },
+        {
+          "type": "item",
+          "name": "metallic-asteroid-chunk",
+          "amount": 1,
+          "independent_probability": 0.1,
+          "ignored_by_stats": 1
+        }
+      ]
+    },
+    "advanced-carbonic-asteroid-crushing": {
+      "enabled": false,
+      "categories": ["crushing", "hand-crafting"],
+      "ingredients": [{
+        "type": "item",
+        "name": "carbonic-asteroid-chunk",
+        "amount": 1,
+        "ignored_by_stats": 1
+      }],
+      "energy_required": 5,
+      "results": [
+        {
+          "type": "item",
+          "name": "carbon",
+          "amount": 5
+        },
+        {
+          "type": "item",
+          "name": "sulfur",
+          "amount": 2
+        },
+        {
+          "type": "item",
+          "name": "carbonic-asteroid-chunk",
+          "amount": 1,
+          "independent_probability": 0.1,
+          "ignored_by_stats": 1
+        }
+      ]
+    },
+    "advanced-oxide-asteroid-crushing": {
+      "enabled": true,
+      "categories": ["crushing", "hand-crafting"],
+      "ingredients": [{
+        "type": "item",
+        "name": "oxide-asteroid-chunk",
+        "amount": 1,
+        "ignored_by_stats": 1
+      }],
+      "energy_required": 5,
+      "results": [
+        {
+          "type": "item",
+          "name": "ice",
+          "amount": 3
+        },
+        {
+          "type": "item",
+          "name": "calcite",
+          "amount": 2
+        },
+        {
+          "type": "item",
+          "name": "oxide-asteroid-chunk",
+          "amount": 1,
+          "independent_probability": 0.1,
+          "ignored_by_stats": 1
+        }
+      ]
+    },
+    "metallic-asteroid-reprocessing": {
+      "enabled": false,
+      "categories": ["crushing", "hand-crafting"],
+      "ingredients": [{
+        "type": "item",
+        "name": "metallic-asteroid-chunk",
+        "amount": 1,
+        "ignored_by_stats": 1
+      }],
+      "energy_required": 2,
+      "results": [
+        {
+          "type": "item",
+          "name": "metallic-asteroid-chunk",
+          "amount": 1,
+          "shared_probability": {"min": 0, "max": 0.4},
+          "ignored_by_stats": 1
+        },
+        {
+          "type": "item",
+          "name": "carbonic-asteroid-chunk",
+          "amount": 1,
+          "shared_probability": {"min": 0.4, "max": 0.6}
+        },
+        {
+          "type": "item",
+          "name": "oxide-asteroid-chunk",
+          "amount": 1,
+          "shared_probability": {"min": 0.6, "max": 0.8}
+        }
+      ]
+    },
+    "carbonic-asteroid-reprocessing": {
+      "enabled": false,
+      "categories": ["crushing", "hand-crafting"],
+      "ingredients": [{
+        "type": "item",
+        "name": "carbonic-asteroid-chunk",
+        "amount": 1,
+        "ignored_by_stats": 1
+      }],
+      "energy_required": 2,
+      "results": [
+        {
+          "type": "item",
+          "name": "carbonic-asteroid-chunk",
+          "amount": 1,
+          "shared_probability": {"min": 0, "max": 0.4},
+          "ignored_by_stats": 1
+        },
+        {
+          "type": "item",
+          "name": "metallic-asteroid-chunk",
+          "amount": 1,
+          "shared_probability": {"min": 0.4, "max": 0.6}
+        },
+        {
+          "type": "item",
+          "name": "oxide-asteroid-chunk",
+          "amount": 1,
+          "shared_probability": {"min": 0.6, "max": 0.8}
+        }
+      ]
+    },
+    "oxide-asteroid-reprocessing": {
+      "enabled": false,
+      "categories": ["crushing", "hand-crafting"],
+      "ingredients": [{
+        "type": "item",
+        "name": "oxide-asteroid-chunk",
+        "amount": 1,
+        "ignored_by_stats": 1
+      }],
+      "energy_required": 1,
+      "results": [
+        {
+          "type": "item",
+          "name": "oxide-asteroid-chunk",
+          "amount": 1,
+          "shared_probability": {"min": 0, "max": 0.4},
+          "ignored_by_stats": 1
+        },
+        {
+          "type": "item",
+          "name": "metallic-asteroid-chunk",
+          "amount": 1,
+          "shared_probability": {"min": 0.4, "max": 0.6}
+        },
+        {
+          "type": "item",
+          "name": "carbonic-asteroid-chunk",
+          "amount": 1,
+          "shared_probability": {"min": 0.6, "max": 0.8}
+        }
+      ]
+    },
+    "railgun": {
+      "enabled": false,
+      "categories": ["cryogenics"],
+      "ingredients": [
+        {
+          "type": "item",
+          "name": "steel-plate",
+          "amount": 10
+        },
+        {
+          "type": "item",
+          "name": "battery",
+          "amount": 10
+        },
+        {
+          "type": "item",
+          "name": "quantum-processor",
+          "amount": 20
+        },
+        {
+          "type": "fluid",
+          "name": "fluoroketone-cold",
+          "amount": 10
+        }
+      ],
+      "energy_required": 10,
+      "results": [{
+        "type": "item",
+        "name": "railgun",
+        "amount": 1
+      }]
+    },
+    "railgun-turret": {
+      "enabled": false,
+      "categories": ["cryogenics"],
+      "ingredients": [
+        {
+          "type": "item",
+          "name": "quantum-processor",
+          "amount": 100
+        },
+        {
+          "type": "item",
+          "name": "steel-plate",
+          "amount": 30
+        },
+        {
+          "type": "item",
+          "name": "battery",
+          "amount": 50
+        },
+        {
+          "type": "item",
+          "name": "carbon",
+          "amount": 20
+        },
+        {
+          "type": "fluid",
+          "name": "fluoroketone-cold",
+          "amount": 100
+        }
+      ],
+      "energy_required": 10,
+      "results": [{
+        "type": "item",
+        "name": "railgun-turret",
+        "amount": 1
+      }]
+    },
+    "lithium": {
+      "enabled": false,
+      "categories": ["chemistry", "cryogenics"],
+      "ingredients": [
+        {
+          "type": "item",
+          "name": "copper-plate",
+          "amount": 1
+        },
+        {
+          "type": "fluid",
+          "name": "lithium-brine",
+          "amount": 50
+        },
+        {
+          "type": "fluid",
+          "name": "ammonia",
+          "amount": 50
+        }
+      ],
+      "energy_required": 20,
+      "results": [{
+        "type": "item",
+        "name": "lithium",
+        "amount": 5
+      }]
+    },
+    "cryogenic-plant": {
+      "surface_conditions": [{
+        "property": "pressure",
+        "min": 100,
+        "max": 600
+      }],
+      "enabled": false,
+      "categories": ["cryogenics", "advanced-crafting"],
+      "ingredients": [
+        {
+          "type": "item",
+          "name": "refined-concrete",
+          "amount": 40
+        },
+        {
+          "type": "item",
+          "name": "battery",
+          "amount": 20
+        },
+        {
+          "type": "item",
+          "name": "processing-unit",
+          "amount": 20
+        },
+        {
+          "type": "item",
+          "name": "lithium-plate",
+          "amount": 20
+        }
+      ],
+      "energy_required": 10,
+      "results": [{
+        "type": "item",
+        "name": "cryogenic-plant",
+        "amount": 1
+      }]
+    },
+    "quantum-processor": {
+      "surface_conditions": [{
+        "property": "pressure",
+        "max": 600
+      }],
+      "enabled": false,
+      "categories": ["electromagnetics", "cryogenics"],
+      "ingredients": [
+        {
+          "type": "item",
+          "name": "plastic-bar",
+          "amount": 1
+        },
+        {
+          "type": "item",
+          "name": "processing-unit",
+          "amount": 1
+        },
+        {
+          "type": "item",
+          "name": "battery",
+          "amount": 1
+        },
+        {
+          "type": "item",
+          "name": "carbon",
+          "amount": 1
+        },
+        {
+          "type": "item",
+          "name": "lithium-plate",
+          "amount": 2
+        },
+        {
+          "type": "fluid",
+          "name": "fluoroketone-cold",
+          "amount": 10,
+          "ignored_by_stats": 5
+        }
+      ],
+      "energy_required": 30,
+      "results": [
+        {
+          "type": "item",
+          "name": "quantum-processor",
+          "amount": 1
+        },
+        {
+          "type": "fluid",
+          "name": "fluoroketone-hot",
+          "amount": 5,
+          "ignored_by_stats": 5,
+          "temperature": 180
+        }
+      ]
+    },
+    "fusion-reactor-equipment": {
+      "enabled": false,
+      "ingredients": [
+        {
+          "type": "item",
+          "name": "fusion-power-cell",
+          "amount": 10
+        },
+        {
+          "type": "item",
+          "name": "steel-plate",
+          "amount": 250
+        },
+        {
+          "type": "item",
+          "name": "carbon",
+          "amount": 100
+        },
+        {
+          "type": "item",
+          "name": "battery",
+          "amount": 25
+        },
+        {
+          "type": "item",
+          "name": "quantum-processor",
+          "amount": 250
+        }
+      ],
+      "energy_required": 30,
+      "results": [{
+        "type": "item",
+        "name": "fusion-reactor-equipment",
+        "amount": 1
+      }]
+    },
+    "fusion-power-cell": {
+      "enabled": false,
+      "categories": ["cryogenics"],
+      "ingredients": [
+        {
+          "type": "item",
+          "name": "lithium-plate",
+          "amount": 5
+        },
+        {
+          "type": "item",
+          "name": "copper-plate",
+          "amount": 1
+        },
+        {
+          "type": "fluid",
+          "name": "ammonia",
+          "amount": 100
+        }
+      ],
+      "energy_required": 10,
+      "results": [{
+        "type": "item",
+        "name": "fusion-power-cell",
+        "amount": 1
+      }]
+    },
+    "fusion-reactor": {
+      "surface_conditions": [{
+        "property": "pressure",
+        "min": 100,
+        "max": 600
+      }],
+      "enabled": false,
+      "categories": ["cryogenics"],
+      "ingredients": [
+        {
+          "type": "item",
+          "name": "steel-plate",
+          "amount": 200
+        },
+        {
+          "type": "item",
+          "name": "battery",
+          "amount": 200
+        },
+        {
+          "type": "item",
+          "name": "quantum-processor",
+          "amount": 250
+        }
+      ],
+      "energy_required": 60,
+      "results": [{
+        "type": "item",
+        "name": "fusion-reactor",
+        "amount": 1
+      }]
+    },
+    "fusion-generator": {
+      "surface_conditions": [{
+        "property": "pressure",
+        "min": 100,
+        "max": 600
+      }],
+      "enabled": false,
+      "categories": ["cryogenics"],
+      "ingredients": [
+        {
+          "type": "item",
+          "name": "steel-plate",
+          "amount": 100
+        },
+        {
+          "type": "item",
+          "name": "battery",
+          "amount": 100
+        },
+        {
+          "type": "item",
+          "name": "quantum-processor",
+          "amount": 50
+        }
+      ],
+      "energy_required": 30,
+      "results": [{
+        "type": "item",
+        "name": "fusion-generator",
+        "amount": 1
+      }]
+    },
+    "foundation": {
+      "enabled": false,
+      "categories": ["crafting-with-fluid"],
+      "ingredients": [
+        {
+          "type": "item",
+          "name": "steel-plate",
+          "amount": 4
+        },
+        {
+          "type": "item",
+          "name": "lithium-plate",
+          "amount": 4
+        },
+        {
+          "type": "item",
+          "name": "carbon",
+          "amount": 4
+        },
+        {
+          "type": "item",
+          "name": "stone",
+          "amount": 20
+        },
+        {
+          "type": "fluid",
+          "name": "fluoroketone-cold",
+          "amount": 20
+        }
+      ],
+      "energy_required": 30,
+      "results": [{
+        "type": "item",
+        "name": "foundation",
+        "amount": 1
+      }]
+    },
+    "aos-basic-asteroid-collector": {
+      "enabled": false,
+      "ingredients": [
+        {
+          "type": "item",
+          "name": "iron-plate",
+          "amount": 10
+        },
+        {
+          "type": "item",
+          "name": "iron-gear-wheel",
+          "amount": 5
+        },
+        {
+          "type": "item",
+          "name": "electronic-circuit",
+          "amount": 3
+        }
+      ],
+      "energy_required": 10,
+      "results": [{
+        "type": "item",
+        "name": "aos-basic-asteroid-collector",
+        "amount": 1
+      }]
+    },
+    "aos-basic-crusher": {
+      "enabled": false,
+      "ingredients": [
+        {
+          "type": "item",
+          "name": "iron-plate",
+          "amount": 10
+        },
+        {
+          "type": "item",
+          "name": "iron-gear-wheel",
+          "amount": 5
+        },
+        {
+          "type": "item",
+          "name": "electronic-circuit",
+          "amount": 3
+        }
+      ],
+      "energy_required": 10,
+      "results": [{
+        "type": "item",
+        "name": "aos-basic-crusher",
+        "amount": 1
+      }]
+    },
+    "aos-space-furnace": {
+      "enabled": false,
+      "ingredients": [
+        {
+          "type": "item",
+          "name": "iron-ore",
+          "amount": 20
+        },
+        {
+          "type": "item",
+          "name": "carbon",
+          "amount": 10
+        },
+        {
+          "type": "item",
+          "name": "calcite",
+          "amount": 2
+        }
+      ],
+      "energy_required": 5,
+      "results": [{
+        "type": "item",
+        "name": "aos-space-furnace",
+        "amount": 1
+      }]
+    },
+    "aos-space-platform-foundation-from-carbon": {
+      "surface_conditions": [{
+        "property": "gravity",
+        "min": 0,
+        "max": 0
+      }],
+      "enabled": false,
+      "categories": ["crafting"],
+      "ingredients": [
+        {
+          "type": "item",
+          "name": "carbon",
+          "amount": 20
+        },
+        {
+          "type": "item",
+          "name": "copper-cable",
+          "amount": 20
+        }
+      ],
+      "energy_required": 10,
+      "results": [{
+        "type": "item",
+        "name": "space-platform-foundation",
+        "amount": 10
+      }]
+    },
+    "aos-refined-concrete-from-calcite": {
+      "surface_conditions": [{
+        "property": "gravity",
+        "min": 0,
+        "max": 0
+      }],
+      "enabled": false,
+      "categories": ["crafting-with-fluid"],
+      "ingredients": [
+        {
+          "type": "item",
+          "name": "calcite",
+          "amount": 20
+        },
+        {
+          "type": "item",
+          "name": "iron-stick",
+          "amount": 8
+        },
+        {
+          "type": "item",
+          "name": "steel-plate",
+          "amount": 1
+        },
+        {
+          "type": "fluid",
+          "name": "water",
+          "amount": 100
+        }
+      ],
+      "energy_required": 15,
+      "results": [{
+        "type": "item",
+        "name": "refined-concrete",
+        "amount": 10
+      }]
+    },
+    "aos-heating-tower-from-refined-concrete": {
+      "enabled": false,
+      "ingredients": [
+        {
+          "type": "item",
+          "name": "heat-pipe",
+          "amount": 5
+        },
+        {
+          "type": "item",
+          "name": "refined-concrete",
+          "amount": 10
+        }
+      ],
+      "energy_required": 10,
+      "results": [{
+        "type": "item",
+        "name": "heating-tower",
+        "amount": 1
+      }]
+    },
+    "aos-electric-furnace-from-refined-concrete": {
+      "enabled": false,
+      "ingredients": [
+        {
+          "type": "item",
+          "name": "steel-plate",
+          "amount": 10
+        },
+        {
+          "type": "item",
+          "name": "advanced-circuit",
+          "amount": 5
+        },
+        {
+          "type": "item",
+          "name": "refined-concrete",
+          "amount": 10
+        }
+      ],
+      "energy_required": 5,
+      "results": [{
+        "type": "item",
+        "name": "electric-furnace",
+        "amount": 1
+      }]
+    },
+    "aos-oil-refinery-from-refined-concrete": {
+      "enabled": false,
+      "ingredients": [
+        {
+          "type": "item",
+          "name": "steel-plate",
+          "amount": 15
+        },
+        {
+          "type": "item",
+          "name": "iron-gear-wheel",
+          "amount": 10
+        },
+        {
+          "type": "item",
+          "name": "refined-concrete",
+          "amount": 10
+        },
+        {
+          "type": "item",
+          "name": "electronic-circuit",
+          "amount": 10
+        },
+        {
+          "type": "item",
+          "name": "pipe",
+          "amount": 10
+        }
+      ],
+      "energy_required": 8,
+      "results": [{
+        "type": "item",
+        "name": "oil-refinery",
+        "amount": 1
+      }]
+    },
+    "aos-rocket-silo-from-refined-concrete": {
+      "enabled": false,
+      "ingredients": [
+        {
+          "type": "item",
+          "name": "steel-plate",
+          "amount": 1000
+        },
+        {
+          "type": "item",
+          "name": "refined-concrete",
+          "amount": 500
+        },
+        {
+          "type": "item",
+          "name": "pipe",
+          "amount": 100
+        },
+        {
+          "type": "item",
+          "name": "processing-unit",
+          "amount": 200
+        },
+        {
+          "type": "item",
+          "name": "electric-engine-unit",
+          "amount": 200
+        }
+      ],
+      "energy_required": 30,
+      "results": [{
+        "type": "item",
+        "name": "rocket-silo",
+        "amount": 1
+      }]
+    },
+    "aos-cargo-landing-pad-from-refined-concrete": {
+      "enabled": false,
+      "ingredients": [
+        {
+          "type": "item",
+          "name": "refined-concrete",
+          "amount": 100
+        },
+        {
+          "type": "item",
+          "name": "steel-plate",
+          "amount": 25
+        },
+        {
+          "type": "item",
+          "name": "electronic-circuit",
+          "amount": 10
+        }
+      ],
+      "energy_required": 30,
+      "results": [{
+        "type": "item",
+        "name": "cargo-landing-pad",
+        "amount": 1
+      }]
+    },
+    "aos-space-platform-starter-pack-from-electronic-circuit": {
+      "surface_conditions": [{
+        "property": "gravity",
+        "min": 0,
+        "max": 0
+      }],
+      "enabled": false,
+      "ingredients": [
+        {
+          "type": "item",
+          "name": "space-platform-foundation",
+          "amount": 60
+        },
+        {
+          "type": "item",
+          "name": "steel-plate",
+          "amount": 20
+        },
+        {
+          "type": "item",
+          "name": "electronic-circuit",
+          "amount": 100
+        }
+      ],
+      "energy_required": 60,
+      "results": [{
+        "type": "item",
+        "name": "space-platform-starter-pack",
+        "amount": 1
+      }]
+    },
+    "aos-cargo-bay-from-electronic-circuit": {
+      "surface_conditions": [{
+        "property": "gravity",
+        "min": 0,
+        "max": 0
+      }],
+      "enabled": false,
+      "ingredients": [
+        {
+          "type": "item",
+          "name": "steel-plate",
+          "amount": 20
+        },
+        {
+          "type": "item",
+          "name": "electronic-circuit",
+          "amount": 20
+        }
+      ],
+      "energy_required": 10,
+      "results": [{
+        "type": "item",
+        "name": "cargo-bay",
+        "amount": 1
+      }]
+    }
+  },
+  "technology": {
+    "steam-power": {
+      "research_trigger": {
+        "type": "build-entity",
+        "entity": "heating-tower"
+      },
+      "prerequisites": ["planet-discovery-aquilo"],
+      "effects": [
+        {
+          "type": "unlock-recipe",
+          "recipe": "offshore-pump"
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "boiler"
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "steam-engine"
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "heat-exchanger"
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "steam-turbine"
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "medium-electric-pole"
+        }
+      ]
+    },
+    "electronics": {
+      "research_trigger": {
+        "type": "craft-item",
+        "item": "copper-plate",
+        "count": 10
+      },
+      "prerequisites": ["asteroid-reprocessing"],
+      "effects": [
+        {
+          "type": "unlock-recipe",
+          "recipe": "copper-cable"
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "electronic-circuit"
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "lab"
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "inserter"
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "transport-belt"
+        }
+      ]
+    },
+    "automation-science-pack": {
+      "research_trigger": {
+        "type": "craft-item",
+        "item": "lab"
+      },
+      "prerequisites": ["electronics", "solar-energy"],
+      "effects": [{
+        "type": "unlock-recipe",
+        "recipe": "automation-science-pack"
+      }]
+    },
+    "steel-processing": {
+      "research_trigger": {
+        "type": "craft-item",
+        "item": "iron-plate",
+        "count": 5
+      },
+      "prerequisites": ["asteroid-reprocessing"],
+      "effects": [{
+        "type": "unlock-recipe",
+        "recipe": "steel-plate"
+      }]
+    },
+    "steel-axe": {
+      "unit": {
+        "count": 50,
+        "time": 30,
+        "ingredients": [["automation-science-pack", 1]]
+      },
+      "prerequisites": ["automation-science-pack"],
+      "effects": [
+        {
+          "type": "character-mining-speed",
+          "modifier": 1
+        },
+        {
+          "type": "character-resource-reach-distance",
+          "modifier": 10
+        }
+      ]
+    },
+    "railway": {
+      "unit": {
+        "count": 75,
+        "time": 30,
+        "ingredients": [
+          ["automation-science-pack", 1],
+          ["logistic-science-pack", 1]
+        ]
+      },
+      "prerequisites": ["logistics-2", "engine"],
+      "effects": [
+        {
+          "type": "unlock-recipe",
+          "recipe": "rail"
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "locomotive"
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "cargo-wagon"
+        }
+      ]
+    },
+    "solar-energy": {
+      "research_trigger": {
+        "type": "craft-item",
+        "item": "steel-plate",
+        "count": 5
+      },
+      "prerequisites": ["electronics", "steel-processing"],
+      "effects": [{
+        "type": "unlock-recipe",
+        "recipe": "solar-panel"
+      }]
+    },
+    "electric-energy-distribution-1": {
+      "unit": {
+        "count": 120,
+        "time": 30,
+        "ingredients": [
+          ["automation-science-pack", 1],
+          ["logistic-science-pack", 1]
+        ]
+      },
+      "prerequisites": ["steam-power"],
+      "effects": [{
+        "type": "unlock-recipe",
+        "recipe": "big-electric-pole"
+      }]
+    },
+    "concrete": {
+      "unit": {
+        "count": 250,
+        "time": 30,
+        "ingredients": [
+          ["automation-science-pack", 1],
+          ["logistic-science-pack", 1]
+        ]
+      },
+      "prerequisites": [
+        "automation-2",
+        "steel-processing",
+        "logistic-science-pack"
+      ],
+      "effects": [
+        {
+          "type": "unlock-recipe",
+          "recipe": "concrete"
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "hazard-concrete"
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "refined-concrete"
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "aos-refined-concrete-from-calcite"
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "refined-hazard-concrete"
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "iron-stick"
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "pipe"
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "pipe-to-ground"
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "ice-melting"
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "chemical-plant"
+        }
+      ]
+    },
+    "chemical-science-pack": {
+      "unit": {
+        "count": 75,
+        "time": 10,
+        "ingredients": [
+          ["automation-science-pack", 1],
+          ["logistic-science-pack", 1]
+        ]
+      },
+      "prerequisites": [
+        "engine",
+        "advanced-circuit",
+        "sulfur-processing"
+      ],
+      "effects": [{
+        "type": "unlock-recipe",
+        "recipe": "chemical-science-pack"
+      }]
+    },
+    "military-science-pack": {
+      "unit": {
+        "count": 30,
+        "time": 15,
+        "ingredients": [
+          ["automation-science-pack", 1],
+          ["logistic-science-pack", 1]
+        ]
+      },
+      "prerequisites": [
+        "military-2",
+        "stone-wall",
+        "space-platform-thruster"
+      ],
+      "effects": [{
+        "type": "unlock-recipe",
+        "recipe": "military-science-pack"
+      }]
+    },
+    "production-science-pack": {
+      "unit": {
+        "count": 100,
+        "time": 30,
+        "ingredients": [
+          ["automation-science-pack", 1],
+          ["logistic-science-pack", 1],
+          ["chemical-science-pack", 1]
+        ]
+      },
+      "prerequisites": [
+        "productivity-module",
+        "advanced-material-processing-2",
+        "railway",
+        "space-platform-thruster"
+      ],
+      "effects": [{
+        "type": "unlock-recipe",
+        "recipe": "production-science-pack"
+      }]
+    },
+    "space-science-pack": {
+      "unit": {
+        "count": 75,
+        "time": 5,
+        "ingredients": [["automation-science-pack", 1]]
+      },
+      "prerequisites": ["automation-science-pack"],
+      "effects": [{
+        "type": "unlock-recipe",
+        "recipe": "space-science-pack"
+      }]
+    },
+    "rocket-fuel": {
+      "unit": {
+        "count": 300,
+        "time": 45,
+        "ingredients": [
+          ["automation-science-pack", 1],
+          ["logistic-science-pack", 1],
+          ["chemical-science-pack", 1]
+        ]
+      },
+      "prerequisites": ["flammables", "advanced-oil-processing"],
+      "effects": [
+        {
+          "type": "unlock-recipe",
+          "recipe": "rocket-fuel"
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "ammonia-rocket-fuel"
+        }
+      ]
+    },
+    "low-density-structure": {
+      "unit": {
+        "count": 300,
+        "time": 45,
+        "ingredients": [
+          ["automation-science-pack", 1],
+          ["logistic-science-pack", 1],
+          ["chemical-science-pack", 1]
+        ]
+      },
+      "prerequisites": [
+        "chemical-science-pack",
+        "steel-processing",
+        "logistic-science-pack"
+      ],
+      "effects": [{
+        "type": "unlock-recipe",
+        "recipe": "low-density-structure"
+      }]
+    },
+    "rocket-silo": {
+      "unit": {
+        "count": 1000,
+        "time": 60,
+        "ingredients": [
+          ["automation-science-pack", 1],
+          ["logistic-science-pack", 1],
+          ["chemical-science-pack", 1]
+        ]
+      },
+      "prerequisites": [
+        "electric-engine",
+        "concrete",
+        "processing-unit",
+        "low-density-structure",
+        "rocket-fuel"
+      ],
+      "effects": [
+        {
+          "type": "unlock-recipe",
+          "recipe": "rocket-silo"
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "aos-rocket-silo-from-refined-concrete"
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "rocket-part"
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "space-platform-foundation"
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "asteroid-collector"
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "crusher"
+        }
+      ]
+    },
+    "advanced-material-processing-2": {
+      "unit": {
+        "count": 250,
+        "time": 30,
+        "ingredients": [
+          ["automation-science-pack", 1],
+          ["logistic-science-pack", 1],
+          ["chemical-science-pack", 1]
+        ]
+      },
+      "prerequisites": [
+        "chemical-science-pack",
+        "steel-processing",
+        "logistic-science-pack"
+      ],
+      "effects": [
+        {
+          "type": "unlock-recipe",
+          "recipe": "electric-furnace"
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "aos-electric-furnace-from-refined-concrete"
+        }
+      ]
+    },
+    "construction-robotics": {
+      "unit": {
+        "count": 100,
+        "time": 30,
+        "ingredients": [
+          ["automation-science-pack", 1],
+          ["logistic-science-pack", 1],
+          ["chemical-science-pack", 1]
+        ]
+      },
+      "prerequisites": ["robotics"],
+      "effects": [
+        {
+          "type": "unlock-recipe",
+          "recipe": "roboport"
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "passive-provider-chest"
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "storage-chest"
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "construction-robot"
+        },
+        {
+          "type": "unlock-logistic-network",
+          "modifier": true,
+          "hidden": true
+        }
+      ]
+    },
+    "logistic-system": {
+      "unit": {
+        "count": 500,
+        "time": 30,
+        "ingredients": [
+          ["automation-science-pack", 1],
+          ["logistic-science-pack", 1],
+          ["chemical-science-pack", 1],
+          ["space-science-pack", 1]
+        ]
+      },
+      "prerequisites": ["space-science-pack", "logistic-robotics"],
+      "effects": [
+        {
+          "type": "unlock-recipe",
+          "recipe": "active-provider-chest"
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "requester-chest"
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "buffer-chest"
+        },
+        {
+          "type": "vehicle-logistics",
+          "modifier": true
+        }
+      ]
+    },
+    "fluid-handling": {
+      "unit": {
+        "count": 50,
+        "time": 15,
+        "ingredients": [
+          ["automation-science-pack", 1],
+          ["logistic-science-pack", 1]
+        ]
+      },
+      "prerequisites": ["engine", "concrete"],
+      "effects": [
+        {
+          "type": "unlock-recipe",
+          "recipe": "storage-tank"
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "pump"
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "barrel"
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "water-barrel"
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "empty-water-barrel"
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "sulfuric-acid-barrel"
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "empty-sulfuric-acid-barrel"
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "crude-oil-barrel"
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "empty-crude-oil-barrel"
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "heavy-oil-barrel"
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "empty-heavy-oil-barrel"
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "light-oil-barrel"
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "empty-light-oil-barrel"
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "petroleum-gas-barrel"
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "empty-petroleum-gas-barrel"
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "lubricant-barrel"
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "empty-lubricant-barrel"
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "fluoroketone-cold-barrel"
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "empty-fluoroketone-cold-barrel"
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "fluoroketone-hot-barrel"
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "empty-fluoroketone-hot-barrel"
+        }
+      ]
+    },
+    "oil-gathering": {
+      "unit": {
+        "count": 100,
+        "time": 30,
+        "ingredients": [
+          ["automation-science-pack", 1],
+          ["logistic-science-pack", 1]
+        ]
+      },
+      "prerequisites": ["concrete"],
+      "effects": [{
+        "type": "unlock-recipe",
+        "recipe": "pumpjack"
+      }]
+    },
+    "oil-processing": {
+      "research_trigger": {
+        "type": "mine-entity",
+        "entities": ["crude-oil"]
+      },
+      "prerequisites": ["oil-gathering", "planet-discovery-aquilo"],
+      "effects": [
+        {
+          "type": "unlock-recipe",
+          "recipe": "oil-refinery"
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "aos-oil-refinery-from-refined-concrete"
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "basic-oil-processing"
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "solid-fuel-from-petroleum-gas"
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "solid-fuel-from-ammonia"
+        }
+      ]
+    },
+    "sulfur-processing": {
+      "unit": {
+        "count": 150,
+        "time": 30,
+        "ingredients": [
+          ["automation-science-pack", 1],
+          ["logistic-science-pack", 1]
+        ]
+      },
+      "prerequisites": ["oil-processing"],
+      "effects": [
+        {
+          "type": "unlock-recipe",
+          "recipe": "sulfuric-acid"
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "sulfur"
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "advanced-carbonic-asteroid-crushing"
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "coal-synthesis"
+        }
+      ]
+    },
+    "plastics": {
+      "unit": {
+        "count": 200,
+        "time": 30,
+        "ingredients": [
+          ["automation-science-pack", 1],
+          ["logistic-science-pack", 1]
+        ]
+      },
+      "prerequisites": ["oil-processing", "sulfur-processing"],
+      "effects": [{
+        "type": "unlock-recipe",
+        "recipe": "plastic-bar"
+      }]
+    },
+    "uranium-mining": {
+      "unit": {
+        "count": 100,
+        "time": 30,
+        "ingredients": [
+          ["automation-science-pack", 1],
+          ["logistic-science-pack", 1],
+          ["chemical-science-pack", 1]
+        ]
+      },
+      "prerequisites": [
+        "chemical-science-pack",
+        "concrete",
+        "planet-discovery-nauvis"
+      ],
+      "effects": [{
+        "type": "mining-with-fluid",
+        "modifier": true
+      }]
+    },
+    "nuclear-power": {
+      "unit": {
+        "count": 800,
+        "time": 30,
+        "ingredients": [
+          ["automation-science-pack", 1],
+          ["logistic-science-pack", 1],
+          ["chemical-science-pack", 1]
+        ]
+      },
+      "prerequisites": ["uranium-processing"],
+      "effects": [
+        {
+          "type": "unlock-recipe",
+          "recipe": "nuclear-reactor"
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "uranium-fuel-cell"
+        }
+      ]
+    },
+    "epic-quality": {
+      "unit": {
+        "count": 500,
+        "time": 60,
+        "ingredients": [
+          ["automation-science-pack", 1],
+          ["logistic-science-pack", 1],
+          ["chemical-science-pack", 1],
+          ["utility-science-pack", 1],
+          ["space-science-pack", 1]
+        ]
+      },
+      "prerequisites": ["utility-science-pack", "quality-module"],
+      "effects": [{
+        "type": "unlock-quality",
+        "quality": "epic"
+      }]
+    },
+    "legendary-quality": {
+      "unit": {
+        "count": 500,
+        "time": 60,
+        "ingredients": [
+          ["automation-science-pack", 1],
+          ["logistic-science-pack", 1],
+          ["chemical-science-pack", 1],
+          ["utility-science-pack", 1],
+          ["space-science-pack", 1],
+          ["cryogenic-science-pack", 1]
+        ]
+      },
+      "prerequisites": ["cryogenic-science-pack", "epic-quality"],
+      "effects": [{
+        "type": "unlock-quality",
+        "quality": "legendary"
+      }]
+    },
+    "space-platform": {
+      "unit": {
+        "count": 200,
+        "time": 30,
+        "ingredients": [
+          ["automation-science-pack", 1],
+          ["space-science-pack", 1]
+        ]
+      },
+      "prerequisites": ["space-science-pack"],
+      "effects": [
+        {
+          "type": "unlock-recipe",
+          "recipe": "space-platform-starter-pack"
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "aos-space-platform-starter-pack-from-electronic-circuit"
+        }
+      ]
+    },
+    "landing-pad-unloading-bay": {
+      "unit": {
+        "count": 750,
+        "time": 60,
+        "ingredients": [
+          ["automation-science-pack", 1],
+          ["logistic-science-pack", 1],
+          ["chemical-science-pack", 1],
+          ["space-science-pack", 1]
+        ]
+      },
+      "prerequisites": [
+        "planet-discovery-aquilo",
+        "processing-unit",
+        "electric-engine",
+        "cargo-bay"
+      ],
+      "effects": [
+        {
+          "type": "unlock-recipe",
+          "recipe": "landing-pad-unloading-bay"
+        },
+        {
+          "type": "max-cargo-bay-unloading-distance",
+          "modifier": 59
+        }
+      ]
+    },
+    "railgun-shooting-speed-1": {
+      "unit": {
+        "count_formula": "2^(L-1)*100",
+        "time": 60,
+        "ingredients": [
+          ["automation-science-pack", 1],
+          ["logistic-science-pack", 1],
+          ["chemical-science-pack", 1],
+          ["space-science-pack", 1],
+          ["cryogenic-science-pack", 1]
+        ]
+      },
+      "max_level": "infinite",
+      "prerequisites": ["railgun"],
+      "effects": [{
+        "type": "gun-speed",
+        "ammo_category": "railgun",
+        "icon": "__space-age__/graphics/icons/railgun-ammo.png",
+        "icon_size": 64,
+        "modifier": 0.15
+      }]
+    },
+    "railgun-damage-1": {
+      "unit": {
+        "count_formula": "2^(L-1)*100",
+        "time": 60,
+        "ingredients": [
+          ["automation-science-pack", 1],
+          ["logistic-science-pack", 1],
+          ["chemical-science-pack", 1],
+          ["space-science-pack", 1]
+        ]
+      },
+      "max_level": "infinite",
+      "prerequisites": ["railgun"],
+      "effects": [{
+        "type": "ammo-damage",
+        "ammo_category": "railgun",
+        "modifier": 0.4
+      }]
+    },
+    "space-platform-thruster": {
+      "unit": {
+        "count": 500,
+        "time": 60,
+        "ingredients": [
+          ["automation-science-pack", 1],
+          ["logistic-science-pack", 1],
+          ["chemical-science-pack", 1],
+          ["space-science-pack", 1]
+        ]
+      },
+      "prerequisites": ["rocket-silo", "space-science-pack"],
+      "effects": [
+        {
+          "type": "unlock-recipe",
+          "recipe": "thruster"
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "thruster-fuel"
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "thruster-oxidizer"
+        }
+      ]
+    },
+    "planet-discovery-vulcanus": {
+      "unit": {
+        "count": 1000,
+        "time": 60,
+        "ingredients": [
+          ["automation-science-pack", 1],
+          ["logistic-science-pack", 1],
+          ["chemical-science-pack", 1],
+          ["space-science-pack", 1]
+        ]
+      },
+      "prerequisites": ["space-platform-thruster"],
+      "effects": [
+        {
+          "type": "unlock-space-location",
+          "space_location": "vulcanus",
+          "use_icon_overlay_constant": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "stone-brick"
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "stone-furnace"
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "burner-mining-drill"
+        }
+      ]
+    },
+    "planet-discovery-gleba": {
+      "unit": {
+        "count": 1000,
+        "time": 60,
+        "ingredients": [
+          ["automation-science-pack", 1],
+          ["logistic-science-pack", 1],
+          ["chemical-science-pack", 1],
+          ["space-science-pack", 1]
+        ]
+      },
+      "prerequisites": ["space-platform-thruster", "landfill"],
+      "effects": [
+        {
+          "type": "unlock-space-location",
+          "space_location": "gleba",
+          "use_icon_overlay_constant": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "wooden-chest"
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "small-electric-pole"
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "stone-brick"
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "stone-furnace"
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "burner-mining-drill"
+        }
+      ]
+    },
+    "planet-discovery-fulgora": {
+      "unit": {
+        "count": 1000,
+        "time": 60,
+        "ingredients": [
+          ["automation-science-pack", 1],
+          ["logistic-science-pack", 1],
+          ["chemical-science-pack", 1],
+          ["space-science-pack", 1]
+        ]
+      },
+      "prerequisites": ["space-platform-thruster", "electric-energy-accumulators"],
+      "effects": [
+        {
+          "type": "unlock-space-location",
+          "space_location": "fulgora",
+          "use_icon_overlay_constant": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "lightning-rod"
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "stone-brick"
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "stone-furnace"
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "burner-mining-drill"
+        }
+      ]
+    },
+    "planet-discovery-aquilo": {
+      "research_trigger": {
+        "type": "craft-item",
+        "item": "heating-tower"
+      },
+      "prerequisites": ["heating-tower"],
+      "effects": [
+        {
+          "type": "unlock-space-location",
+          "space_location": "aquilo",
+          "use_icon_overlay_constant": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "ammoniacal-solution-separation"
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "ice-platform"
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "burner-inserter"
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "iron-chest"
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "steel-chest"
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "cargo-landing-pad"
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "aos-cargo-landing-pad-from-refined-concrete"
+        }
+      ]
+    },
+    "railgun": {
+      "unit": {
+        "count": 200,
+        "time": 60,
+        "ingredients": [
+          ["automation-science-pack", 1],
+          ["logistic-science-pack", 1],
+          ["chemical-science-pack", 1],
+          ["space-science-pack", 1],
+          ["cryogenic-science-pack", 1]
+        ]
+      },
+      "prerequisites": ["quantum-processor", "explosives"],
+      "effects": [
+        {
+          "type": "unlock-recipe",
+          "recipe": "railgun"
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "railgun-turret"
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "railgun-ammo"
+        }
+      ]
+    },
+    "bioflux-processing": {
+      "research_trigger": {
+        "type": "craft-item",
+        "item": "bioflux",
+        "count": 25
+      },
+      "prerequisites": ["bioflux"],
+      "effects": [
+        {
+          "type": "unlock-recipe",
+          "recipe": "bioplastic"
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "rocket-fuel-from-jelly"
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "biosulfur"
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "biolubricant"
+        }
+      ]
+    },
+    "tree-seeding": {
+      "unit": {
+        "count": 50,
+        "time": 60,
+        "ingredients": [
+          ["automation-science-pack", 1],
+          ["logistic-science-pack", 1],
+          ["chemical-science-pack", 1],
+          ["space-science-pack", 1],
+          ["agricultural-science-pack", 1]
+        ]
+      },
+      "prerequisites": ["agricultural-science-pack", "planet-discovery-nauvis"],
+      "effects": [{
+        "type": "unlock-recipe",
+        "recipe": "tree-seed"
+      }]
+    },
+    "captivity": {
+      "unit": {
+        "count": 1000,
+        "time": 60,
+        "ingredients": [
+          ["automation-science-pack", 1],
+          ["logistic-science-pack", 1],
+          ["chemical-science-pack", 1],
+          ["military-science-pack", 1],
+          ["space-science-pack", 1],
+          ["agricultural-science-pack", 1]
+        ]
+      },
+      "prerequisites": [
+        "agricultural-science-pack",
+        "military-3",
+        "rocketry",
+        "planet-discovery-nauvis"
+      ],
+      "effects": [{
+        "type": "unlock-recipe",
+        "recipe": "capture-robot-rocket"
+      }]
+    },
+    "fish-breeding": {
+      "unit": {
+        "count": 500,
+        "time": 60,
+        "ingredients": [
+          ["automation-science-pack", 1],
+          ["logistic-science-pack", 1],
+          ["chemical-science-pack", 1],
+          ["space-science-pack", 1],
+          ["agricultural-science-pack", 1]
+        ]
+      },
+      "prerequisites": ["tree-seeding", "planet-discovery-nauvis"],
+      "effects": [
+        {
+          "type": "unlock-recipe",
+          "recipe": "fish-breeding"
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "nutrients-from-fish"
+        }
+      ]
+    },
+    "heating-tower": {
+      "unit": {
+        "count": 500,
+        "time": 30,
+        "ingredients": [
+          ["automation-science-pack", 1],
+          ["logistic-science-pack", 1]
+        ]
+      },
+      "prerequisites": ["concrete"],
+      "effects": [
+        {
+          "type": "unlock-recipe",
+          "recipe": "heating-tower"
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "aos-heating-tower-from-refined-concrete"
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "heat-pipe"
+        }
+      ]
+    },
+    "lithium-processing": {
+      "research_trigger": {
+        "type": "mine-entity",
+        "entities": ["lithium-iceberg-big", "lithium-iceberg-huge"]
+      },
+      "prerequisites": ["advanced-material-processing-2"],
+      "effects": [
+        {
+          "type": "unlock-recipe",
+          "recipe": "lithium"
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "lithium-plate"
+        }
+      ]
+    },
+    "cryogenic-plant": {
+      "research_trigger": {
+        "type": "craft-item",
+        "item": "lithium-plate"
+      },
+      "prerequisites": [
+        "lithium-processing",
+        "battery",
+        "processing-unit"
+      ],
+      "effects": [
+        {
+          "type": "unlock-recipe",
+          "recipe": "cryogenic-plant"
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "fluoroketone"
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "fluoroketone-cooling"
+        }
+      ]
+    },
+    "asteroid-reprocessing": {
+      "research_trigger": {
+        "type": "craft-item",
+        "item": "calcite"
+      },
+      "prerequisites": [],
+      "effects": [
+        {
+          "type": "unlock-recipe",
+          "recipe": "metallic-asteroid-reprocessing"
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "oxide-asteroid-reprocessing"
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "carbonic-asteroid-reprocessing"
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "aos-basic-asteroid-collector"
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "aos-basic-crusher"
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "aos-space-furnace"
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "aos-space-platform-foundation-from-carbon"
+        },
+        {
+          "type": "unlock-space-platforms",
+          "modifier": true,
+          "hidden": true
+        },
+        {
+          "type": "unlock-travel-to-space-platforms",
+          "modifier": true,
+          "hidden": true
+        },
+        {
+          "type": "create-ghost-on-entity-death",
+          "modifier": true,
+          "hidden": true
+        }
+      ]
+    },
+    "advanced-asteroid-processing": {
+      "unit": {
+        "count": 2000,
+        "time": 60,
+        "ingredients": [
+          ["automation-science-pack", 1],
+          ["logistic-science-pack", 1],
+          ["chemical-science-pack", 1],
+          ["production-science-pack", 1],
+          ["utility-science-pack", 1],
+          ["space-science-pack", 1],
+          ["agricultural-science-pack", 1]
+        ]
+      },
+      "prerequisites": [
+        "agricultural-science-pack",
+        "production-science-pack",
+        "utility-science-pack"
+      ],
+      "effects": [
+        {
+          "type": "unlock-recipe",
+          "recipe": "advanced-thruster-fuel"
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "advanced-thruster-oxidizer"
+        }
+      ]
+    },
+    "quantum-processor": {
+      "unit": {
+        "count": 50,
+        "time": 60,
+        "ingredients": [
+          ["automation-science-pack", 1],
+          ["logistic-science-pack", 1],
+          ["chemical-science-pack", 1],
+          ["space-science-pack", 1],
+          ["cryogenic-science-pack", 1]
+        ]
+      },
+      "prerequisites": ["cryogenic-science-pack"],
+      "effects": [{
+        "type": "unlock-recipe",
+        "recipe": "quantum-processor"
+      }]
+    },
+    "fusion-reactor": {
+      "unit": {
+        "count": 200,
+        "time": 60,
+        "ingredients": [
+          ["automation-science-pack", 1],
+          ["logistic-science-pack", 1],
+          ["chemical-science-pack", 1],
+          ["space-science-pack", 1],
+          ["cryogenic-science-pack", 1]
+        ]
+      },
+      "prerequisites": ["quantum-processor"],
+      "effects": [
+        {
+          "type": "unlock-recipe",
+          "recipe": "fusion-reactor"
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "fusion-generator"
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "fusion-power-cell"
+        }
+      ]
+    },
+    "fusion-reactor-equipment": {
+      "unit": {
+        "count": 100,
+        "time": 60,
+        "ingredients": [
+          ["automation-science-pack", 1],
+          ["logistic-science-pack", 1],
+          ["chemical-science-pack", 1],
+          ["utility-science-pack", 1],
+          ["space-science-pack", 1],
+          ["cryogenic-science-pack", 1]
+        ]
+      },
+      "prerequisites": [
+        "modular-armor",
+        "fusion-reactor",
+        "utility-science-pack"
+      ],
+      "effects": [{
+        "type": "unlock-recipe",
+        "recipe": "fusion-reactor-equipment"
+      }]
+    },
+    "captive-biter-spawner": {
+      "unit": {
+        "count": 300,
+        "time": 60,
+        "ingredients": [
+          ["automation-science-pack", 1],
+          ["logistic-science-pack", 1],
+          ["chemical-science-pack", 1],
+          ["utility-science-pack", 1],
+          ["space-science-pack", 1],
+          ["cryogenic-science-pack", 1]
+        ]
+      },
+      "prerequisites": [
+        "cryogenic-science-pack",
+        "biter-egg-handling",
+        "kovarex-enrichment-process"
+      ],
+      "effects": [{
+        "type": "unlock-recipe",
+        "recipe": "captive-biter-spawner"
+      }]
+    },
+    "stellar-discovery-solar-system-edge": {
+      "unit": {
+        "count": 1000,
+        "time": 60,
+        "ingredients": [
+          ["automation-science-pack", 1],
+          ["logistic-science-pack", 1],
+          ["chemical-science-pack", 1],
+          ["production-science-pack", 1],
+          ["utility-science-pack", 1],
+          ["space-science-pack", 1],
+          ["metallurgic-science-pack", 1],
+          ["agricultural-science-pack", 1],
+          ["electromagnetic-science-pack", 1],
+          ["cryogenic-science-pack", 1]
+        ]
+      },
+      "prerequisites": [
+        "production-science-pack",
+        "utility-science-pack",
+        "metallurgic-science-pack",
+        "agricultural-science-pack",
+        "electromagnetic-science-pack",
+        "cryogenic-science-pack"
+      ],
+      "effects": [{
+        "type": "unlock-space-location",
+        "space_location": "solar-system-edge",
+        "use_icon_overlay_constant": true
+      }]
+    },
+    "foundation": {
+      "unit": {
+        "count": 200,
+        "time": 60,
+        "ingredients": [
+          ["automation-science-pack", 1],
+          ["logistic-science-pack", 1],
+          ["chemical-science-pack", 1],
+          ["utility-science-pack", 1],
+          ["space-science-pack", 1],
+          ["cryogenic-science-pack", 1]
+        ]
+      },
+      "prerequisites": ["cryogenic-science-pack", "utility-science-pack"],
+      "effects": [{
+        "type": "unlock-recipe",
+        "recipe": "foundation"
+      }]
+    },
+    "asteroid-productivity": {
+      "unit": {
+        "count": 100,
+        "time": 60,
+        "ingredients": [
+          ["automation-science-pack", 1],
+          ["space-science-pack", 1]
+        ]
+      },
+      "prerequisites": ["space-science-pack"],
+      "effects": [
+        {
+          "type": "change-recipe-productivity",
+          "recipe": "carbonic-asteroid-crushing",
+          "change": 0.1
+        },
+        {
+          "type": "change-recipe-productivity",
+          "recipe": "oxide-asteroid-crushing",
+          "change": 0.1
+        },
+        {
+          "type": "change-recipe-productivity",
+          "recipe": "metallic-asteroid-crushing",
+          "change": 0.1
+        },
+        {
+          "type": "change-recipe-productivity",
+          "recipe": "advanced-carbonic-asteroid-crushing",
+          "change": 0.1
+        },
+        {
+          "type": "change-recipe-productivity",
+          "recipe": "advanced-oxide-asteroid-crushing",
+          "change": 0.1
+        },
+        {
+          "type": "change-recipe-productivity",
+          "recipe": "advanced-metallic-asteroid-crushing",
+          "change": 0.1
+        }
+      ]
+    },
+    "rocket-part-productivity": {
+      "unit": {
+        "count_formula": "1.5^L*200",
+        "time": 60,
+        "ingredients": [
+          ["automation-science-pack", 1],
+          ["logistic-science-pack", 1],
+          ["chemical-science-pack", 1],
+          ["cryogenic-science-pack", 1]
+        ]
+      },
+      "max_level": "infinite",
+      "prerequisites": ["cryogenic-science-pack", "rocket-silo"],
+      "effects": [{
+        "type": "change-recipe-productivity",
+        "recipe": "rocket-part",
+        "change": 0.1
+      }]
+    },
+    "planet-discovery-nauvis": {
+      "unit": {
+        "count": 1000,
+        "time": 60,
+        "ingredients": [
+          ["automation-science-pack", 1],
+          ["logistic-science-pack", 1],
+          ["chemical-science-pack", 1],
+          ["space-science-pack", 1]
+        ]
+      },
+      "prerequisites": ["space-platform-thruster"],
+      "effects": [
+        {
+          "type": "unlock-space-location",
+          "space_location": "nauvis",
+          "use_icon_overlay_constant": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "wooden-chest"
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "small-electric-pole"
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "stone-brick"
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "stone-furnace"
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "burner-mining-drill"
+        }
+      ]
+    },
+    "asteroid-productivity-2": {
+      "unit": {
+        "count_formula": "1.5^(L-2)*250",
+        "time": 60,
+        "ingredients": [
+          ["automation-science-pack", 1],
+          ["logistic-science-pack", 1],
+          ["space-science-pack", 1]
+        ]
+      },
+      "max_level": "infinite",
+      "prerequisites": ["logistic-science-pack", "asteroid-productivity"],
+      "effects": [
+        {
+          "type": "change-recipe-productivity",
+          "recipe": "carbonic-asteroid-crushing",
+          "change": 0.1
+        },
+        {
+          "type": "change-recipe-productivity",
+          "recipe": "oxide-asteroid-crushing",
+          "change": 0.1
+        },
+        {
+          "type": "change-recipe-productivity",
+          "recipe": "metallic-asteroid-crushing",
+          "change": 0.1
+        },
+        {
+          "type": "change-recipe-productivity",
+          "recipe": "advanced-carbonic-asteroid-crushing",
+          "change": 0.1
+        },
+        {
+          "type": "change-recipe-productivity",
+          "recipe": "advanced-oxide-asteroid-crushing",
+          "change": 0.1
+        },
+        {
+          "type": "change-recipe-productivity",
+          "recipe": "advanced-metallic-asteroid-crushing",
+          "change": 0.1
+        }
+      ]
+    },
+    "cargo-bay": {
+      "unit": {
+        "count": 100,
+        "time": 30,
+        "ingredients": [
+          ["automation-science-pack", 1],
+          ["space-science-pack", 1]
+        ]
+      },
+      "prerequisites": ["space-science-pack"],
+      "effects": [
+        {
+          "type": "unlock-recipe",
+          "recipe": "cargo-bay"
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "aos-cargo-bay-from-electronic-circuit"
+        }
+      ]
+    }
+  }
+}
