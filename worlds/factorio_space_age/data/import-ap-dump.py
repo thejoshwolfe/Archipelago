@@ -17,12 +17,12 @@ here = os.path.dirname(__file__)
 formatted_input = os.path.join(here, "ap-dump-full.json")
 formatted_input_planets = {
     planet: os.path.join(here, "ap-dump-full-{}.json".format(planet))
-    for planet in ["vulcanus", "gleba", "fulgora"]
+    for planet in ["vulcanus", "gleba", "fulgora", "aquilo-orbit"]
 }
 main_output = os.path.join(here, "ap-dump.json")
 output_planets = {
     planet: os.path.join(here, "ap-dump-{}.json".format(planet))
-    for planet in ["vulcanus", "gleba", "fulgora"]
+    for planet in ["vulcanus", "gleba", "fulgora", "aquilo-orbit"]
 }
 output_names_py = os.path.join(here, "generated_names.py")
 output_ids_py = os.path.join(here, "generated_ids.py")
@@ -83,6 +83,8 @@ def recieve_input(input_path):
             starting_planet = "gleba"
         elif the_data["technology"]["planet-discovery-fulgora"].get("hidden", False):
             starting_planet = "fulgora"
+        elif "cargo-bay" in the_data["technology"]:
+            starting_planet = "aquilo-orbit"
         else: assert False, "which planet start is this?"
         with open(formatted_input_planets[starting_planet], "w") as f:
             json_dump(the_data, f)
