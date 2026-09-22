@@ -576,6 +576,14 @@ starting_planet_to_unrandomized_technologies = {
         "automation-science-pack",
         "automation",
     },
+    "aquilo_orbit": {
+        "asteroid-reprocessing", # All the early game buildings.
+        "steel-processing",
+        "electronics",
+        "solar-energy",
+        "automation-science-pack",
+        "automation",
+    },
 }
 
 never_give_free_samples_from_recipes = {

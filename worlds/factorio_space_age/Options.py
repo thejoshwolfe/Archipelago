@@ -57,16 +57,22 @@ class Goal(Choice):
 
 class StartingPlanet(Choice):
     """
-    Start on one of the other 3 inner planets.
+    Start on another planet.
     To randomly select a planet, use advanced option randomization to specify weights.
     Requires _CodeGreen's Any Planet Start mod: https://mods.factorio.com/mod/any-planet-start
+    Sometimes requires my Aquilo Orbit Start mod: https://mods.factorio.com/mod/aquilo-orbit-start
 
     WARNING: starting on Gleba with enemies enabled is very difficult. See also pentapod_killers and gleba_coal.
+
+    WARNING: starting in Aquilo Orbit is a very different experience from the other options.
+    You may want to read the Aquilo Orbit Start mod's documentation before decciding to try it out.
+    See also aquilo_orbit_start_settings. TODO: add that.
     """
     option_nauvis = 0
     option_vulcanus = 1
     option_gleba = 2
     option_fulgora = 3
+    option_aquilo_orbit = 4
     default = 0
 
 class AllowImportedBlueprints(DefaultOnToggle):

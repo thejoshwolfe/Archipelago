@@ -250,6 +250,23 @@ class Factorio(World):
                 names.scrap_recycling_productivity_4, # infinite
             ])
             infinite_scrap_recycling_productivity = scrap_stack[-1]
+        if self.starting_planet == "aquilo_orbit":
+            # aquilo-orbit-start instantiates 1 level of asteroid productivity.
+            try:
+                # progressive_technologies: only_related
+                scrap_stack = self.progressive_technology_stacks[names.scrap_recycling_productivity]
+            except KeyError:
+                # progressive_technologies: large_groups
+                scrap_stack = self.progressive_technology_stacks[names.progressive_fulgora]
+            assert scrap_stack[-1] == infinite_scrap_recycling_productivity
+            del scrap_stack[-1]
+            scrap_stack.extend([
+                names.scrap_recycling_productivity_1,
+                names.scrap_recycling_productivity_2,
+                names.scrap_recycling_productivity_3,
+                names.scrap_recycling_productivity_4, # infinite
+            ])
+            infinite_scrap_recycling_productivity = scrap_stack[-1]
 
         # Now build the reverse index.
         self.technology_name_to_progressive_group_name = {
