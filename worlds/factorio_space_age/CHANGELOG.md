@@ -1,5 +1,9 @@
 # Factorio: Space Age apworld Changelog
 
+## 3.0.5
+
+* Better error reporting when creating save files in directories with problematic permissions. Thanks @lepideble for the suggestion.
+
 ## 3.0.4
 
 * Remove map exchange string version locking with Factorio 2.1.{14,15,16} etc. It's probably going to be fine to just require `>= 2.1.14`.
