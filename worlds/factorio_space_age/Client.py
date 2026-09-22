@@ -369,7 +369,7 @@ async def factorio_server_watcher(ctx: FactorioContext):
         logger.info(f"Creating savegame {savegame_name}")
         subprocess.run((
             executable, "--create", savegame_name, "--exchange-string", ctx.map_exchange_string,
-        ))
+        ), check=True)
     factorio_process = subprocess.Popen(
         (executable, "--start-server", savegame_name, *ctx.server_args),
         stderr=subprocess.PIPE,
@@ -485,7 +485,7 @@ async def factorio_spinup_server(ctx: FactorioContext) -> bool:
         logger.info(f"Creating savegame {savegame_name}")
         subprocess.run((
             executable, "--create", savegame_name
-        ))
+        ), check=True)
     factorio_process = subprocess.Popen(
         (executable, "--start-server", savegame_name, *ctx.server_args),
         stderr=subprocess.PIPE,
