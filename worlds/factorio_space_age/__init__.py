@@ -712,7 +712,11 @@ class Factorio(World):
                 prerequisites = technology_props.get("prerequisites", [])
                 if len(prerequisites) == 0: return False # Starting trigger tech.
                 return any(is_beyond_goal(prerequisite) for prerequisite in prerequisites)
-            return any(name in sciences_beyond_goal for (name, amount) in technology_props["unit"]["ingredients"])
+            ingredients = {name for (name, amount) in technology_props["unit"]["ingredients"]}
+            if technology_name == names.railgun_damage_1:
+                # Really? This doesn't require cryo science? Well, pretend it does just to get this logic right.
+                ingredients.add(names.cryogenic_science_pack)
+            return len(sciences_beyond_goal & ingredients) > 0
 
         technology_name_to_location = {}
         for location_name in location_names:
