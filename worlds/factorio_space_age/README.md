@@ -1,9 +1,11 @@
 # Factorio: Space Age Archipelago
 
-download: https://github.com/thejoshwolfe/Archipelago/releases .
-general docs: https://github.com/thejoshwolfe/Archipelago/blob/space-age/worlds/factorio_space_age/docs/en_Factorio_Space_Age.md .
-setup guide: https://github.com/thejoshwolfe/Archipelago/blob/space-age/worlds/factorio_space_age/docs/setup_en.md .
-source code: https://github.com/thejoshwolfe/Archipelago/tree/space-age/worlds/factorio_space_age .
+Archipelago apworld for Factorio: Space Age by thejoshwolfe.
+
+* download: https://github.com/thejoshwolfe/Archipelago/releases
+* general docs: https://github.com/thejoshwolfe/Archipelago/blob/space-age/worlds/factorio_space_age/docs/en_Factorio_Space_Age.md
+* setup guide: https://github.com/thejoshwolfe/Archipelago/blob/space-age/worlds/factorio_space_age/docs/setup_en.md
+* source code: https://github.com/thejoshwolfe/Archipelago/tree/space-age/worlds/factorio_space_age
 
 Welcome to the source code!
 
