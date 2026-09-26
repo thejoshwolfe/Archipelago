@@ -922,27 +922,27 @@
     "discharge-defense-remote": {},
     "artillery-targeting-remote": {},
     "yumako": {
-      "fuel_category": "chemical",
+      "fuel_categories": ["chemical"],
       "spoil_ticks": 216000,
       "spoil_result": "spoilage"
     },
     "jellynut": {
-      "fuel_category": "chemical",
+      "fuel_categories": ["chemical"],
       "spoil_ticks": 216000,
       "spoil_result": "spoilage"
     },
     "yumako-mash": {
-      "fuel_category": "chemical",
+      "fuel_categories": ["chemical"],
       "spoil_ticks": 10800,
       "spoil_result": "spoilage"
     },
     "jelly": {
-      "fuel_category": "chemical",
+      "fuel_categories": ["chemical"],
       "spoil_ticks": 14400,
       "spoil_result": "spoilage"
     },
     "bioflux": {
-      "fuel_category": "food",
+      "fuel_categories": ["food"],
       "spoil_ticks": 432000,
       "spoil_result": "spoilage"
     }
@@ -1192,8 +1192,8 @@
     "parameter-8": {"parameter": true},
     "parameter-9": {"parameter": true},
     "stone-brick": {"place_as_tile": {"result": "stone-path"}},
-    "wood": {"fuel_category": "chemical"},
-    "coal": {"fuel_category": "chemical"},
+    "wood": {"fuel_categories": ["chemical"]},
+    "coal": {"fuel_categories": ["chemical"]},
     "stone": {},
     "iron-ore": {},
     "copper-ore": {},
@@ -1232,8 +1232,8 @@
     "steel-plate": {},
     "engine-unit": {},
     "electric-furnace": {"place_result": "electric-furnace"},
-    "solid-fuel": {"fuel_category": "chemical"},
-    "rocket-fuel": {"fuel_category": "chemical"},
+    "solid-fuel": {"fuel_categories": ["chemical"]},
+    "rocket-fuel": {"fuel_categories": ["chemical"]},
     "iron-chest": {"place_result": "iron-chest"},
     "big-electric-pole": {"place_result": "big-electric-pole"},
     "medium-electric-pole": {"place_result": "medium-electric-pole"},
@@ -1311,7 +1311,7 @@
     "battery": {},
     "flying-robot-frame": {},
     "low-density-structure": {},
-    "nuclear-fuel": {"fuel_category": "chemical"},
+    "nuclear-fuel": {"fuel_categories": ["chemical"]},
     "rocket-part": {"hidden": true},
     "electric-energy-interface": {
       "hidden": true,
@@ -1326,7 +1326,7 @@
     "uranium-238": {},
     "centrifuge": {"place_result": "centrifuge"},
     "uranium-fuel-cell": {
-      "fuel_category": "nuclear",
+      "fuel_categories": ["nuclear"],
       "burnt_result": "depleted-uranium-fuel-cell"
     },
     "depleted-uranium-fuel-cell": {},
@@ -1443,7 +1443,7 @@
     "crusher": {"place_result": "crusher"},
     "thruster": {"place_result": "thruster"},
     "ice": {},
-    "carbon": {"fuel_category": "chemical"},
+    "carbon": {"fuel_categories": ["chemical"]},
     "calcite": {},
     "tungsten-ore": {},
     "tungsten-plate": {},
@@ -1462,15 +1462,15 @@
     "yumako-seed": {
       "place_result": "yumako-tree",
       "plant_result": "yumako-tree",
-      "fuel_category": "chemical"
+      "fuel_categories": ["chemical"]
     },
     "jellynut-seed": {
       "place_result": "jellystem",
       "plant_result": "jellystem",
-      "fuel_category": "chemical"
+      "fuel_categories": ["chemical"]
     },
     "nutrients": {
-      "fuel_category": "nutrients",
+      "fuel_categories": ["nutrients"],
       "spoil_ticks": 18000,
       "spoil_result": "spoilage"
     },
@@ -1486,11 +1486,11 @@
       "spoil_ticks": 108000
     },
     "biter-egg": {
-      "fuel_category": "chemical",
+      "fuel_categories": ["chemical"],
       "spoil_ticks": 108000
     },
     "pentapod-egg": {
-      "fuel_category": "chemical",
+      "fuel_categories": ["chemical"],
       "spoil_ticks": 54000
     },
     "carbon-fiber": {},
@@ -1510,11 +1510,11 @@
     "tesla-turret": {"place_result": "tesla-turret"},
     "quantum-processor": {},
     "fusion-reactor-equipment": {},
-    "fusion-power-cell": {"fuel_category": "fusion"},
+    "fusion-power-cell": {"fuel_categories": ["fusion"]},
     "fusion-reactor": {"place_result": "fusion-reactor"},
     "fusion-generator": {"place_result": "fusion-generator"},
     "cryogenic-plant": {"place_result": "cryogenic-plant"},
-    "spoilage": {"fuel_category": "chemical"},
+    "spoilage": {"fuel_categories": ["chemical"]},
     "ice-platform": {"place_as_tile": {"result": "ice-platform"}},
     "foundation": {"place_as_tile": {"result": "foundation"}},
     "space-platform-hub": {
@@ -1524,7 +1524,7 @@
     "tree-seed": {
       "place_result": "tree-plant",
       "plant_result": "tree-plant",
-      "fuel_category": "chemical"
+      "fuel_categories": ["chemical"]
     },
     "water-barrel": {},
     "sulfuric-acid-barrel": {},
@@ -26673,7 +26673,7 @@
           ["agricultural-science-pack", 1]
         ]
       },
-      "prerequisites": ["transport-belt-capacity-1"],
+      "prerequisites": ["transport-belt-capacity-1", "inserter-capacity-bonus-7"],
       "effects": [
         {
           "type": "belt-stack-size-bonus",
@@ -26810,11 +26810,7 @@
         ]
       },
       "max_level": "infinite",
-      "prerequisites": [
-        "agricultural-science-pack",
-        "utility-science-pack",
-        "military-science-pack"
-      ],
+      "prerequisites": ["agricultural-science-pack", "utility-science-pack"],
       "effects": [{
         "type": "character-health-bonus",
         "modifier": 50

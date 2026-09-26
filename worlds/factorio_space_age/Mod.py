@@ -349,13 +349,13 @@ def generate_mod(
         "description": "Integration client for the Archipelago Randomizer",
         "factorio_version": "2.1",
         "dependencies": [
-            "quality >= 2.1.14",
-            "space-age >= 2.1.14",
+            "quality >= 2.1.20",
+            "space-age >= 2.1.20",
             "? respawn-to-any-planet",
         ]
     }
     if starting_planet != names.nauvis:
-        info["dependencies"].append("any-planet-start = 1.2.2"),
+        info["dependencies"].append("any-planet-start = 1.2.4"),
     mod.writing_tasks.append(lambda: (versioned_mod_name + "/info.json",
                                       json.dumps(info, indent=4) + "\n"))
     mod.writing_tasks.append(lambda: ("logic.json",

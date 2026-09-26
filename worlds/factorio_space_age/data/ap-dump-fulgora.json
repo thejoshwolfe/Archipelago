@@ -160,28 +160,6 @@
         "amount": 1
       }]
     },
-    "accumulator": {
-      "enabled": true,
-      "categories": ["crafting", "electromagnetics"],
-      "ingredients": [
-        {
-          "type": "item",
-          "name": "iron-plate",
-          "amount": 2
-        },
-        {
-          "type": "item",
-          "name": "battery",
-          "amount": 5
-        }
-      ],
-      "energy_required": 10,
-      "results": [{
-        "type": "item",
-        "name": "accumulator",
-        "amount": 1
-      }]
-    },
     "lightning-rod": {
       "surface_conditions": [{
         "property": "magnetic-field",

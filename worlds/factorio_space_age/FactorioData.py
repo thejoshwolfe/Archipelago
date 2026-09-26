@@ -425,8 +425,8 @@ class FactorioData:
         power_type_to_fuel_items = defaultdict(set)
         for item_name, item_data in combined_items.items():
             # https://lua-api.factorio.com/latest/prototypes/ItemPrototype.html
-            if "fuel_category" in item_data:
-                power_type_to_fuel_items[fuel_category_to_power_type[item_data["fuel_category"]]].add(item_name)
+            for fuel_category in item_data.get("fuel_categories", []):
+                power_type_to_fuel_items[fuel_category_to_power_type[fuel_category]].add(item_name)
 
         # ========
         # Machines
