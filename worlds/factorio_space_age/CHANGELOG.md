@@ -1,5 +1,9 @@
 # Factorio: Space Age apworld Changelog
 
+## 3.0.6
+
+* Fix `goal: aquilo_orbit` causing Factorio crashes with missing `railgun_location` prerequisite. Thanks HandleWithKERR and d_a_v_e_2000 for the bug reports.
+
 ## 3.0.5
 
 * Better error reporting when creating save files in directories with problematic permissions. Thanks @lepideble for the suggestion.
