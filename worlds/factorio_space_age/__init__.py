@@ -141,7 +141,8 @@ class Factorio(World):
         from .data.ap_data import (
             map_exchange_strings,
             trap_names, energy_link_bridge_recipes,
-            small_progressive_groups, large_progressive_groups,
+            small_progressive_groups, large_progressive_groups, aquilo_orbit_start_large_progressive_groups,
+            quick_start_items, aquilo_quick_start_items,
             starting_planet_to_unrandomized_technologies,
             intermediate_recipe_technologies,
         )
@@ -168,7 +169,7 @@ class Factorio(World):
         the_data = json.loads(read_local_path("data/ap-dump.json"))
         if self.starting_planet != names.nauvis:
             # Patch the logic data according to Any Planet Start mod.
-            data_diff = json.loads(read_local_path("data/ap-dump-{}.json".format(self.starting_planet)))
+            data_diff = json.loads(read_local_path("data/ap-dump-{}.json".format(self.starting_planet.replace("_", "-"))))
             for prototype_type, prototype_diffs in data_diff.items():
                 prototypes = the_data[prototype_type]
                 for prototype_name, prototype_diff in prototype_diffs.items():
@@ -205,9 +206,12 @@ class Factorio(World):
             ])
 
         infinite_scrap_recycling_productivity = names.scrap_recycling_productivity
+        infinite_asteroid_productivity = names.asteroid_productivity
         self.progressive_technology_stacks = {
             "only_related": small_progressive_groups,
-            "large_groups": large_progressive_groups,
+            "large_groups": {
+                "aquilo_orbit": aquilo_orbit_start_large_progressive_groups,
+            }.get(self.starting_planet, large_progressive_groups),
         }[self.options.progressive_technologies.current_key]
         # Remove unrandomized and removed technologies from progressive stacks.
         remove_from_progressive_stacks = {
@@ -250,6 +254,16 @@ class Factorio(World):
                 names.scrap_recycling_productivity_4, # infinite
             ])
             infinite_scrap_recycling_productivity = scrap_stack[-1]
+        if self.starting_planet == "aquilo_orbit":
+            # aquilo-orbit-start instantiates 1 level of asteroid productivity.
+            try:
+                # progressive_technologies: only_related
+                asteroid_stack = self.progressive_technology_stacks[names.asteroid_productivity]
+            except KeyError:
+                asteroid_stack = self.progressive_technology_stacks[names.progressive_space]
+            assert asteroid_stack[-1] == infinite_asteroid_productivity
+            asteroid_stack.append(names.asteroid_productivity_2) # infinite
+            infinite_asteroid_productivity = asteroid_stack[-1]
 
         # Now build the reverse index.
         self.technology_name_to_progressive_group_name = {
@@ -265,23 +279,8 @@ class Factorio(World):
             # Something like this maybe: https://github.com/ouk-ouk/Factorio-NoRespawnGun/blob/c3f55d2dc5bf8a832ba8c110e23a71122252dd88/src/control.lua#L20C112-L20C129
             # See /path/to/factorio/data/base/script/freeplay.lua for the definition of the remote interface.
             for k, v in {
-                # Run fast. Build fast. Fun fast.
-                names.power_armor: 1,
-                names.fission_reactor_equipment: 1,
-                names.battery_equipment: 2,
-                names.personal_roboport_equipment: 1,
-                names.exoskeleton_equipment: 3,
-                names.construction_robot: 50,
-                # Also get through the burner phase faster.
-                names.burner_mining_drill: 49, # +1 from scenario
-                names.stone_furnace: 49,       # +1 from scenario
-                names.wood: 99,                # +1 from scenario
-                names.iron_plate: 500,
-                names.iron_gear_wheel: 200,
-                names.copper_cable: 200,       # +200 from free samples (if enabled)
-                # Assembling machines cost 10 secience packs to unlock (not configurable).
-                names.automation_science_pack: 10,
-            }.items():
+                "aquilo_orbit": aquilo_quick_start_items,
+            }.get(self.starting_planet, quick_start_items).items():
                 try:
                     self.options.starting_items.value[k] += v
                 except KeyError:
@@ -482,7 +481,7 @@ class Factorio(World):
             names.artillery_shell_damage_1:           self.options.filler_artillery_shell_damage_weight.value,
             names.artillery_shell_range_1:            self.options.filler_artillery_shell_range_weight.value,
             names.artillery_shell_speed_1:            self.options.filler_artillery_shell_speed_weight.value,
-            names.asteroid_productivity:              self.options.filler_asteroid_productivity_weight.value,
+            infinite_asteroid_productivity:           self.options.filler_asteroid_productivity_weight.value,
             names.electric_weapons_damage_4:          self.options.filler_electric_weapons_damage_weight.value,
             names.follower_robot_count_5:             self.options.filler_follower_robot_count_weight.value,
             names.health:                             self.options.filler_health_weight.value,
@@ -683,7 +682,7 @@ class Factorio(World):
                 names.promethium_science_pack,
             }
             if self.starting_planet != names.vulcanus:
-                victory_location_technology_names.add(names.asteroid_reprocessing)
+                victory_location_technology_names.add(names.cliff_explosives)
             if self.starting_planet != names.gleba:
                 victory_location_technology_names.add(names.carbon_fiber)
             if self.starting_planet != names.fulgora:

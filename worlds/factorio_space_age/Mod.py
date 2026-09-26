@@ -351,11 +351,15 @@ def generate_mod(
         "dependencies": [
             "quality >= 2.1.20",
             "space-age >= 2.1.20",
-            "? respawn-to-any-planet",
+            "+ respawn-to-any-planet >= 0.2.0",
         ]
     }
-    if starting_planet != names.nauvis:
-        info["dependencies"].append("any-planet-start = 1.2.4"),
+    if starting_planet in {names.vulcanus, names.gleba, names.fulgora}:
+        info["dependencies"].append("any-planet-start = 1.2.4")
+    elif starting_planet == "aquilo_orbit":
+        info["dependencies"].append("aquilo-orbit-start = 0.0.0")
+    else:
+        info["dependencies"].append("! aquilo-orbit-start")
     mod.writing_tasks.append(lambda: (versioned_mod_name + "/info.json",
                                       json.dumps(info, indent=4) + "\n"))
     mod.writing_tasks.append(lambda: ("logic.json",

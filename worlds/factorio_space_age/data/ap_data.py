@@ -508,6 +508,59 @@ large_progressive_groups = {
     ]},
 }
 
+# Aquilo orbit start is different enough that we need to make some major modifications.
+aquilo_orbit_start_large_progressive_groups = {**{k: [*v] for k, v in large_progressive_groups.items()}}
+# Landing on Aquilo follows this progression:
+aquilo_orbit_start_large_progressive_groups["progressive-space"].remove("concrete")
+aquilo_orbit_start_large_progressive_groups["progressive-aquilo"].insert(0, "concrete")
+aquilo_orbit_start_large_progressive_groups["progressive-aquilo"].insert(1, "heating-tower")
+assert aquilo_orbit_start_large_progressive_groups["progressive-aquilo"][2] == "planet-discovery-aquilo"
+aquilo_orbit_start_large_progressive_groups["progressive-aquilo"].insert(3, "steam-power")
+# Progressive space becomes mostly about thrusters.
+aquilo_orbit_start_large_progressive_groups["progressive-space"].remove("space-science-pack")
+aquilo_orbit_start_large_progressive_groups["progressive-space"].insert(0, "space-science-pack")
+aquilo_orbit_start_large_progressive_groups["progressive-space"].remove("space-platform") # Its own thing.
+# Move assembling machine 2 earlier so you can craft refined concrete and land on the surface.
+aquilo_orbit_start_large_progressive_groups["progressive-circuit"].remove("automation-2")
+aquilo_orbit_start_large_progressive_groups["progressive-circuit"].insert(0, "automation-2")
+
+
+quick_start_items = {
+    # Run fast. Build fast. Fun fast.
+    "power-armor": 1,
+    "fission-reactor-equipment": 1,
+    "battery-equipment": 2,
+    "personal-roboport-equipment": 1,
+    "exoskeleton-equipment": 3,
+    "construction-robot": 50,
+    # Also get through the burner phase faster.
+    "burner-mining-drill": 49, # +1 from scenario
+    "stone-furnace": 49,       # +1 from scenario
+    "wood": 99,                # +1 from scenario
+    "iron-plate": 500,
+    "iron-gear-wheel": 200,
+    "copper-cable": 200,       # +200 from free samples (if enabled)
+    # Assembling machines cost 10 secience packs to unlock (not configurable).
+    "automation-science-pack": 10,
+}
+
+aquilo_quick_start_items = {
+    # Building on Aquilo is going to be tedious no matter what, but maybe this will help.
+    "power-armor": 1,
+    "fission-reactor-equipment": 2,
+    "battery-equipment": 6,
+    "personal-roboport-equipment": 1,
+    "construction-robot": 50,
+    # With free samples enabled, you're probably going to want this:
+    "cargo-bay": 4,
+    # Hurry through the cramped part of the sky block experience.
+    "space-platform-foundation": 300,
+    "steel-plate": 100, # Craft solar panels with these.
+    "iron-plate": 500,
+    "copper-cable": 200,
+    "automation-science-pack": 10,
+}
+
 energy_link_bridge_recipes = {
     "early_game": [
         dict(type="item", amount=50, name="iron-plate"),
@@ -573,6 +626,14 @@ starting_planet_to_unrandomized_technologies = {
         "battery",   # accumulators
         # Labs and red science:
         "electronics",
+        "automation-science-pack",
+        "automation",
+    },
+    "aquilo_orbit": {
+        "asteroid-reprocessing", # All the early game buildings.
+        "steel-processing",
+        "electronics",
+        "solar-energy",
         "automation-science-pack",
         "automation",
     },

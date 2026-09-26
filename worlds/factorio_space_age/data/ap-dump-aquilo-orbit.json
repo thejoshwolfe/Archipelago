@@ -1170,10 +1170,6 @@
       "effects": [
         {
           "type": "unlock-recipe",
-          "recipe": "offshore-pump"
-        },
-        {
-          "type": "unlock-recipe",
           "recipe": "boiler"
         },
         {
@@ -1187,10 +1183,6 @@
         {
           "type": "unlock-recipe",
           "recipe": "steam-turbine"
-        },
-        {
-          "type": "unlock-recipe",
-          "recipe": "medium-electric-pole"
         }
       ]
     },
@@ -1221,6 +1213,14 @@
         {
           "type": "unlock-recipe",
           "recipe": "transport-belt"
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "medium-electric-pole"
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "iron-stick"
         }
       ]
     },
@@ -1351,10 +1351,6 @@
         {
           "type": "unlock-recipe",
           "recipe": "refined-hazard-concrete"
-        },
-        {
-          "type": "unlock-recipe",
-          "recipe": "iron-stick"
         },
         {
           "type": "unlock-recipe",
@@ -1850,6 +1846,47 @@
         }
       ]
     },
+    "circuit-network": {
+      "unit": {
+        "count": 100,
+        "time": 15,
+        "ingredients": [
+          ["automation-science-pack", 1],
+          ["logistic-science-pack", 1]
+        ]
+      },
+      "prerequisites": ["logistic-science-pack"],
+      "effects": [
+        {
+          "type": "unlock-circuit-network",
+          "modifier": true
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "arithmetic-combinator"
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "decider-combinator"
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "constant-combinator"
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "power-switch"
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "programmable-speaker"
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "display-panel"
+        }
+      ]
+    },
     "epic-quality": {
       "unit": {
         "count": 500,
@@ -2151,6 +2188,10 @@
         {
           "type": "unlock-recipe",
           "recipe": "aos-cargo-landing-pad-from-refined-concrete"
+        },
+        {
+          "type": "unlock-recipe",
+          "recipe": "offshore-pump"
         }
       ]
     },
