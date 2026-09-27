@@ -555,9 +555,9 @@ aquilo_quick_start_items = {
     "cargo-bay": 4,
     # Hurry through the cramped part of the sky block experience.
     "space-platform-foundation": 300,
-    "steel-plate": 100, # Craft solar panels with these.
+    "steel-plate": 100, # You could craft solar panels with these.
     "iron-plate": 500,
-    "copper-cable": 200,
+    "copper-plate": 200,
     "automation-science-pack": 10,
 }
 

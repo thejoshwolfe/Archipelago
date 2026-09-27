@@ -130,6 +130,10 @@ class Factorio(World):
             starting_planet=self.starting_planet,
             vulcanus_rock_multiplier=self.options.vulcanus_rocks.value,
             enable_alternate_explosives=self.starting_planet == names.gleba and self.options.gleba_coal.current_key == "alternate_explosives",
+            space_platform_foundation_amount_per_craft=self.options.aquilo_orbit_start_settings.value.get("space platform foundation amount per craft", 10),
+            ice_platform_amount_per_craft=self.options.aquilo_orbit_start_settings.value.get("ice platform amount per craft", 50),
+            refined_concrete_amount_per_craft=self.options.aquilo_orbit_start_settings.value.get("refined concrete amount per craft", 50),
+            heat_pipe_amount_per_craft=self.options.aquilo_orbit_start_settings.value.get("heat pipe amount per craft", 10),
             map_exchange_string=self.map_exchange_string,
             output_directory=output_directory,
         )
@@ -165,6 +169,9 @@ class Factorio(World):
 
         self.starting_planet = self.options.starting_planet.current_key
         self.early_unrandomized_technologies = starting_planet_to_unrandomized_technologies[self.starting_planet]
+        if not all(1 <= value <= 100 for value in self.options.aquilo_orbit_start_settings.value.values()):
+            # This should really be in the options schema, but i don't know how to do that.
+            raise ValueError("Values for aquilo_orbit_start_settings must be between 1 and 100")
 
         the_data = json.loads(read_local_path("data/ap-dump.json"))
         if self.starting_planet != names.nauvis:
