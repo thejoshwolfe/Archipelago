@@ -1,5 +1,14 @@
 # Factorio: Space Age apworld Changelog
 
+## 4.0.0
+
+* MAJOR FEATURE: Add `starting_planet: aquilo_orbit`, which integrates my brand new [aquilo-orbit-start](https://mods.factorio.com/mod/aquilo-orbit-start) mod.
+    * This is flagged as a major feature with a major version bump because it is dramatically different from the other `starting_planet` options. If you've been putting `random` as your starting planet, you should probably read that mod's description before you dive in again.
+    * I think the aquilo-orbit-start idea is super fun, but others may find it somewhere between tedious and overpowered. I recommend giving it a try to see if you enjoy it.
+    * Added a new option `aquilo_orbit_start_settings` to adjust the balance. The default is designed to progress very fast. Please let me know if the defaults are buffed too hard.
+    * Starting in Aquilo orbit interacts with these other options: `goal`, `space_technology_level`, `require_electric_mining_drill`,
+    * The mod has been tested, but is still pretty new. Please report bugs, balance suggestions, or any other feedback!
+
 ## 3.0.6
 
 * Fix `goal: aquilo_orbit` causing Factorio crashes with missing `railgun_location` prerequisite. Thanks HandleWithKERR and d_a_v_e_2000 for the bug reports.
