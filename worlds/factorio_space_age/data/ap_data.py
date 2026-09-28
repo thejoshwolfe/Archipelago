@@ -517,12 +517,17 @@ aquilo_orbit_start_large_progressive_groups["progressive-aquilo"].insert(1, "hea
 assert aquilo_orbit_start_large_progressive_groups["progressive-aquilo"][2] == "planet-discovery-aquilo"
 aquilo_orbit_start_large_progressive_groups["progressive-aquilo"].insert(3, "steam-power")
 # Progressive space becomes mostly about thrusters.
+aquilo_orbit_start_large_progressive_groups["progressive-space"].remove("asteroid-reprocessing")
 aquilo_orbit_start_large_progressive_groups["progressive-space"].remove("space-science-pack")
 aquilo_orbit_start_large_progressive_groups["progressive-space"].insert(0, "space-science-pack")
 aquilo_orbit_start_large_progressive_groups["progressive-space"].remove("space-platform") # Its own thing.
 # Move assembling machine 2 earlier so you can craft refined concrete and land on the surface.
 aquilo_orbit_start_large_progressive_groups["progressive-circuit"].remove("automation-2")
 aquilo_orbit_start_large_progressive_groups["progressive-circuit"].insert(0, "automation-2")
+# Move electric furnaces earlier, because they're craftable from calcite before steel furnaces from stone.
+aquilo_orbit_start_large_progressive_groups["progressive-production"].remove("advanced-material-processing-2")
+assert aquilo_orbit_start_large_progressive_groups["progressive-production"][2] == "advanced-material-processing"
+aquilo_orbit_start_large_progressive_groups["progressive-production"].insert(2, "advanced-material-processing-2")
 
 
 quick_start_items = {

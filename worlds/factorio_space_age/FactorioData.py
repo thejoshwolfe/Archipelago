@@ -1460,14 +1460,18 @@ class FactorioData:
                         recipe_exprs.append({"or": [fmt_reach_location(location_name) for location_name in recipe.locations]})
                     # Logic option hooks
                     if item_name == names.logistic_science_pack and fmt_automate_or_access is fmt_automate_item:
-                        if not burner_mining_drill_is_good_enough:
-                            # Require electric mining drills to get out of the early game.
-                            recipe_exprs.append(fmt_access_item(names.electric_mining_drill))
                         if not inserter_balancing_is_good_enough:
                             recipe_exprs.extend([
                                 fmt_access_item(names.underground_belt),
                                 fmt_access_item(names.splitter),
                             ])
+                    if (
+                        self.starting_planet != "aquilo_orbit" and item_name == names.logistic_science_pack or
+                        self.starting_planet == "aquilo_orbit" and item_name in (names.agricultural_science_pack, names.electromagnetic_science_pack)
+                    ) and fmt_automate_or_access is fmt_automate_item:
+                        if not burner_mining_drill_is_good_enough:
+                            # Require electric mining drills to get out of the early game.
+                            recipe_exprs.append(fmt_access_item(names.electric_mining_drill))
                     if item_name == names.advanced_circuit and names.assembling_machine_2 in recipe.machines and fmt_automate_or_access is fmt_automate_item:
                         # Require faster machines to get through the blue science phase of the game.
                         if not slow_inserter_is_good_enough:

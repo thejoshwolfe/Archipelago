@@ -172,6 +172,14 @@ class Factorio(World):
         if not all(1 <= value <= 100 for value in self.options.aquilo_orbit_start_settings.value.values()):
             # This should really be in the options schema, but i don't know how to do that.
             raise ValueError("Values for aquilo_orbit_start_settings must be between 1 and 100")
+        if self.starting_planet == "aquilo_orbit":
+            # Extend trivial goals.
+            if self.options.goal.current_key == "aquilo_orbit":
+                self.options.goal.value = self.options.goal.option_solar_system_edge
+            elif self.options.goal.current_key == "aquilo_orbit_10_science":
+                self.options.goal.value = self.options.goal.option_solar_system_edge_11_science
+            # Ignore space_technology_level.
+            self.options.space_technology_level.value = self.options.space_technology_level.option_vanilla
 
         the_data = json.loads(read_local_path("data/ap-dump.json"))
         if self.starting_planet != names.nauvis:
@@ -666,7 +674,19 @@ class Factorio(World):
                 # This is a receivable technology item.
                 item_names.append(event_name)
 
+        if self.starting_planet == names.nauvis:
+            starting_planet_native_science_packs = set()
+        elif self.starting_planet == names.vulcanus:
+            starting_planet_native_science_packs = {names.metallurgic_science_pack}
+        elif self.starting_planet == names.gleba:
+            starting_planet_native_science_packs = {names.agricultural_science_pack}
+        elif self.starting_planet == names.fulgora:
+            starting_planet_native_science_packs = {names.electromagnetic_science_pack}
+        elif self.starting_planet == "aquilo_orbit":
+            starting_planet_native_science_packs = {names.space_science_pack, names.cryogenic_science_pack}
+
         victory_location_technology_names = set()
+        specifically_removed_technology_names = set()
         if self.options.goal.current_key == "space_science":
             sciences_beyond_goal = {
                 names.space_science_pack,
@@ -676,9 +696,32 @@ class Factorio(World):
                 names.cryogenic_science_pack,
                 names.promethium_science_pack,
             }
-            victory_location_technology_names = {
-                names.logistic_system,
-            }
+            if self.starting_planet == "aquilo_orbit":
+                # Aquilo orbit doesn't get stone until space travel, which is beyond this goal.
+                sciences_beyond_goal.update([names.military_science_pack, names.production_science_pack])
+                specifically_removed_technology_names.update([
+                    # Don't let trigger techs on these planets extend the end game for an explicitly short goal setting.
+                    names.planet_discovery_vulcanus,
+                    names.planet_discovery_gleba,
+                    names.planet_discovery_fulgora,
+                    names.planet_discovery_nauvis,
+                    # Most of the uranium tech on nauvis doesn't have any telltale science pack ingredients.
+                    names.uranium_mining,
+                    names.uranium_processing,
+                    names.nuclear_power,
+                    names.kovarex_enrichment_process,
+                    names.nuclear_fuel_reprocessing,
+                    # Then the others require military or agricultural science.
+                ])
+                victory_location_technology_names = {
+                    names.quantum_processor,
+                }
+                # And while cryo science is naitive to Aquilo, it is the goal science tech, so remove all other research objectives requiring it.
+                starting_planet_native_science_packs -= {names.cryogenic_science_pack}
+            else:
+                victory_location_technology_names = {
+                    names.logistic_system,
+                }
             self.last_technology_location_names = sorted(victory_location_technology_names)
         elif self.options.goal.current_key == "any_other_planet_science":
             sciences_beyond_goal = {
@@ -688,6 +731,9 @@ class Factorio(World):
                 names.cryogenic_science_pack,
                 names.promethium_science_pack,
             }
+            if self.starting_planet == "aquilo_orbit":
+                # Aquilo orbit doesn't get stone until space travel, which is beyond this goal.
+                sciences_beyond_goal.update([names.military_science_pack, names.production_science_pack])
             if self.starting_planet != names.vulcanus:
                 victory_location_technology_names.add(names.cliff_explosives)
             if self.starting_planet != names.gleba:
@@ -696,6 +742,7 @@ class Factorio(World):
                 victory_location_technology_names.add(names.lightning_collector)
             self.last_technology_location_names = sorted(victory_location_technology_names)
         elif self.options.goal.current_key in ("aquilo_orbit", "aquilo_orbit_10_science"):
+            assert self.starting_planet != "aquilo_orbit", "the goal was supposed to be extended earlier than this"
             sciences_beyond_goal = {
                 names.cryogenic_science_pack,
                 names.promethium_science_pack,
@@ -709,9 +756,11 @@ class Factorio(World):
         else: assert False
         assert len(self.last_technology_location_names) > 0
         self.last_technology_location_names = [name + "_location" for name in self.last_technology_location_names]
+        sciences_beyond_goal -= starting_planet_native_science_packs
 
         def is_beyond_goal(technology_name):
             if technology_name in victory_location_technology_names: return False
+            if technology_name in specifically_removed_technology_names: return True
             technology_props = self.technology_props_lua[technology_name]
             if "unit" not in technology_props:
                 # Trigger techs are beyond the goal if their dependencies are beyond the goal.
