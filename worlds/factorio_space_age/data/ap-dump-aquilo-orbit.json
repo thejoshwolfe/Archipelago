@@ -1897,6 +1897,69 @@
         "recipe": "plastic-bar"
       }]
     },
+    "speed-module-2": {
+      "unit": {
+        "count": 200,
+        "time": 30,
+        "ingredients": [
+          ["automation-science-pack", 1],
+          ["logistic-science-pack", 1],
+          ["chemical-science-pack", 1],
+          ["space-science-pack", 1]
+        ]
+      },
+      "prerequisites": [
+        "speed-module",
+        "space-science-pack",
+        "processing-unit"
+      ],
+      "effects": [{
+        "type": "unlock-recipe",
+        "recipe": "speed-module-2"
+      }]
+    },
+    "productivity-module-2": {
+      "unit": {
+        "count": 200,
+        "time": 30,
+        "ingredients": [
+          ["automation-science-pack", 1],
+          ["logistic-science-pack", 1],
+          ["chemical-science-pack", 1],
+          ["space-science-pack", 1]
+        ]
+      },
+      "prerequisites": [
+        "productivity-module",
+        "space-science-pack",
+        "processing-unit"
+      ],
+      "effects": [{
+        "type": "unlock-recipe",
+        "recipe": "productivity-module-2"
+      }]
+    },
+    "efficiency-module-2": {
+      "unit": {
+        "count": 200,
+        "time": 30,
+        "ingredients": [
+          ["automation-science-pack", 1],
+          ["logistic-science-pack", 1],
+          ["chemical-science-pack", 1],
+          ["space-science-pack", 1]
+        ]
+      },
+      "prerequisites": [
+        "efficiency-module",
+        "space-science-pack",
+        "processing-unit"
+      ],
+      "effects": [{
+        "type": "unlock-recipe",
+        "recipe": "efficiency-module-2"
+      }]
+    },
     "uranium-mining": {
       "unit": {
         "count": 100,
@@ -3571,6 +3634,27 @@
           "hidden": true
         }
       ]
+    },
+    "quality-module-2": {
+      "unit": {
+        "count": 500,
+        "time": 30,
+        "ingredients": [
+          ["automation-science-pack", 1],
+          ["logistic-science-pack", 1],
+          ["chemical-science-pack", 1],
+          ["space-science-pack", 1]
+        ]
+      },
+      "prerequisites": [
+        "quality-module",
+        "space-science-pack",
+        "processing-unit"
+      ],
+      "effects": [{
+        "type": "unlock-recipe",
+        "recipe": "quality-module-2"
+      }]
     },
     "epic-quality": {
       "unit": {

@@ -365,7 +365,7 @@ def generate_mod(
     if starting_planet in {names.vulcanus, names.gleba, names.fulgora}:
         info["dependencies"].append("any-planet-start = 1.2.4")
     elif starting_planet == "aquilo_orbit":
-        info["dependencies"].append("aquilo-orbit-start = 1.1.0")
+        info["dependencies"].append("aquilo-orbit-start = 1.1.1")
     else:
         info["dependencies"].append("! aquilo-orbit-start")
     mod.writing_tasks.append(lambda: (versioned_mod_name + "/info.json",
