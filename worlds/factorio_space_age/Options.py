@@ -45,6 +45,11 @@ class Goal(Choice):
     Note that technology_prerequisites adds extra steps to unlocking unrandomized technology locations related to the goal.
 
     For shorter games, consider also setting production_and_utility_science: removed.
+
+    If starting_planet is aquilo_orbit, then goal: aquilo_orbit automatically gets extended to goal: solar_system_edge,
+    aquilo_orbit_10_science is extended to solar_system_edge_11_science,
+    and goal: space_science additionally requires cryogenic science pack from Aquilo's surface.
+    The space_technology_level option is ignored when starting_planet is aquilo_orbit.
     """
     display_name = "Goal"
     option_space_science = 0
@@ -57,16 +62,23 @@ class Goal(Choice):
 
 class StartingPlanet(Choice):
     """
-    Start on one of the other 3 inner planets.
+    Start on another planet.
     To randomly select a planet, use advanced option randomization to specify weights.
-    Requires _CodeGreen's Any Planet Start mod: https://mods.factorio.com/mod/any-planet-start
+    Sometimes requires _CodeGreen's Any Planet Start mod: https://mods.factorio.com/mod/any-planet-start
+    Sometimes requires my Aquilo Orbit Start mod: https://mods.factorio.com/mod/aquilo-orbit-start
 
     WARNING: starting on Gleba with enemies enabled is very difficult. See also pentapod_killers and gleba_coal.
+
+    WARNING: starting in Aquilo Orbit is a very different experience from the other options.
+    You may want to read the Aquilo Orbit Start mod's documentation before decciding to try it out.
+    See also aquilo_orbit_start_settings.
+    See also goal.
     """
     option_nauvis = 0
     option_vulcanus = 1
     option_gleba = 2
     option_fulgora = 3
+    option_aquilo_orbit = 4
     default = 0
 
 class AllowImportedBlueprints(DefaultOnToggle):
@@ -320,6 +332,10 @@ class TechCostMaxCount(Range):
 @auto_group
 class SpaceTechnologyLevel(Choice):
     """
+    WARNING: This option is in danger of getting deprecated. If you try it out and like it,
+    please advocate for its existence on Discord or here: https://github.com/thejoshwolfe/Archipelago/issues/39 .
+    Until then, I don't recommend changing this option from it's default: vanilla.
+
     Downgrade space-related crafting ingredients to make space travel accessible earlier in the game:
     vanilla               -> mid game         -> early game;
     processing unit       -> advanced circuit -> electronic circuit;
@@ -353,7 +369,8 @@ class SpaceTechnologyLevel(Choice):
         solar-energy: 1
         ap-energy-link-bridge: 1
 
-    When starting_planet is not set to nauvis, then this option's behavior changes accordingly.
+    When starting_planet is set to vulcanus, gleba, or fulgora, then this option's behavior changes accordingly.
+    When starting_planet is set to aquilo_orbit, this option is ignored.
     """
     option_early_game = 0
     option_mid_game = 1
@@ -390,6 +407,25 @@ class GlebaCoal(Choice):
     option_alternate_explosives = 3
     default = 2
 
+@auto_group
+class AquiloOrbitStartSettings(OptionDict):
+    """
+    Balance settings for the aquilo-orbit-start mod.
+    Ignored when starting_planet is not aquilo_orbit.
+
+    The default values for this Archipelago randomizer buff the "sky block" recipes by 5x relative to the aquilo-orbit-start mod's own default settings.
+    This is recommended to help Factorio: Spage Age players get advacement items at the pace generally expected in Archipelago.
+
+    The settings for aquilo-orbit-start not listed here are locked to their easier settings for technical logic-related reasons.
+    """
+    default = {
+        "space platform foundation amount per craft": 50,
+        "ice platform amount per craft": 10,
+        "refined concrete amount per craft": 50,
+        "heat pipe amount per craft": 10,
+    }
+    schema = Schema({Optional(k): int for k in default.keys()})
+
 
 
 option_groups.append(OptionGroup("Logic", []))
@@ -399,6 +435,8 @@ class LogicMiningDrill(DefaultOnToggle):
     """
     Logically require electric mining drills for logistic science pack automation (green science).
     Otherwise, you may need to use burner mining drills for automation until Vulcanus or uranium is required.
+
+    When starting_planet is aquilo_orbit, the requirement is for agricultural and electromagnetic sciences instead.
     """
 
 @auto_group
@@ -810,6 +848,7 @@ class FactorioOptions(PerGameCommonOptions):
     space_technology_level: SpaceTechnologyLevel
     vulcanus_rocks: VulcanusRocks
     gleba_coal: GlebaCoal
+    aquilo_orbit_start_settings: AquiloOrbitStartSettings
 
     require_electric_mining_drill: LogicMiningDrill
     require_logistics: LogicLogistics

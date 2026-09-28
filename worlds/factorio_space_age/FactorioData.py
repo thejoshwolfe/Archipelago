@@ -199,6 +199,10 @@ class FactorioData:
                 return threats, tuple(sorted(items))
             assert False, "what's this asteroid data: " + repr(spawn_data)
 
+        dark_space_threshold = 100 # Everything in space before aquilo orbit.
+        if self.starting_planet == "aquilo_orbit":
+            # aquilo-orbit-start mod expects you to suffer through 60% solar power in orbit.
+            dark_space_threshold = 50
         asteroid_chunk_and_location_to_mining_sources: dict[tuple[str, str], set[MiningSource]] = defaultdict(set)
         space_locations: dict[str, SpaceLocation] = {}
         space_location_to_solar_power: dict[str, int|float] = {}
@@ -262,8 +266,7 @@ class FactorioData:
             space_location.threats |= Capability.generate_electricity_in_space
             solar_power_in_space = space_location_data.get("solar_power_in_space", 1)
             space_location_to_solar_power[space_location.name] = solar_power_in_space
-            if solar_power_in_space < 100:
-                # This is true for aquilo and beyond.
+            if solar_power_in_space < dark_space_threshold:
                 space_location.threats |= Capability.generate_electricity_in_dark_space
 
         for location_name, space_connection_data in the_data["space-connection"].items():
@@ -294,8 +297,7 @@ class FactorioData:
                 space_location_to_solar_power[connection_name]
                 for connection_name in connection_names
             )
-            if solar_power_in_space < 100:
-                # This is true for all of aquilo's connections and beyond.
+            if solar_power_in_space < dark_space_threshold:
                 space_location.threats |= Capability.generate_electricity_in_dark_space
 
         # The generic expression optimizer has trouble with the complexity of asteroid chunk sourcing.
@@ -844,7 +846,7 @@ class FactorioData:
         fmt_learn_recipe = "Learn {}".format
 
         can_launch_rockets = fmt_automate_item(names.rocket_part)
-        if launching_metal_is_good_enough:
+        if launching_metal_is_good_enough or self.starting_planet == "aquilo_orbit":
             automate_iron_plates_in_space = ALWAYS
         else:
             automate_iron_plates_in_space = {"and": [
@@ -906,6 +908,10 @@ class FactorioData:
         # Reach locations.
         for space_location in space_locations.values():
             # Inbound connections
+            if self.starting_planet == "aquilo_orbit" and space_location == names.aquilo:
+                # The aquilo-orbit-start mod makes a special restriction that prevents you from dropping to the surface until you discover it.
+                logic_events[fmt_reach_location(space_location.name)] = {"and": [fmt_discover_location(name) for name in space_location.unlock_names]}
+                continue
             logic_events[fmt_reach_location(space_location.name)] = {"and": [
                 {"and": [fmt_discover_location(name) for name in space_location.unlock_names]},
                 {"or": [
@@ -930,10 +936,29 @@ class FactorioData:
         for name, techs in space_location_to_unlocking_technologies.items():
             logic_events[fmt_discover_location(name)] = {"or": [fmt_unlock_technology(technology) for technology in techs]}
         # Start on a planet
-        logic_events[fmt_discover_location(self.starting_planet)] = ALWAYS
         logic_events[fmt_reach_location(self.starting_planet)] = ALWAYS
+        if self.starting_planet != "aquilo_orbit":
+            logic_events[fmt_discover_location(self.starting_planet)] = ALWAYS
 
         # Capabilities.
+        operate_rocket_turrets_in_space_expr = {"and": [
+            {"or": [
+                fmt_operate_machine(machine) for machine in ammo_category_to_weapon_entities["rocket"]
+                # Spidertron can't be placed in space.
+                # Just hardcoding the answer i guess.
+                if machine == names.rocket_turret
+            ]},
+            {"or": [
+                fmt_automate_item(item) for item in ammo_category_to_ammo_items["rocket"]
+                # atomic bomb and capture robot rocket are not what you need.
+                # Just hardcoding the answer i guess.
+                if item in (names.rocket, names.explosive_rocket)
+            ]},
+        ]}
+        operate_railgun_turrets_in_space_expr = {"and": [
+            {"or": [fmt_operate_machine(machine) for machine in ammo_category_to_weapon_entities["railgun"]]},
+            {"or": [fmt_automate_item(item) for item in ammo_category_to_ammo_items["railgun"]]},
+        ]}
         for capability in Capability:
             if capability in mining_capability_to_machines:
                 expr = {"or": [
@@ -977,10 +1002,28 @@ class FactorioData:
                 ]}
                 if not nuclear_heating_is_good_enough:
                     expr["and"].append(fmt_operate_machine(names.heating_tower))
+                if self.starting_planet == "aquilo_orbit" and not solar_panels_into_darkness:
+                    # You'll also need better power on the surface than solar panels.
+                    # This seems like the best place to insert a logical hook for supplying ground electricity.
+                    expr["and"].append({"or": [
+                        # Steam power (boiler / heating tower / nuclear).
+                        fmt_operate_machine(names.steam_engine),
+                        fmt_operate_machine(names.steam_turbine),
+                        # Fusion power.
+                        {"and": [
+                            fmt_operate_machine(names.fusion_generator),
+                            fmt_access_item(names.fluoroketone_cold),
+                        ]},
+                    ]})
+
             elif capability == Capability.build_on_ice_platforms:
                 expr = {"or": [fmt_automate_item(name) for name in heat_insulation_flooring_items]}
             elif capability == Capability.collect_asteroids:
-                expr = {"or": [fmt_operate_machine(name) for name in asteroid_collecting_machines]}
+                if self.starting_planet == "aquilo_orbit":
+                    # aquilo-orbit-start mod adds the ability to hand-mine asteroids.
+                    expr = ALWAYS
+                else:
+                    expr = {"or": [fmt_operate_machine(name) for name in asteroid_collecting_machines]}
             elif capability == Capability.travel_space:
                 expr = {"and": [
                     {"or": [fmt_operate_machine(name) for name in thruster_machines]},
@@ -990,6 +1033,11 @@ class FactorioData:
                     optionally_access_pumps_and_tanks,
                     optionally_operate_requester_chests,
                     optionally_operate_construction_robots,
+                    # This matters for aquilo-orbit-start.
+                    # You have launch thrusters (or plastic) from the surface with a rocket-silo.
+                    # (And that's true of every other start location too, because plastic cannot be created in space from scratch
+                    #  (without free sample heavy oil barrel and liquefaction, but free samples are never in logic).)
+                    can_launch_rockets,
                 ]}
             elif capability == Capability.generate_electricity_in_space:
                 expr = {"or": [
@@ -1038,38 +1086,27 @@ class FactorioData:
                         {"or": [fmt_automate_item(item) for item in ammo_category_to_ammo_items[ammo_category]]},
                         *[fmt_unlock_technology(bonus) for bonus in medium_asteroid_upgrade_requirements],
                     ]},
+                    # Or you might have heavier options first.
+                    operate_rocket_turrets_in_space_expr,
+                    operate_railgun_turrets_in_space_expr,
                 ]}
                 if walls_to_destroy_medium_asteroids_is_good_enough:
-                    # Consult your local speedrunner to find out if wall ships are right for you.
+                    # Consult your local challenge runner to find out if wall ships are right for you.
                     expr["or"].append(fmt_automate_item(names.stone_wall))
                     # No repair packs in logic for you. Be grateful you get walls.
             elif capability == Capability.destroy_big_asteroids:
-                ammo_category = "rocket"
-                expr = {"and": [
-                    {"or": [
-                        fmt_operate_machine(machine) for machine in ammo_category_to_weapon_entities[ammo_category]
-                        # Spidertron can't be placed in space.
-                        # Just hardcoding the answer i guess.
-                        if machine == names.rocket_turret
-                    ]},
-                    {"or": [
-                        fmt_automate_item(item) for item in ammo_category_to_ammo_items[ammo_category]
-                        # atomic bomb and capture robot rocket are not what you need.
-                        # Just hardcoding the answer i guess.
-                        if item in (names.rocket, names.explosive_rocket)
-                    ]},
+                expr = {"or": [
+                    operate_rocket_turrets_in_space_expr,
+                    operate_railgun_turrets_in_space_expr,
                 ]}
                 if not basic_asteroid_processing_is_good_enough:
-                    expr["and"].extend([
+                    expr = {"and": [
+                        expr,
                         fmt_unlock_technology(names.asteroid_reprocessing),
                         fmt_unlock_technology(names.advanced_asteroid_processing),
-                    ])
+                    ]}
             elif capability == Capability.destroy_huge_asteroids:
-                ammo_category = "railgun"
-                expr = {"and": [
-                    {"or": [fmt_operate_machine(machine) for machine in ammo_category_to_weapon_entities[ammo_category]]},
-                    {"or": [fmt_automate_item(item) for item in ammo_category_to_ammo_items[ammo_category]]},
-                ]}
+                expr = operate_railgun_turrets_in_space_expr
             elif capability == Capability.kill_demolishers:
                 source_exprs = []
                 for setting, value in demolisher_killers.items():
@@ -1423,14 +1460,18 @@ class FactorioData:
                         recipe_exprs.append({"or": [fmt_reach_location(location_name) for location_name in recipe.locations]})
                     # Logic option hooks
                     if item_name == names.logistic_science_pack and fmt_automate_or_access is fmt_automate_item:
-                        if not burner_mining_drill_is_good_enough:
-                            # Require electric mining drills to get out of the early game.
-                            recipe_exprs.append(fmt_access_item(names.electric_mining_drill))
                         if not inserter_balancing_is_good_enough:
                             recipe_exprs.extend([
                                 fmt_access_item(names.underground_belt),
                                 fmt_access_item(names.splitter),
                             ])
+                    if (
+                        self.starting_planet != "aquilo_orbit" and item_name == names.logistic_science_pack or
+                        self.starting_planet == "aquilo_orbit" and item_name in (names.agricultural_science_pack, names.electromagnetic_science_pack)
+                    ) and fmt_automate_or_access is fmt_automate_item:
+                        if not burner_mining_drill_is_good_enough:
+                            # Require electric mining drills to get out of the early game.
+                            recipe_exprs.append(fmt_access_item(names.electric_mining_drill))
                     if item_name == names.advanced_circuit and names.assembling_machine_2 in recipe.machines and fmt_automate_or_access is fmt_automate_item:
                         # Require faster machines to get through the blue science phase of the game.
                         if not slow_inserter_is_good_enough:
@@ -1480,7 +1521,12 @@ class FactorioData:
             logic_events[fmt_access_item(names.ap_energy_link_bridge)] = expr
 
         # Optimize.
+        def _debug_dump():
+            from .data.json_dumps_but_smaller import json_dump
+            with open("debug-logic.json", "w") as f:
+                json_dump(logic_events, f)
         logic_events = {k: optimize_expr(v, k) for k, v in logic_events.items()}
+        #_debug_dump(); import pdb; pdb.set_trace()
         never_delete_events = {event_name for event_name in logic_events.keys() if " " not in event_name}
         never_inline_events = {
             # These are sometimes goals, which the logic needs to see in the final product:

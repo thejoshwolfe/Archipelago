@@ -130,6 +130,10 @@ class Factorio(World):
             starting_planet=self.starting_planet,
             vulcanus_rock_multiplier=self.options.vulcanus_rocks.value,
             enable_alternate_explosives=self.starting_planet == names.gleba and self.options.gleba_coal.current_key == "alternate_explosives",
+            space_platform_foundation_amount_per_craft=self.options.aquilo_orbit_start_settings.value.get("space platform foundation amount per craft", 10),
+            ice_platform_amount_per_craft=self.options.aquilo_orbit_start_settings.value.get("ice platform amount per craft", 50),
+            refined_concrete_amount_per_craft=self.options.aquilo_orbit_start_settings.value.get("refined concrete amount per craft", 50),
+            heat_pipe_amount_per_craft=self.options.aquilo_orbit_start_settings.value.get("heat pipe amount per craft", 10),
             map_exchange_string=self.map_exchange_string,
             output_directory=output_directory,
         )
@@ -141,7 +145,8 @@ class Factorio(World):
         from .data.ap_data import (
             map_exchange_strings,
             trap_names, energy_link_bridge_recipes,
-            small_progressive_groups, large_progressive_groups,
+            small_progressive_groups, large_progressive_groups, aquilo_orbit_start_large_progressive_groups,
+            quick_start_items, aquilo_quick_start_items,
             starting_planet_to_unrandomized_technologies,
             intermediate_recipe_technologies,
         )
@@ -164,11 +169,22 @@ class Factorio(World):
 
         self.starting_planet = self.options.starting_planet.current_key
         self.early_unrandomized_technologies = starting_planet_to_unrandomized_technologies[self.starting_planet]
+        if not all(1 <= value <= 100 for value in self.options.aquilo_orbit_start_settings.value.values()):
+            # This should really be in the options schema, but i don't know how to do that.
+            raise ValueError("Values for aquilo_orbit_start_settings must be between 1 and 100")
+        if self.starting_planet == "aquilo_orbit":
+            # Extend trivial goals.
+            if self.options.goal.current_key == "aquilo_orbit":
+                self.options.goal.value = self.options.goal.option_solar_system_edge
+            elif self.options.goal.current_key == "aquilo_orbit_10_science":
+                self.options.goal.value = self.options.goal.option_solar_system_edge_11_science
+            # Ignore space_technology_level.
+            self.options.space_technology_level.value = self.options.space_technology_level.option_vanilla
 
         the_data = json.loads(read_local_path("data/ap-dump.json"))
         if self.starting_planet != names.nauvis:
             # Patch the logic data according to Any Planet Start mod.
-            data_diff = json.loads(read_local_path("data/ap-dump-{}.json".format(self.starting_planet)))
+            data_diff = json.loads(read_local_path("data/ap-dump-{}.json".format(self.starting_planet.replace("_", "-"))))
             for prototype_type, prototype_diffs in data_diff.items():
                 prototypes = the_data[prototype_type]
                 for prototype_name, prototype_diff in prototype_diffs.items():
@@ -205,9 +221,12 @@ class Factorio(World):
             ])
 
         infinite_scrap_recycling_productivity = names.scrap_recycling_productivity
+        infinite_asteroid_productivity = names.asteroid_productivity
         self.progressive_technology_stacks = {
             "only_related": small_progressive_groups,
-            "large_groups": large_progressive_groups,
+            "large_groups": {
+                "aquilo_orbit": aquilo_orbit_start_large_progressive_groups,
+            }.get(self.starting_planet, large_progressive_groups),
         }[self.options.progressive_technologies.current_key]
         # Remove unrandomized and removed technologies from progressive stacks.
         remove_from_progressive_stacks = {
@@ -250,6 +269,16 @@ class Factorio(World):
                 names.scrap_recycling_productivity_4, # infinite
             ])
             infinite_scrap_recycling_productivity = scrap_stack[-1]
+        if self.starting_planet == "aquilo_orbit":
+            # aquilo-orbit-start instantiates 1 level of asteroid productivity.
+            try:
+                # progressive_technologies: only_related
+                asteroid_stack = self.progressive_technology_stacks[names.asteroid_productivity]
+            except KeyError:
+                asteroid_stack = self.progressive_technology_stacks[names.progressive_space]
+            assert asteroid_stack[-1] == infinite_asteroid_productivity
+            asteroid_stack.append(names.asteroid_productivity_2) # infinite
+            infinite_asteroid_productivity = asteroid_stack[-1]
 
         # Now build the reverse index.
         self.technology_name_to_progressive_group_name = {
@@ -265,23 +294,8 @@ class Factorio(World):
             # Something like this maybe: https://github.com/ouk-ouk/Factorio-NoRespawnGun/blob/c3f55d2dc5bf8a832ba8c110e23a71122252dd88/src/control.lua#L20C112-L20C129
             # See /path/to/factorio/data/base/script/freeplay.lua for the definition of the remote interface.
             for k, v in {
-                # Run fast. Build fast. Fun fast.
-                names.power_armor: 1,
-                names.fission_reactor_equipment: 1,
-                names.battery_equipment: 2,
-                names.personal_roboport_equipment: 1,
-                names.exoskeleton_equipment: 3,
-                names.construction_robot: 50,
-                # Also get through the burner phase faster.
-                names.burner_mining_drill: 49, # +1 from scenario
-                names.stone_furnace: 49,       # +1 from scenario
-                names.wood: 99,                # +1 from scenario
-                names.iron_plate: 500,
-                names.iron_gear_wheel: 200,
-                names.copper_cable: 200,       # +200 from free samples (if enabled)
-                # Assembling machines cost 10 secience packs to unlock (not configurable).
-                names.automation_science_pack: 10,
-            }.items():
+                "aquilo_orbit": aquilo_quick_start_items,
+            }.get(self.starting_planet, quick_start_items).items():
                 try:
                     self.options.starting_items.value[k] += v
                 except KeyError:
@@ -482,7 +496,7 @@ class Factorio(World):
             names.artillery_shell_damage_1:           self.options.filler_artillery_shell_damage_weight.value,
             names.artillery_shell_range_1:            self.options.filler_artillery_shell_range_weight.value,
             names.artillery_shell_speed_1:            self.options.filler_artillery_shell_speed_weight.value,
-            names.asteroid_productivity:              self.options.filler_asteroid_productivity_weight.value,
+            infinite_asteroid_productivity:           self.options.filler_asteroid_productivity_weight.value,
             names.electric_weapons_damage_4:          self.options.filler_electric_weapons_damage_weight.value,
             names.follower_robot_count_5:             self.options.filler_follower_robot_count_weight.value,
             names.health:                             self.options.filler_health_weight.value,
@@ -660,7 +674,19 @@ class Factorio(World):
                 # This is a receivable technology item.
                 item_names.append(event_name)
 
+        if self.starting_planet == names.nauvis:
+            starting_planet_native_science_packs = set()
+        elif self.starting_planet == names.vulcanus:
+            starting_planet_native_science_packs = {names.metallurgic_science_pack}
+        elif self.starting_planet == names.gleba:
+            starting_planet_native_science_packs = {names.agricultural_science_pack}
+        elif self.starting_planet == names.fulgora:
+            starting_planet_native_science_packs = {names.electromagnetic_science_pack}
+        elif self.starting_planet == "aquilo_orbit":
+            starting_planet_native_science_packs = {names.space_science_pack, names.cryogenic_science_pack}
+
         victory_location_technology_names = set()
+        specifically_removed_technology_names = set()
         if self.options.goal.current_key == "space_science":
             sciences_beyond_goal = {
                 names.space_science_pack,
@@ -670,9 +696,32 @@ class Factorio(World):
                 names.cryogenic_science_pack,
                 names.promethium_science_pack,
             }
-            victory_location_technology_names = {
-                names.logistic_system,
-            }
+            if self.starting_planet == "aquilo_orbit":
+                # Aquilo orbit doesn't get stone until space travel, which is beyond this goal.
+                sciences_beyond_goal.update([names.military_science_pack, names.production_science_pack])
+                specifically_removed_technology_names.update([
+                    # Don't let trigger techs on these planets extend the end game for an explicitly short goal setting.
+                    names.planet_discovery_vulcanus,
+                    names.planet_discovery_gleba,
+                    names.planet_discovery_fulgora,
+                    names.planet_discovery_nauvis,
+                    # Most of the uranium tech on nauvis doesn't have any telltale science pack ingredients.
+                    names.uranium_mining,
+                    names.uranium_processing,
+                    names.nuclear_power,
+                    names.kovarex_enrichment_process,
+                    names.nuclear_fuel_reprocessing,
+                    # Then the others require military or agricultural science.
+                ])
+                victory_location_technology_names = {
+                    names.quantum_processor,
+                }
+                # And while cryo science is naitive to Aquilo, it is the goal science tech, so remove all other research objectives requiring it.
+                starting_planet_native_science_packs -= {names.cryogenic_science_pack}
+            else:
+                victory_location_technology_names = {
+                    names.logistic_system,
+                }
             self.last_technology_location_names = sorted(victory_location_technology_names)
         elif self.options.goal.current_key == "any_other_planet_science":
             sciences_beyond_goal = {
@@ -682,14 +731,18 @@ class Factorio(World):
                 names.cryogenic_science_pack,
                 names.promethium_science_pack,
             }
+            if self.starting_planet == "aquilo_orbit":
+                # Aquilo orbit doesn't get stone until space travel, which is beyond this goal.
+                sciences_beyond_goal.update([names.military_science_pack, names.production_science_pack])
             if self.starting_planet != names.vulcanus:
-                victory_location_technology_names.add(names.asteroid_reprocessing)
+                victory_location_technology_names.add(names.cliff_explosives)
             if self.starting_planet != names.gleba:
                 victory_location_technology_names.add(names.carbon_fiber)
             if self.starting_planet != names.fulgora:
                 victory_location_technology_names.add(names.lightning_collector)
             self.last_technology_location_names = sorted(victory_location_technology_names)
         elif self.options.goal.current_key in ("aquilo_orbit", "aquilo_orbit_10_science"):
+            assert self.starting_planet != "aquilo_orbit", "the goal was supposed to be extended earlier than this"
             sciences_beyond_goal = {
                 names.cryogenic_science_pack,
                 names.promethium_science_pack,
@@ -703,9 +756,11 @@ class Factorio(World):
         else: assert False
         assert len(self.last_technology_location_names) > 0
         self.last_technology_location_names = [name + "_location" for name in self.last_technology_location_names]
+        sciences_beyond_goal -= starting_planet_native_science_packs
 
         def is_beyond_goal(technology_name):
             if technology_name in victory_location_technology_names: return False
+            if technology_name in specifically_removed_technology_names: return True
             technology_props = self.technology_props_lua[technology_name]
             if "unit" not in technology_props:
                 # Trigger techs are beyond the goal if their dependencies are beyond the goal.

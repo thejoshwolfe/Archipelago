@@ -120,6 +120,10 @@ def generate_mod(
     starting_planet: str,
     vulcanus_rock_multiplier: float,
     enable_alternate_explosives: bool,
+    space_platform_foundation_amount_per_craft: int,
+    ice_platform_amount_per_craft: int,
+    refined_concrete_amount_per_craft: int,
+    heat_pipe_amount_per_craft: int,
     map_exchange_string: str,
     output_directory: str,
 ):
@@ -300,6 +304,10 @@ def generate_mod(
         "starting_planet": starting_planet,
         "vulcanus_rock_multiplier": vulcanus_rock_multiplier,
         "enable_alternate_explosives": enable_alternate_explosives,
+        "space_platform_foundation_amount_per_craft": space_platform_foundation_amount_per_craft,
+        "ice_platform_amount_per_craft": ice_platform_amount_per_craft,
+        "refined_concrete_amount_per_craft": refined_concrete_amount_per_craft,
+        "heat_pipe_amount_per_craft": heat_pipe_amount_per_craft,
 
         "hide_base_technologies": sorted(technology_props_lua.keys()),
         "new_technology_data": new_technology_data,
@@ -351,11 +359,15 @@ def generate_mod(
         "dependencies": [
             "quality >= 2.1.20",
             "space-age >= 2.1.20",
-            "? respawn-to-any-planet",
+            "+ respawn-to-any-planet >= 0.2.0",
         ]
     }
-    if starting_planet != names.nauvis:
-        info["dependencies"].append("any-planet-start = 1.2.4"),
+    if starting_planet in {names.vulcanus, names.gleba, names.fulgora}:
+        info["dependencies"].append("any-planet-start = 1.2.4")
+    elif starting_planet == "aquilo_orbit":
+        info["dependencies"].append("aquilo-orbit-start = 1.1.1")
+    else:
+        info["dependencies"].append("! aquilo-orbit-start")
     mod.writing_tasks.append(lambda: (versioned_mod_name + "/info.json",
                                       json.dumps(info, indent=4) + "\n"))
     mod.writing_tasks.append(lambda: ("logic.json",
