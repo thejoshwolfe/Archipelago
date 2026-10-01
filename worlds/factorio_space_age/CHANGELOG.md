@@ -1,5 +1,9 @@
 # Factorio: Space Age apworld Changelog
 
+## 4.0.1
+
+* Fix `starting_planet: aquilo_orbit` not working at all.
+
 ## 4.0.0
 
 * MAJOR FEATURE: Add `starting_planet: aquilo_orbit`, which integrates my brand new [aquilo-orbit-start](https://mods.factorio.com/mod/aquilo-orbit-start) mod.
