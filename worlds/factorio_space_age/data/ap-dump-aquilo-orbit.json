@@ -893,99 +893,6 @@
         "amount": 1
       }]
     },
-    "aos-basic-asteroid-collector-recycling": {
-      "hidden": true,
-      "enabled": false,
-      "categories": ["recycling"],
-      "ingredients": [{
-        "type": "item",
-        "name": "aos-basic-asteroid-collector",
-        "amount": 1
-      }],
-      "energy_required": 0.625,
-      "results": [
-        {
-          "type": "item",
-          "name": "iron-plate",
-          "amount": 2,
-          "extra_count_fraction": 0.5
-        },
-        {
-          "type": "item",
-          "name": "iron-gear-wheel",
-          "amount": 1,
-          "extra_count_fraction": 0.25
-        },
-        {
-          "type": "item",
-          "name": "electronic-circuit",
-          "amount": 0,
-          "extra_count_fraction": 0.75
-        }
-      ]
-    },
-    "aos-basic-crusher-recycling": {
-      "hidden": true,
-      "enabled": false,
-      "categories": ["recycling"],
-      "ingredients": [{
-        "type": "item",
-        "name": "aos-basic-crusher",
-        "amount": 1
-      }],
-      "energy_required": 0.625,
-      "results": [
-        {
-          "type": "item",
-          "name": "iron-plate",
-          "amount": 2,
-          "extra_count_fraction": 0.5
-        },
-        {
-          "type": "item",
-          "name": "iron-gear-wheel",
-          "amount": 1,
-          "extra_count_fraction": 0.25
-        },
-        {
-          "type": "item",
-          "name": "electronic-circuit",
-          "amount": 0,
-          "extra_count_fraction": 0.75
-        }
-      ]
-    },
-    "aos-space-furnace-recycling": {
-      "hidden": true,
-      "enabled": false,
-      "categories": ["recycling"],
-      "ingredients": [{
-        "type": "item",
-        "name": "aos-space-furnace",
-        "amount": 1
-      }],
-      "energy_required": 0.3125,
-      "results": [
-        {
-          "type": "item",
-          "name": "iron-ore",
-          "amount": 5,
-          "extra_count_fraction": 0
-        },
-        {
-          "type": "item",
-          "name": "carbon",
-          "amount": 2,
-          "extra_count_fraction": 0.5
-        },
-        {
-          "type": "item",
-          "name": "calcite",
-          "amount": 0,
-          "extra_count_fraction": 0.5
-        }
-      ]
-    },
     "aos-space-platform-foundation-from-carbon": {
       "surface_conditions": [{
         "property": "gravity",
@@ -1185,7 +1092,7 @@
         {
           "type": "item",
           "name": "electronic-circuit",
-          "amount": 10
+          "amount": 50
         }
       ],
       "energy_required": 30,
@@ -1251,6 +1158,389 @@
         "name": "cargo-bay",
         "amount": 1
       }]
+    },
+    "railgun-recycling": {
+      "hidden": true,
+      "enabled": false,
+      "categories": ["recycling"],
+      "ingredients": [{
+        "type": "item",
+        "name": "railgun",
+        "amount": 1
+      }],
+      "energy_required": 0.625,
+      "results": [
+        {
+          "type": "item",
+          "name": "steel-plate",
+          "amount": 2,
+          "extra_count_fraction": 0.5
+        },
+        {
+          "type": "item",
+          "name": "battery",
+          "amount": 2,
+          "extra_count_fraction": 0.5
+        },
+        {
+          "type": "item",
+          "name": "quantum-processor",
+          "amount": 5,
+          "extra_count_fraction": 0
+        }
+      ]
+    },
+    "railgun-turret-recycling": {
+      "hidden": true,
+      "enabled": false,
+      "categories": ["recycling"],
+      "ingredients": [{
+        "type": "item",
+        "name": "railgun-turret",
+        "amount": 1
+      }],
+      "energy_required": 0.625,
+      "results": [
+        {
+          "type": "item",
+          "name": "quantum-processor",
+          "amount": 25,
+          "extra_count_fraction": 0
+        },
+        {
+          "type": "item",
+          "name": "steel-plate",
+          "amount": 7,
+          "extra_count_fraction": 0.5
+        },
+        {
+          "type": "item",
+          "name": "battery",
+          "amount": 12,
+          "extra_count_fraction": 0.5
+        },
+        {
+          "type": "item",
+          "name": "carbon",
+          "amount": 5,
+          "extra_count_fraction": 0
+        }
+      ]
+    },
+    "cryogenic-plant-recycling": {
+      "hidden": true,
+      "enabled": false,
+      "categories": ["recycling"],
+      "ingredients": [{
+        "type": "item",
+        "name": "cryogenic-plant",
+        "amount": 1
+      }],
+      "energy_required": 0.625,
+      "results": [
+        {
+          "type": "item",
+          "name": "refined-concrete",
+          "amount": 10,
+          "extra_count_fraction": 0
+        },
+        {
+          "type": "item",
+          "name": "battery",
+          "amount": 5,
+          "extra_count_fraction": 0
+        },
+        {
+          "type": "item",
+          "name": "processing-unit",
+          "amount": 5,
+          "extra_count_fraction": 0
+        },
+        {
+          "type": "item",
+          "name": "lithium-plate",
+          "amount": 5,
+          "extra_count_fraction": 0
+        }
+      ]
+    },
+    "quantum-processor-recycling": {
+      "hidden": true,
+      "enabled": false,
+      "categories": ["recycling"],
+      "ingredients": [{
+        "type": "item",
+        "name": "quantum-processor",
+        "amount": 1
+      }],
+      "energy_required": 1.875,
+      "results": [
+        {
+          "type": "item",
+          "name": "plastic-bar",
+          "amount": 0,
+          "extra_count_fraction": 0.25
+        },
+        {
+          "type": "item",
+          "name": "processing-unit",
+          "amount": 0,
+          "extra_count_fraction": 0.25
+        },
+        {
+          "type": "item",
+          "name": "battery",
+          "amount": 0,
+          "extra_count_fraction": 0.25
+        },
+        {
+          "type": "item",
+          "name": "carbon",
+          "amount": 0,
+          "extra_count_fraction": 0.25
+        },
+        {
+          "type": "item",
+          "name": "lithium-plate",
+          "amount": 0,
+          "extra_count_fraction": 0.5
+        }
+      ]
+    },
+    "fusion-reactor-equipment-recycling": {
+      "hidden": true,
+      "enabled": false,
+      "categories": ["recycling"],
+      "ingredients": [{
+        "type": "item",
+        "name": "fusion-reactor-equipment",
+        "amount": 1
+      }],
+      "energy_required": 1.875,
+      "results": [
+        {
+          "type": "item",
+          "name": "fusion-power-cell",
+          "amount": 2,
+          "extra_count_fraction": 0.5
+        },
+        {
+          "type": "item",
+          "name": "steel-plate",
+          "amount": 62,
+          "extra_count_fraction": 0.5
+        },
+        {
+          "type": "item",
+          "name": "carbon",
+          "amount": 25,
+          "extra_count_fraction": 0
+        },
+        {
+          "type": "item",
+          "name": "battery",
+          "amount": 6,
+          "extra_count_fraction": 0.25
+        },
+        {
+          "type": "item",
+          "name": "quantum-processor",
+          "amount": 62,
+          "extra_count_fraction": 0.5
+        }
+      ]
+    },
+    "fusion-reactor-recycling": {
+      "hidden": true,
+      "enabled": false,
+      "categories": ["recycling"],
+      "ingredients": [{
+        "type": "item",
+        "name": "fusion-reactor",
+        "amount": 1
+      }],
+      "energy_required": 3.75,
+      "results": [
+        {
+          "type": "item",
+          "name": "steel-plate",
+          "amount": 50,
+          "extra_count_fraction": 0
+        },
+        {
+          "type": "item",
+          "name": "battery",
+          "amount": 50,
+          "extra_count_fraction": 0
+        },
+        {
+          "type": "item",
+          "name": "quantum-processor",
+          "amount": 62,
+          "extra_count_fraction": 0.5
+        }
+      ]
+    },
+    "fusion-generator-recycling": {
+      "hidden": true,
+      "enabled": false,
+      "categories": ["recycling"],
+      "ingredients": [{
+        "type": "item",
+        "name": "fusion-generator",
+        "amount": 1
+      }],
+      "energy_required": 1.875,
+      "results": [
+        {
+          "type": "item",
+          "name": "steel-plate",
+          "amount": 25,
+          "extra_count_fraction": 0
+        },
+        {
+          "type": "item",
+          "name": "battery",
+          "amount": 25,
+          "extra_count_fraction": 0
+        },
+        {
+          "type": "item",
+          "name": "quantum-processor",
+          "amount": 12,
+          "extra_count_fraction": 0.5
+        }
+      ]
+    },
+    "foundation-recycling": {
+      "hidden": true,
+      "enabled": false,
+      "categories": ["recycling"],
+      "ingredients": [{
+        "type": "item",
+        "name": "foundation",
+        "amount": 1
+      }],
+      "energy_required": 1.875,
+      "results": [
+        {
+          "type": "item",
+          "name": "steel-plate",
+          "amount": 1,
+          "extra_count_fraction": 0
+        },
+        {
+          "type": "item",
+          "name": "lithium-plate",
+          "amount": 1,
+          "extra_count_fraction": 0
+        },
+        {
+          "type": "item",
+          "name": "carbon",
+          "amount": 1,
+          "extra_count_fraction": 0
+        },
+        {
+          "type": "item",
+          "name": "stone",
+          "amount": 5,
+          "extra_count_fraction": 0
+        }
+      ]
+    },
+    "aos-basic-asteroid-collector-recycling": {
+      "hidden": true,
+      "enabled": false,
+      "categories": ["recycling"],
+      "ingredients": [{
+        "type": "item",
+        "name": "aos-basic-asteroid-collector",
+        "amount": 1
+      }],
+      "energy_required": 0.625,
+      "results": [
+        {
+          "type": "item",
+          "name": "iron-plate",
+          "amount": 2,
+          "extra_count_fraction": 0.5
+        },
+        {
+          "type": "item",
+          "name": "iron-gear-wheel",
+          "amount": 1,
+          "extra_count_fraction": 0.25
+        },
+        {
+          "type": "item",
+          "name": "electronic-circuit",
+          "amount": 0,
+          "extra_count_fraction": 0.75
+        }
+      ]
+    },
+    "aos-basic-crusher-recycling": {
+      "hidden": true,
+      "enabled": false,
+      "categories": ["recycling"],
+      "ingredients": [{
+        "type": "item",
+        "name": "aos-basic-crusher",
+        "amount": 1
+      }],
+      "energy_required": 0.625,
+      "results": [
+        {
+          "type": "item",
+          "name": "iron-plate",
+          "amount": 2,
+          "extra_count_fraction": 0.5
+        },
+        {
+          "type": "item",
+          "name": "iron-gear-wheel",
+          "amount": 1,
+          "extra_count_fraction": 0.25
+        },
+        {
+          "type": "item",
+          "name": "electronic-circuit",
+          "amount": 0,
+          "extra_count_fraction": 0.75
+        }
+      ]
+    },
+    "aos-space-furnace-recycling": {
+      "hidden": true,
+      "enabled": false,
+      "categories": ["recycling"],
+      "ingredients": [{
+        "type": "item",
+        "name": "aos-space-furnace",
+        "amount": 1
+      }],
+      "energy_required": 0.3125,
+      "results": [
+        {
+          "type": "item",
+          "name": "iron-ore",
+          "amount": 5,
+          "extra_count_fraction": 0
+        },
+        {
+          "type": "item",
+          "name": "carbon",
+          "amount": 2,
+          "extra_count_fraction": 0.5
+        },
+        {
+          "type": "item",
+          "name": "calcite",
+          "amount": 0,
+          "extra_count_fraction": 0.5
+        }
+      ]
     }
   },
   "technology": {
