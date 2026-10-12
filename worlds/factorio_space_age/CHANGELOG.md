@@ -1,5 +1,9 @@
 # Factorio: Space Age apworld Changelog
 
+## 4.0.2
+
+* Upgrade dependency aquilo-orbit-start to version 1.2.0, which is used for `starting_planet: aquilo_orbit`. https://mods.factorio.com/mod/aquilo-orbit-start/changelog
+
 ## 4.0.1
 
 * Fix `starting_planet: aquilo_orbit` not working at all.
