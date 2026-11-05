@@ -377,7 +377,7 @@ async def factorio_server_watcher(ctx: FactorioContext):
             )
         except subprocess.CalledProcessError as e:
             logger.error(e.output)
-            return False
+            raise
     factorio_process = subprocess.Popen(
         (executable, "--start-server", savegame_name, *ctx.server_args),
         stderr=subprocess.PIPE,
@@ -501,7 +501,7 @@ async def factorio_spinup_server(ctx: FactorioContext) -> bool:
             )
         except subprocess.CalledProcessError as e:
             logger.error(e.output)
-            return False
+            raise
     factorio_process = subprocess.Popen(
         (executable, "--start-server", savegame_name, *ctx.server_args),
         stderr=subprocess.PIPE,
